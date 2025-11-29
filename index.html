@@ -3,33 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>PlonK 協定技術報告</title>
-    <!-- MathJax Configuration (Must be before loading the script) -->
+    
+    <!-- MathJax Configuration -->
     <script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                typeset: true
             }
         };
     </script>
-    <!-- MathJax for rendering LaTeX formulas -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <!-- Mermaid JS (FIXED: Using v9.4.3 for global variable support) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js"></script>
+    <!-- Mermaid JS (v9.4.3 Stable) -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@9.4.3/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // 1. 初始化設定：關閉自動載入，避免與頁面渲染搶資源
             mermaid.initialize({ 
-                startOnLoad: true,
+                startOnLoad: false,
                 theme: 'neutral',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                 securityLevel: 'loose',
                 flowchart: {
                     curve: 'basis',
-                    htmlLabels: true
+                    htmlLabels: true,
+                    useMaxWidth: true
                 }
+            });
+
+            // 2. 手動觸發渲染，確保 DOM 已經完全準備好
+            // 這樣可以避免原始碼直接顯示在頁面上的問題
+            const mermaidNodes = document.querySelectorAll('.mermaid');
+            
+            mermaid.init(undefined, mermaidNodes).then(() => {
+                // 渲染成功後，讓圖表顯示出來
+                mermaidNodes.forEach(node => {
+                    node.style.visibility = 'visible';
+                    node.style.opacity = '1';
+                });
+            }).catch(err => {
+                console.error("Mermaid rendering failed:", err);
             });
         });
     </script>
@@ -185,6 +205,24 @@
             font-weight: 600;
         }
 
+        /* Chart Container & Mermaid Styling */
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            width: 100%;
+            overflow-x: auto; /* 防止過寬時破壞版面 */
+        }
+
+        .mermaid {
+            /* 預設隱藏，等待渲染完成 */
+            visibility: hidden; 
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+            display: flex;
+            justify-content: center;
+        }
+        
         /* Navigation Buttons */
         .section-nav {
             display: flex;
@@ -350,7 +388,8 @@
         <p>PlonK 的運作可以分為四個主要階段：</p>
         
         <!-- Mermaid Diagram Insertion -->
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             %% 定義樣式
             classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
@@ -414,6 +453,7 @@
             SRS -.-> Phase4
             
             linkStyle default stroke:#333,stroke-width:1px;
+            </div>
         </div>
 
         <ol>
@@ -566,7 +606,8 @@
             </ul>
         </p>
 
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph LR
             %% 節點樣式
             classDef actor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
@@ -596,6 +637,7 @@
             Step3 -.-> Toxic
             StepN --> SRS
             Step2 --> StepN
+            </div>
         </div>
 
         <div class="section-nav">
@@ -626,7 +668,8 @@
             計算出的多項式經過 KZG Commit 成為群元素 <span class="math">\(\mathbb{G}_1\)</span>。這些承諾值構成了 VK，Verifier 將使用它們來驗證 Proof 是否對應於特定的電路邏輯。
         </p>
 
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             %% 樣式
             classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5;
@@ -658,6 +701,7 @@
             
             VK("Verification Key"):::artifact
             Commit --> VK
+            </div>
         </div>
 
         <div class="section-nav">
@@ -714,7 +758,8 @@
         </p>
 
         <!-- Detailed Proving Flowchart -->
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             classDef round fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
             classDef challenge fill:#fbe9e7,stroke:#d84315,stroke-width:2px,stroke-dasharray: 5 5;
@@ -767,6 +812,7 @@
                 Out5("Output: Proofs"):::output
                 Step5 --> Open5 --> Out5
             end
+            </div>
         </div>
 
         <div class="section-nav">
@@ -798,7 +844,8 @@
         </p>
 
         <!-- Detailed Verification Flowchart -->
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             classDef input fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
             classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
@@ -840,6 +887,7 @@
             PI_Eval --> CombineE
             Combine --> Pairing
             CombineE --> Pairing
+            </div>
         </div>
 
         <div class="section-nav">
