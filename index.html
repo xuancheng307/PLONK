@@ -18,7 +18,7 @@
             }
         };
     </script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <!-- 移除 polyfill.io 以提升安全性 -->
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <!-- Mermaid JS (v9.4.3 Stable) -->
@@ -33,12 +33,13 @@
                 flowchart: {
                     curve: 'basis',
                     htmlLabels: true,
-                    useMaxWidth: false // 關鍵修正：設為 false 以防止圖表被強制縮小
+                    useMaxWidth: false
                 }
             });
 
             const mermaidNodes = document.querySelectorAll('.mermaid');
             
+            // 使用 Promise 確保渲染完成後再顯示，避免佈局跳動
             mermaid.init(undefined, mermaidNodes).then(() => {
                 mermaidNodes.forEach(node => {
                     node.style.visibility = 'visible';
@@ -46,6 +47,7 @@
                 });
             }).catch(err => {
                 console.error("Mermaid rendering failed:", err);
+                // 即使失敗也嘗試顯示內容（可能是純文字）
                 mermaidNodes.forEach(node => {
                     node.style.visibility = 'visible';
                     node.style.opacity = '1';
@@ -205,25 +207,24 @@
             font-weight: 600;
         }
 
-        /* Chart Container & Mermaid Styling - UPDATED */
+        /* Chart Container & Mermaid Styling */
         .chart-container {
             display: flex;
-            justify-content: center; /* 讓圖表預設居中 */
+            justify-content: center;
             margin: 2rem 0;
             width: 100%;
-            overflow-x: auto; /* 允許過寬時出現捲軸 */
-            padding-bottom: 10px; /* 預留捲軸空間 */
+            overflow-x: auto;
+            padding-bottom: 10px;
         }
 
         .mermaid {
             visibility: hidden; 
             opacity: 0;
             transition: opacity 0.3s ease-in;
-            display: block; /* 改為 block 避免 flex 壓縮內容 */
+            display: block;
             margin: 0 auto;
         }
 
-        /* 強制 SVG 保持原始比例，不被容器寬度壓縮 */
         .mermaid svg {
             max-width: none !important; 
             height: auto;
@@ -238,28 +239,39 @@
             font-weight: 500;
         }
 
+        /* Demo Button Styling */
+        .demo-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            border-radius: 4px;
+        }
+
+        .demo-title {
+            margin-top: 0;
+            color: #0d47a1;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
         .btn {
             display: inline-block;
             padding: 0.5rem 1rem;
-            background-color: white;
-            border: 1px solid var(--border-color);
+            background-color: #2196f3;
+            border: 1px solid #2196f3;
             border-radius: 4px;
-            color: var(--link-color);
+            color: white;
             text-decoration: none;
             transition: all 0.2s;
+            font-weight: bold;
+            margin-top: 0.5rem;
         }
 
         .btn:hover {
-            background-color: var(--link-color);
-            color: white;
-            border-color: var(--link-color);
-        }
-
-        .btn.disabled {
-            pointer-events: none;
-            opacity: 0.5;
-            background-color: #f8f9fa;
-            color: #6c757d;
+            background-color: #1976d2;
+            border-color: #1976d2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 768px) {
@@ -276,7 +288,6 @@
             main {
                 padding: 1.5rem;
             }
-            /* 手機板允許左對齊捲動，體驗較好 */
             .chart-container {
                 justify-content: flex-start;
             }
@@ -320,7 +331,7 @@
         <p>
             本報告將從「系統角色」與「技術流程」的角度解構 PLONK 協定。我們將詳細探討其如何透過多項式承諾方案（Polynomial Commitment Scheme）與多項式互動協議（Polynomial Interactive Oracle Proofs）來構建 SNARK。重點將放在解析其獨特的 permutation check 機制、Prover 的五輪互動流程，以及 Verifier 如何透過常數次配對運算完成高效驗證，從而實現一個通用、高效且安全的 zk-SNARK 系統。
         </p>
-</section>
+    </section>
 
     <section id="intro">
         <h2>1. 前言與動機 (Introduction)</h2>
@@ -344,7 +355,7 @@
                 <li><strong>第 8–10 章</strong>：分析 PLONK 的實際效能表現、安全性論證，並總結其在隱私計算領域的應用前景與未來發展。</li>
             </ul>
         </p>
-</section>
+    </section>
 
     <section id="system-roles">
         <h2>2. 系統與角色模型 (System Roles)</h2>
@@ -378,7 +389,7 @@
         <p>
             <strong>Lemma 2.2 的直覺</strong>：AGM 允許我們將複雜的雙線性配對檢查（Real Pairing Check）還原為多項式恆等式檢查（Ideal Polynomial Check）。具體來說，如果一個代數對手能欺騙 Pairing Check，則相當於他在不知情的情況下解決了離散對數問題（Q-DLOG）。這確保了只要 Polynomial Protocol 是安全的（具有 Knowledge Soundness），編譯後的 SNARK 就是安全的。
         </p>
-</section>
+    </section>
 
     <section id="overview">
         <h2>3. 整體流程概觀 (Overview)</h2>
@@ -508,41 +519,29 @@
             <li><strong>Verifier</strong>：重建挑戰值，執行配對驗證。</li>
         </ul>
 
-        <h3>3.4 通用 SRS 與更換電路的實際流程</h3>
+        <!-- NEW SUBSECTION 3.4 -->
+        <h3>3.4 在同一組 SRS 下切換電路時會發生什麼？</h3>
         <p>
-            PLONK 的「通用 SRS」並不是什麼都不用管，而是：同一份 SRS 可以支援所有「多項式次數不超過某個上限」的電路。換電路時，只需要重新做「電路預處理」，不需要重新跑一次昂貴的 MPC setup。
-            可以把整個過程拆成兩個層次：
+            在 PlonK 的「通用且可更新 SRS」模型下，同一組 SRS 可以支援所有 gate 數不超過某個上限 $n$ 的電路。也就是說，只要在一開始的 MPC 儀式中產生了 degree 上界為 $d \ge n$ 的 monomials SRS，之後不論換多少個不同邏輯的電路，都不需要重新跑 setup。
         </p>
-        <p><strong>（1）一次性的 Universal Setup（只做一次）</strong></p>
-        <ul>
-            <li>在多方儀式中選出一個隨機秘密值 $x \in \mathbb{F}$，建立 monomial SRS：
-            $[1]_1, [x]_1, \dots, [x^{d-1}]_1, [1]_2, [x]_2$。</li>
-            <li>這裡的 $d$ 對應「最大支援 degree」，也就是你想支援的最大電路大小。之後所有電路裡出現的多項式（wire、多項式約束、permutation 等）都必須是 degree < $d$ 才能用這份 SRS 承諾。</li>
-        </ul>
-        <p><strong>（2）針對每一個電路 $\mathcal{C}$ 的預處理（可以想成「編譯電路」）</strong></p>
-        <ul>
-            <li>對於每一個具體電路 $\mathcal{C}$：
-                <ul>
-                    <li>先把電路轉成 PLONK 的 constraint system，產生對應的 selector 多項式 $q_L, q_R, q_O, q_M, q_C$，以及 permutation 多項式 $S_{\sigma 1}, S_{\sigma 2}, S_{\sigma 3}$。</li>
-                    <li>確認這些多項式的 degree 都小於當初 setup 設的上限 $d$。</li>
-                    <li>用同一份 SRS 計算它們的 KZG 承諾，得到：
-                    $[q_L]_1, [q_R]_1, [q_O]_1, [q_M]_1, [q_C]_1, [S_{\sigma 1}]_1, [S_{\sigma 2}]_1, [S_{\sigma 3}]_1$。</li>
-                    <li>把這些承諾加上一些電路尺寸、根 $\omega$、coset 因子 $k_1, k_2$ 等共同參數，打包成「這個電路專用的 Verification Key (VK)」。</li>
-                </ul>
-            </li>
-        </ul>
         <p>
-            這樣，換一個電路時，實際上發生的只有：
-            <ol>
-                <li>設計新的算術電路 $\mathcal{C}'$（gate 數不要超過當初 SRS 的上限）。</li>
-                <li>重新生成新的 selector/permutation 多項式。</li>
-                <li>用同一份 $\mathsf{srs}$ 算出新的承諾，得到新的 $\text{VK}_{\mathcal{C}'}$。</li>
-                <li>Prover 在產生證明時，使用「舊的 SRS ＋ 新電路的 VK」來跑 PLONK 的 5 個 round。</li>
-                <li>Verifier 在驗證時，只要選對「這個 statement 對應的 VK」，但 SRS 不用換。</li>
-            </ol>
-            因此，一個系統只要做一次通用的 MPC setup（生成 SRS），之後可以不斷「上新電路」，每個電路只需要多一份 VK，不用每次重來一次 setup 儀式。這就是「universal SRS」在實務上的意義。
+            實際上，當我們從某個電路 $C$ 換到另一個電路 $C'$ 時，流程會是：
+            <ul>
+                <li><strong>SRS 完全不變</strong>：MPC 儀式產生的是一組通用的 monomial SRS（例如 $\{[x^i]_1\}_{i=0}^d$）。這組 SRS 只跟支援的最大多項式次數 $d$ 有關，不依賴任何特定電路。因此換電路時，這組 SRS 在鏈上或系統裡是共用且長期存在的，不需要重跑儀式。</li>
+                <li><strong>重新編譯新的電路約束</strong>：電路設計者把新的電路 $C'$ 編譯成一個新的 constraint system $(V', Q')$。這裡的 $Q'$ 給出新的 selector 向量 $q_L', q_R', q_O', q_M', q_C'$，而 $V'$ 給出新的 wiring partition $T_{C'}$（描述哪些 wires 應該相等）。</li>
+                <li><strong>產生新的 selector / permutation 多項式</strong>：把 $Q'$ 中的 selector 向量插值成多項式 $q_L'(X), \dots, q_C'(X)$，並且根據新的 partition $T_{C'}$ 建出新的 permutation $\sigma'$，再插值成 $S_{\sigma 1}'(X), S_{\sigma 2}'(X), S_{\sigma 3}'(X)$。</li>
+                <li><strong>用同一組 SRS 對這些多項式重新 commit</strong>：利用原本的 monomial SRS 計算
+                $[q_L']_1, [q_R']_1, [q_O']_1, [q_M']_1, [q_C']_1, [S_{\sigma 1}']_1, [S_{\sigma 2}']_1, [S_{\sigma 3}']_1$。
+                這些承諾構成新的 Verification Key $VK'$，對應於電路 $C'$。</li>
+            </ul>
         </p>
-</section>
+        <p>
+            <strong>Prover / Verifier 只換 VK，不換 SRS</strong>：之後 Prover 在電路 $C'$ 上產生證明時，用的多項式承諾與 opening 機制全部共用原本的 SRS；Verifier 驗證任何一個 proof，只是根據「這份 proof 屬於哪一個電路」，載入對應的 VK（即這個電路的 selector / permutation 承諾），而不需要更換 SRS。
+        </p>
+        <p>
+            從「工程操作」的角度來看，換電路的成本只是重新跑一遍「電路預處理（preprocessing）」產生新的 VK，而不是重新跑 MPC setup。這也是 PlonK 相對於 Groth16 最大的部署優勢之一。
+        </p>
+    </section>
 
     <section id="math">
         <h2>4. 數學與建模基礎 (Math Foundation)</h2>
@@ -574,7 +573,7 @@
             <strong>Polynomial Protocol</strong> 是一個抽象模型，Prover 將多項式發送給理想第三方 <span class="math">\(\mathcal{I}\)</span>，Verifier 查詢這些多項式在隨機點的評估值，並檢查多項式恆等式（Polynomial Identities）。
             <strong>Ranged Protocol</strong> 則處理如「對於所有 <span class="math">\(x \in H\)</span>，<span class="math">\(P(x)=0\)</span>」這類約束。這在代數上等價於證明 <span class="math">\(P(X)\)</span> 能被 <span class="math">\(Z_H(X)\)</span> 整除，即 <span class="math">\(P(X) = Q(X) \cdot Z_H(X)\)</span>。
         </p>
-</section>
+    </section>
 
     <section id="permutation">
         <h2>5. Permutation Argument</h2>
@@ -604,7 +603,7 @@
             例如，左輸入的位置標記為 <span class="math">\(x\)</span>，右輸入標記為 <span class="math">\(k_1 x\)</span>，輸出標記為 <span class="math">\(k_2 x\)</span>。
             Copy constraints 透過置換 <span class="math">\(\sigma\)</span> 將這些位置連結起來。如果 <span class="math">\(Z(X)\)</span> 通過檢查，則保證了電路中所有的連線關係（例如 gate A 的輸出等於 gate B 的輸入）都是正確的。
         </p>
-</section>
+    </section>
 
     <!-- NEW SECTION: Setup -->
     <section id="setup">
@@ -661,7 +660,7 @@
             Step2 --> StepN
             </div>
         </div>
-</section>
+    </section>
 
     <!-- NEW SECTION: Preprocessing -->
     <section id="preprocessing">
@@ -720,7 +719,7 @@
             Commit --> VK
             </div>
         </div>
-</section>
+    </section>
 
     <section id="proving">
         <h2>8. Prover 流程 (Proving)</h2>
@@ -762,6 +761,11 @@
             \bar{S}_{\sigma 2} = S_{\sigma 2}(z),\quad
             \bar{z}_\omega = z(\omega z)
             $$
+        </p>
+        <p>
+            這裡注意，商多項式 $t(X)$ 並不需要單獨在點 $z$ 開啟。Verifier 只會透過其三個承諾 $[t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1$ 和 $Z_H(z)$ 的值，把它們線性組合進線性化多項式與最終的配對檢查中，因此不會另外傳送 $\bar{t} = t(z)$ 這個純量。
+        </p>
+        <p>
             注意：
             <ul>
                 <li>$\bar{S}_{\sigma 3}$ 的評估值不需要由 Prover 額外傳送，Verifier 可以利用已知的置換結構，在本地推導出相容的值，從而節省頻寬。</li>
@@ -835,7 +839,7 @@
             end
             </div>
         </div>
-</section>
+    </section>
 
     <section id="verification">
         <h2>9. Verifier 流程 (Verification)</h2>
@@ -905,14 +909,21 @@
             CombineE --> Pairing
             </div>
         </div>
-</section>
+    </section>
 
     <section id="performance">
         <h2>10. 效能與實作 (Performance)</h2>
 
         <h3>10.1 Prover / Verifier 複雜度</h3>
         <p>
-            根據論文分析與實作數據，PLONK 的 Prover 複雜度主要由 <span class="math">\(9(n+a)\)</span> 次 <span class="math">\(\mathbb{G}_1\)</span> 指數運算主導，其中 $n$ 是乘法閘數量，$a$ 是加法閘數量（在一般電路裡 $a$ 往往是 $n$ 的數倍）。與 Sonic 相比，PLONK 移除了大量的昂貴計算，使得 Prover 速度顯著提升。Verifier 的複雜度固定為 2 次配對運算，這與 Groth16（3 次配對）相當甚至更優，屬於常數等級驗證。
+            根據論文分析與實作數據，PLONK 的 Prover 複雜度主要由 <span class="math">\(9(n+a)\)</span> 次 <span class="math">\(\mathbb{G}_1\)</span> 指數運算主導，其中 $n$ 可以視為乘法閘（multiplication gates）的數量，而 $a$ 則是加法閘（addition gates）的數量。論文中另外以 $m$ 表示 wire／R1CS 變數的個數，通常滿足 $m \approx n$。與 Sonic 相比，PLONK 移除了大量的昂貴計算，使得 Prover 速度顯著提升。Verifier 的複雜度固定為 2 次配對運算，這與 Groth16（3 次配對）相當甚至更優，屬於常數等級驗證。
+        </p>
+
+        <p>
+            原論文中實際給出了兩種 PlonK 變體可選：<br>
+            <strong>small proof 版本</strong>：Prover 需要約 $11(n+a)$ 次 $\mathbb{G}_1$ 指數運算，但 proof 少兩個群元素，Verifier 的部分運算稍微減少。<br>
+            <strong>fast prover 版本</strong>：Prover 的指數運算次數降為 $9(n+a)$，也就是本報告採用的參數；代價是 proof 多出兩個群元素，Verifier 多做少量標量乘法。<br>
+            在「通用 SRS」的前提下，fast prover 版本的 PlonK 在 Prover 耗時上已經非常接近 Groth16，但同時保留了「同一組 SRS 可支援多個電路」的彈性。
         </p>
 
         <h3>10.2 與 Groth16 / Sonic / Marlin 的比較</h3>
@@ -954,7 +965,18 @@
         <p>
             在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PLONK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
         </p>
-</section>
+
+        <!-- 新增的 DEMO 連結區塊 -->
+        <div class="demo-box">
+            <h4 class="demo-title">🚀 互動式演示 (Interactive Demo)</h4>
+            <p>
+                為了更直觀地理解 PLONK 的運作流程，我們準備了一個簡單的網頁演示。您可以親自體驗證明生成的過程。
+            </p>
+            <a href="demo.html" target="_blank" class="btn">
+                開啟 PLONK 演示頁面 ↗
+            </a>
+        </div>
+    </section>
 
     <section id="security">
         <h2>11. 安全性與擴充 (Security)</h2>
@@ -979,7 +1001,7 @@
         <p>
             PLONK 與 Fractal 或 Marlin 等系統的主要區別在於算術化（Arithmetization）的選擇。Marlin 使用雙變數稀疏多項式（bi-variate sparse polynomials）來處理 R1CS，而 PLONK 使用基於加法閘與乘法閘的約束系統，並透過 Permutation Argument 處理線路連接。這使得 PLONK 在處理特定類型的「扇入（fan-in）為 2」的電路時更為高效。
         </p>
-</section>
+    </section>
 
     <section id="conclusion">
         <h2>12. 結論 (Conclusion)</h2>
@@ -998,28 +1020,8 @@
         <p>
             未來的研究與優化方向包括：(1) 替換底層的多項式承諾方案（如使用 Halo 的 IPA 或 FRI），以移除對配對友善曲線的依賴或進一步減少 setup 需求；(2) 設計自定義閘（Custom Gates）與查找表（Lookup Tables，如 Plookup），以支援更複雜的運算邏輯並減少電路大小；(3) 深化與遞迴 SNARK（Recursive SNARK）的整合，實現無限深度的證明聚合與區塊鏈狀態壓縮。
         </p>
-</section>
+    </section>
 
-    <section id="performance">
-        <h2> 實作 (Performance)</h2>
-        <!-- ... existing content of section 10 ... -->
-        
-        <h3> 實作與 Benchmark 結果</h3>
-        <p>
-            在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PLONK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
-        </p>
-
-        <!-- 新增的 DEMO 連結區塊 -->
-        <div style="margin-top: 2rem; padding: 1.5rem; background-color: #e3f2fd; border-left: 5px solid #2196f3; border-radius: 4px;">
-            <h4 style="margin-top: 0; color: #0d47a1;">🚀 互動式演示 (Interactive Demo)</h4>
-            <p>
-                為了更直觀地理解 PLONK 的運作流程，我們準備了一個簡單的網頁演示。您可以親自體驗證明生成的過程。
-            </p>
-            <a href="demo.html" target="_blank" class="btn" style="background-color: #2196f3; color: white; border: none; padding: 0.75rem 1.5rem; font-weight: bold; text-decoration: none; display: inline-block; border-radius: 4px; transition: background-color 0.3s;">
-                開啟 PLONK 演示頁面 ↗
-            </a>
-        </div>
-</section>
 </main>
 
 </body>
