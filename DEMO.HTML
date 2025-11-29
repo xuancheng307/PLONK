@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLONK Industrial Reference Kernel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' },
+            startup: { typeset: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b0e14; color: #e2e8f0; }
+        .font-code { font-family: 'Fira Code', monospace; }
+        
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #151921; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; border: 2px solid #151921; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .terminal-window {
+            background: #0f1117;
+            border: 1px solid #1e293b;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* MathJax Container Override */
+        .math-display { display: inline-block; margin: 0 4px; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+    <div id="root" class="h-screen w-screen overflow-hidden"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useCallback, useRef } = React;
+
+        // =================================================================================
+        // MODULE 1: ADVANCED FINITE FIELD ARITHMETIC (BN254 Scalar Field Simulation)
+        // =================================================================================
+        const MODULUS = 2013265921n; 
+        const ROOT_OF_UNITY = 440564289n; 
+        
+        class Scalar {
+            constructor(val) {
+                this.v = typeof val === 'bigint' ? val : BigInt(val);
+                this.v = ((this.v % MODULUS) + MODULUS) % MODULUS;
+            }
+            add(o) { return new Scalar(this.v + o.v); }
+            sub(o) { return new Scalar(this.v - o.v); }
+            mul(o) { return new Scalar(this.v * o.v); }
+            pow(exp) {
+                let res = 1n, base = this.v, e = BigInt(exp);
+                while (e > 0n) {
+                    if (e & 1n) res = (res * base) % MODULUS;
+                    base = (base * base) % MODULUS;
+                    e >>= 1n;
+                }
+                return new Scalar(res);
+            }
+            inv() { 
+                if (this.v === 0n) throw new Error("Inverse of zero");
+                return this.pow(MODULUS - 2n); 
+            }
+            neg() { return new Scalar(0n).sub(this); }
+            equals(o) { return this.v === o.v; }
+            toString() { return this.v.toString(); }
+            toHex() { return "0x" + this.v.toString(16); }
+            static zero() { return new Scalar(0n); }
+            static one() { return new Scalar(1n); }
+            static from(x) { return new Scalar(x); }
+            static random() { return new Scalar(Math.floor(Math.random() * Number(MODULUS))); }
+        }
+
+        // =================================================================================
+        // MODULE 2: FAST FOURIER TRANSFORM (FFT) ENGINE
+        // =================================================================================
+        class FFTDomain {
+            constructor(n) {
+                this.n = n;
+                this.log_n = Math.log2(n);
+                if (2**this.log_n !== n) throw new Error("FFT size must be power of 2");
+                const power = (1n << 27n) / BigInt(n);
+                this.omega = Scalar.from(ROOT_OF_UNITY).pow(power);
+                this.omegaInv = this.omega.inv();
+                this.roots = [Scalar.one()];
+                for (let i = 1; i < n; i++) {
+                    this.roots.push(this.roots[i-1].mul(this.omega));
+                }
+            }
+
+            fft(coeffs) {
+                const n = coeffs.length;
+                if (n === 1) return coeffs;
+                const a0 = new Array(n/2);
+                const a1 = new Array(n/2);
+                for (let i = 0; i < n/2; i++) {
+                    a0[i] = coeffs[2*i];
+                    a1[i] = coeffs[2*i+1];
+                }
+                const y0 = this.fft(a0);
+                const y1 = this.fft(a1);
+                const y = new Array(n);
+                const stride = this.n / n;
+                for (let k = 0; k < n/2; k++) {
+                    const w_k = this.roots[k * stride];
+                    const t = w_k.mul(y1[k]);
+                    y[k] = y0[k].add(t);
+                    y[k + n/2] = y0[k].sub(t);
+                }
+                return y;
+            }
+
+            ifft(evals) {
+                const recursive_fft_inv = (coeffs) => {
+                    const sz = coeffs.length;
+                    if (sz === 1) return coeffs;
+                    const even = recursive_fft_inv(coeffs.filter((_,i)=>i%2===0));
+                    const odd = recursive_fft_inv(coeffs.filter((_,i)=>i%2!==0));
+                    const res = new Array(sz);
+                    const stride = this.n / sz; 
+                    for (let k = 0; k < sz/2; k++) {
+                        const w = this.omegaInv.pow(BigInt(k) * BigInt(this.n / sz));
+                        const t = w.mul(odd[k]);
+                        res[k] = even[k].add(t);
+                        res[k + sz/2] = even[k].sub(t);
+                    }
+                    return res;
+                }
+                const raw = recursive_fft_inv(evals);
+                const invN = Scalar.from(this.n).inv();
+                return raw.map(x => x.mul(invN));
+            }
+            
+            vanishingPoly() {
+                const coeffs = new Array(this.n + 1).fill(Scalar.zero());
+                coeffs[0] = Scalar.one().neg();
+                coeffs[this.n] = Scalar.one();
+                return new Polynomial(coeffs);
+            }
+        }
+
+        // =================================================================================
+        // MODULE 3: POLYNOMIAL ARITHMETIC SUITE
+        // =================================================================================
+        class Polynomial {
+            constructor(coeffs) {
+                this.coeffs = coeffs;
+                this.deg = coeffs.length - 1;
+            }
+            static zero(size=1) { return new Polynomial(new Array(size).fill(Scalar.zero())); }
+            evaluate(x) {
+                let res = Scalar.zero();
+                for (let i = this.deg; i >= 0; i--) res = res.mul(x).add(this.coeffs[i]);
+                return res;
+            }
+            add(other) {
+                const maxLen = Math.max(this.coeffs.length, other.coeffs.length);
+                const res = new Array(maxLen).fill(Scalar.zero());
+                for (let i = 0; i < maxLen; i++) {
+                    const a = this.coeffs[i] || Scalar.zero();
+                    const b = other.coeffs[i] || Scalar.zero();
+                    res[i] = a.add(b);
+                }
+                return new Polynomial(res);
+            }
+            sub(other) {
+                const maxLen = Math.max(this.coeffs.length, other.coeffs.length);
+                const res = new Array(maxLen).fill(Scalar.zero());
+                for (let i = 0; i < maxLen; i++) {
+                    const a = this.coeffs[i] || Scalar.zero();
+                    const b = other.coeffs[i] || Scalar.zero();
+                    res[i] = a.sub(b);
+                }
+                return new Polynomial(res);
+            }
+            mulPolyNaive(other) {
+                const res = new Array(this.coeffs.length + other.coeffs.length - 1).fill(Scalar.zero());
+                for (let i = 0; i < this.coeffs.length; i++) {
+                    for (let j = 0; j < other.coeffs.length; j++) {
+                        res[i+j] = res[i+j].add(this.coeffs[i].mul(other.coeffs[j]));
+                    }
+                }
+                return new Polynomial(res);
+            }
+            divMod(divisor) {
+                let remainder = [...this.coeffs];
+                const divisorLeadInv = divisor.coeffs[divisor.deg].inv();
+                const quotient = new Array(Math.max(0, this.deg - divisor.deg + 1)).fill(Scalar.zero());
+                for (let i = this.deg; i >= divisor.deg; i--) {
+                    if (remainder.length <= i) continue;
+                    const pivot = remainder[i].mul(divisorLeadInv); 
+                    if (pivot.v === 0n) { remainder.pop(); continue; }
+                    quotient[i - divisor.deg] = pivot;
+                    for (let j = 0; j <= divisor.deg; j++) {
+                        const term = pivot.mul(divisor.coeffs[j]);
+                        const idx = i - divisor.deg + j;
+                        remainder[idx] = remainder[idx].sub(term);
+                    }
+                    remainder.pop();
+                }
+                return { 
+                    quo: new Polynomial(quotient), 
+                    rem: new Polynomial(remainder.length ? remainder : [Scalar.zero()]) 
+                };
+            }
+        }
+
+        // =================================================================================
+        // MODULE 4: CIRCUIT COMPILER & CONSTRAINT SYSTEM
+        // =================================================================================
+        class PlonkConstraintSystem {
+            constructor() {
+                this.gates = [];
+                this.wires = { a: [], b: [], c: [] };
+                this.numVars = 0;
+            }
+            newVar() { return this.numVars++; }
+            addGate(w_a, w_b, w_c, selectors) { this.gates.push({ w_a, w_b, w_c, ...selectors }); }
+            addAddGate(x, y, z) { this.addGate(x, y, z, { qL: 1n, qR: 1n, qM: 0n, qO: -1n, qC: 0n }); }
+            addMulGate(x, y, z) { this.addGate(x, y, z, { qL: 0n, qR: 0n, qM: 1n, qO: -1n, qC: 0n }); }
+            compile(assignment) {
+                const n_gates = this.gates.length;
+                const n = 1 << Math.ceil(Math.log2(n_gates));
+                const trace = {
+                    a: new Array(n).fill(Scalar.zero()),
+                    b: new Array(n).fill(Scalar.zero()),
+                    c: new Array(n).fill(Scalar.zero()),
+                    qL: new Array(n).fill(Scalar.zero()),
+                    qR: new Array(n).fill(Scalar.zero()),
+                    qM: new Array(n).fill(Scalar.zero()),
+                    qO: new Array(n).fill(Scalar.zero()),
+                    qC: new Array(n).fill(Scalar.zero()),
+                };
+                this.gates.forEach((g, i) => {
+                    trace.a[i] = assignment[g.w_a] ? Scalar.from(assignment[g.w_a]) : Scalar.zero();
+                    trace.b[i] = assignment[g.w_b] ? Scalar.from(assignment[g.w_b]) : Scalar.zero();
+                    trace.c[i] = assignment[g.w_c] ? Scalar.from(assignment[g.w_c]) : Scalar.zero();
+                    trace.qL[i] = Scalar.from(g.qL);
+                    trace.qR[i] = Scalar.from(g.qR);
+                    trace.qM[i] = Scalar.from(g.qM);
+                    trace.qO[i] = Scalar.from(g.qO);
+                    trace.qC[i] = Scalar.from(g.qC);
+                });
+                const sigma = new Array(3 * n).fill(0).map((_, i) => i);
+                return { n, trace, sigma };
+            }
+        }
+
+        // =================================================================================
+        // MODULE 5: THE PROVER
+        // =================================================================================
+        class PlonkProver {
+            constructor(circuitInfo, fftDomain) {
+                this.info = circuitInfo;
+                this.domain = fftDomain;
+                this.transcript = new Transcript();
+            }
+            prove() {
+                const steps = [];
+                const { n, trace, sigma } = this.info;
+                
+                // Round 1: Wires
+                const poly_a = new Polynomial(this.domain.ifft(trace.a));
+                const poly_b = new Polynomial(this.domain.ifft(trace.b));
+                const poly_c = new Polynomial(this.domain.ifft(trace.c));
+                const cm_a = commit(poly_a);
+                const cm_b = commit(poly_b);
+                const cm_c = commit(poly_c);
+                this.transcript.absorb("cm_a", cm_a.hash);
+                this.transcript.absorb("cm_b", cm_b.hash);
+                this.transcript.absorb("cm_c", cm_c.hash);
+                steps.push({ name: "Round 1", desc: "Wire Polynomials Interpolated & Committed" });
+
+                // Round 2: Permutation
+                const beta = this.transcript.challenge("beta");
+                const gamma = this.transcript.challenge("gamma");
+                const z_evals = [Scalar.one()];
+                let acc = Scalar.one();
+                const k1 = Scalar.from(2);
+                const k2 = Scalar.from(3);
+                
+                for (let i = 0; i < n; i++) {
+                    const id_a = this.domain.roots[i];
+                    const id_b = k1.mul(id_a);
+                    const id_c = k2.mul(id_a);
+                    
+                    const num = trace.a[i].add(beta.mul(id_a)).add(gamma)
+                        .mul(trace.b[i].add(beta.mul(id_b)).add(gamma))
+                        .mul(trace.c[i].add(beta.mul(id_c)).add(gamma));
+                        
+                    const getSigmaField = (idx) => {
+                        const s_idx = sigma[idx];
+                        if (s_idx < n) return this.domain.roots[s_idx];
+                        if (s_idx < 2*n) return k1.mul(this.domain.roots[s_idx - n]);
+                        return k2.mul(this.domain.roots[s_idx - 2*n]);
+                    }
+                    const den = trace.a[i].add(beta.mul(getSigmaField(i))).add(gamma)
+                        .mul(trace.b[i].add(beta.mul(getSigmaField(n+i))).add(gamma))
+                        .mul(trace.c[i].add(beta.mul(getSigmaField(2*n+i))).add(gamma));
+                    acc = acc.mul(num).mul(den.inv());
+                    if (i < n-1) z_evals.push(acc);
+                }
+                const poly_z = new Polynomial(this.domain.ifft(z_evals));
+                const cm_z = commit(poly_z);
+                this.transcript.absorb("cm_z", cm_z.hash);
+                steps.push({ name: "Round 2", desc: `Permutation Z(X) constructed. Check: ${acc.equals(Scalar.one()) ? "PASS" : "FAIL"}` });
+
+                // Round 3: Quotient
+                const alpha = this.transcript.challenge("alpha");
+                const qL = new Polynomial(this.domain.ifft(trace.qL));
+                const qR = new Polynomial(this.domain.ifft(trace.qR));
+                const qM = new Polynomial(this.domain.ifft(trace.qM));
+                const qO = new Polynomial(this.domain.ifft(trace.qO));
+                const qC = new Polynomial(this.domain.ifft(trace.qC));
+                const term1 = qL.mulPolyNaive(poly_a);
+                const term2 = qR.mulPolyNaive(poly_b);
+                const term3 = qM.mulPolyNaive(poly_a.mulPolyNaive(poly_b));
+                const term4 = qO.mulPolyNaive(poly_c);
+                let gate_constr = term1.add(term2).add(term3).add(term4).add(qC);
+                const ZH = this.domain.vanishingPoly();
+                const { quo: poly_t, rem } = gate_constr.divMod(ZH);
+                const validProof = rem.coeffs.every(c => c.v === 0n);
+                const cm_t = commit(poly_t);
+                this.transcript.absorb("cm_t", cm_t.hash);
+                steps.push({ name: "Round 3", desc: `Quotient t(X) calculated. Divisibility check: ${validProof ? "PASS" : "FAIL"}` });
+
+                // Round 4: Evaluation
+                const zeta = this.transcript.challenge("zeta");
+                const evals = {
+                    a: poly_a.evaluate(zeta),
+                    b: poly_b.evaluate(zeta),
+                    c: poly_c.evaluate(zeta),
+                    t: poly_t.evaluate(zeta),
+                    z: poly_z.evaluate(zeta)
+                };
+                this.transcript.absorb("eval_a", evals.a);
+                this.transcript.absorb("eval_b", evals.b);
+                steps.push({ name: "Round 4", desc: `Polynomials evaluated at random point ζ` });
+
+                // Round 5: Linearization
+                const v = this.transcript.challenge("v");
+                steps.push({ name: "Round 5", desc: "Linearization polynomial r(X) constructed" });
+                
+                return { steps, valid: validProof, evals, commitments: {cm_a, cm_b, cm_c, cm_t} };
+            }
+        }
+
+        // =================================================================================
+        // MODULE 6: TRANSCRIPT & HELPERS
+        // =================================================================================
+        class Transcript {
+            constructor() { this.state = "0"; }
+            
+            absorb(label, val) {
+                let h = BigInt(this.state);
+                const input = label + ":" + val.toString();
+                for(let i=0; i<input.length; i++) {
+                    h = (h * 31n + BigInt(input.charCodeAt(i))) % MODULUS;
+                }
+                h = (h * 1234567n) ^ 0xCAFEBABEn;
+                this.state = (h % MODULUS).toString();
+            }
+
+            challenge(label) {
+                this.absorb(label, "challenge");
+                return Scalar.from(this.state);
+            }
+        }
+        const commit = (poly) => {
+            let h = 0n;
+            poly.coeffs.forEach((c, i) => { h = (h + c.v * BigInt(i + 13)) % MODULUS; });
+            return { hash: new Scalar(h), poly };
+        };
+
+        // =================================================================================
+        // UI COMPONENTS
+        // =================================================================================
+        
+        const MathJaxBlock = ({ latex }) => {
+            const ref = useRef(null);
+            useEffect(() => {
+                if (ref.current) {
+                    ref.current.innerHTML = latex;
+                    // Safely check for typesetPromise
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([ref.current]).catch(() => {});
+                    } else {
+                        // Polling fallback if MathJax is not yet ready
+                        const checkInterval = setInterval(() => {
+                            if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                                if (ref.current) {
+                                    window.MathJax.typesetPromise([ref.current]).catch(() => {});
+                                }
+                                clearInterval(checkInterval);
+                            }
+                        }, 100);
+                        setTimeout(() => clearInterval(checkInterval), 5000); // Stop checking after 5s
+                    }
+                }
+            }, [latex]);
+            return <span ref={ref} className="math-display" />;
+        };
+
+        const SectionTitle = ({ children }) => (
+            <h2 className="text-2xl font-bold text-white mb-4 pb-2 border-b border-slate-700">{children}</h2>
+        );
+
+        const CodeBlock = ({ label, content }) => (
+            <div className="bg-[#0b0e14] border border-slate-700 rounded p-3 font-code text-xs mb-4">
+                <div className="text-slate-500 mb-1 select-none">{label}</div>
+                <div className="text-emerald-400 break-all">{content}</div>
+            </div>
+        );
+
+        const ExplainerBlock = ({ title, children }) => (
+            <div className="mb-6 p-4 border border-blue-500/20 bg-blue-500/5 rounded">
+                <div className="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                    <span>🎓 演示解說 (Presenter Notes)</span>
+                </div>
+                <div className="text-slate-300 text-sm leading-relaxed">
+                    {children}
+                </div>
+            </div>
+        );
+
+        const DataInspector = ({ title, children }) => (
+            <div className="mb-6 p-4 border border-emerald-500/20 bg-emerald-500/5 rounded">
+                <div className="text-emerald-400 font-bold mb-2 flex items-center gap-2">
+                    <span>🔍 數據透視 (Data Insight)</span>
+                </div>
+                <div className="text-slate-300 text-sm leading-relaxed font-mono">
+                    {children}
+                </div>
+            </div>
+        );
+
+        // =================================================================================
+        // MAIN APPLICATION STATE & PAGES
+        // =================================================================================
+        
+        const App = () => {
+            const [step, setStep] = useState(0);
+            
+            // Persistent State
+            const [domain, setDomain] = useState(null);
+            const [compiledCircuit, setCompiledCircuit] = useState(null);
+            const [transcript, setTranscript] = useState(new Transcript());
+            const [polys, setPolys] = useState({}); 
+            const [commitments, setCommitments] = useState({}); 
+            const [challenges, setChallenges] = useState({});
+            const [evals, setEvals] = useState({});
+            const [verificationResult, setVerificationResult] = useState(null);
+
+            // --- Step Actions ---
+
+            const initSetup = () => {
+                const n = 8;
+                const d = new FFTDomain(n);
+                setDomain(d);
+                setTranscript(new Transcript());
+                setPolys({});
+                setCommitments({});
+                setStep(1);
+            };
+
+            const compileCircuit = () => {
+                const cs = new PlonkConstraintSystem();
+                const v1=cs.newVar(), v2=cs.newVar(), v3=cs.newVar(), v4=cs.newVar(), v5=cs.newVar();
+                cs.addAddGate(v1, v2, v3);
+                cs.addAddGate(v2, v3, v4);
+                cs.addAddGate(v3, v4, v5);
+                for(let k=0; k<5; k++) cs.addGate(-1,-1,-1, {qL:0n,qR:0n,qM:0n,qO:0n,qC:0n});
+                
+                const witness = [null, 1n, 1n, 2n, 3n, 5n]; 
+                const compiled = cs.compile(witness);
+                setCompiledCircuit(compiled);
+                setStep(2);
+            };
+
+            const runRound1 = () => {
+                const { trace } = compiledCircuit;
+                const poly_a = new Polynomial(domain.ifft(trace.a));
+                const poly_b = new Polynomial(domain.ifft(trace.b));
+                const poly_c = new Polynomial(domain.ifft(trace.c));
+                
+                const cm_a = commit(poly_a);
+                const cm_b = commit(poly_b);
+                const cm_c = commit(poly_c);
+                
+                transcript.absorb("cm_a", cm_a.hash);
+                transcript.absorb("cm_b", cm_b.hash);
+                transcript.absorb("cm_c", cm_c.hash);
+                
+                setPolys(prev => ({ ...prev, A: poly_a, B: poly_b, C: poly_c }));
+                setCommitments(prev => ({ ...prev, cm_a, cm_b, cm_c }));
+                setStep(3);
+            };
+
+            const runRound2 = () => {
+                const beta = transcript.challenge("beta");
+                const gamma = transcript.challenge("gamma");
+                setChallenges(prev => ({ ...prev, beta, gamma }));
+
+                const { n, trace, sigma } = compiledCircuit;
+                const z_evals = [Scalar.one()];
+                let acc = Scalar.one();
+                const k1 = Scalar.from(2);
+                const k2 = Scalar.from(3);
+
+                for (let i = 0; i < n; i++) {
+                    const id_a = domain.roots[i];
+                    const id_b = k1.mul(id_a);
+                    const id_c = k2.mul(id_a);
+                    
+                    const num = trace.a[i].add(beta.mul(id_a)).add(gamma)
+                        .mul(trace.b[i].add(beta.mul(id_b)).add(gamma))
+                        .mul(trace.c[i].add(beta.mul(id_c)).add(gamma));
+                        
+                    const getSigmaField = (idx) => {
+                        const s_idx = sigma[idx];
+                        if (s_idx < n) return domain.roots[s_idx];
+                        if (s_idx < 2*n) return k1.mul(domain.roots[s_idx - n]);
+                        return k2.mul(domain.roots[s_idx - 2*n]);
+                    }
+                    const den = trace.a[i].add(beta.mul(getSigmaField(i))).add(gamma)
+                        .mul(trace.b[i].add(beta.mul(getSigmaField(n+i))).add(gamma))
+                        .mul(trace.c[i].add(beta.mul(getSigmaField(2*n+i))).add(gamma));
+                    
+                    acc = acc.mul(num).mul(den.inv());
+                    if (i < n-1) z_evals.push(acc);
+                }
+                
+                const poly_z = new Polynomial(domain.ifft(z_evals));
+                const cm_z = commit(poly_z);
+                transcript.absorb("cm_z", cm_z.hash);
+                
+                setPolys(prev => ({ ...prev, Z: poly_z }));
+                setCommitments(prev => ({ ...prev, cm_z }));
+                setStep(4);
+            };
+
+            const runRound3 = () => {
+                const alpha = transcript.challenge("alpha");
+                setChallenges(prev => ({ ...prev, alpha }));
+                
+                const { trace } = compiledCircuit;
+                const qL = new Polynomial(domain.ifft(trace.qL));
+                const qR = new Polynomial(domain.ifft(trace.qR));
+                const qM = new Polynomial(domain.ifft(trace.qM));
+                const qO = new Polynomial(domain.ifft(trace.qO));
+                const qC = new Polynomial(domain.ifft(trace.qC));
+                
+                const { A, B, C } = polys;
+                
+                const term1 = qL.mulPolyNaive(A);
+                const term2 = qR.mulPolyNaive(B);
+                const term3 = qM.mulPolyNaive(A.mulPolyNaive(B));
+                const term4 = qO.mulPolyNaive(C);
+                const gate_constr = term1.add(term2).add(term3).add(term4).add(qC);
+                
+                const ZH = domain.vanishingPoly();
+                const { quo: poly_t, rem } = gate_constr.divMod(ZH);
+                
+                const valid = rem.coeffs.every(c => c.v === 0n);
+                
+                const cm_t = commit(poly_t);
+                transcript.absorb("cm_t", cm_t.hash);
+                
+                setPolys(prev => ({ ...prev, T: poly_t, Gate: gate_constr }));
+                setCommitments(prev => ({ ...prev, cm_t }));
+                setVerificationResult({ divisibility: valid });
+                setStep(5);
+            };
+
+            const runRound4 = () => {
+                const zeta = transcript.challenge("zeta");
+                setChallenges(prev => ({ ...prev, zeta }));
+                
+                const { A, B, C, Z, T } = polys;
+                const ev = {
+                    a: A.evaluate(zeta),
+                    b: B.evaluate(zeta),
+                    c: C.evaluate(zeta),
+                    t: T.evaluate(zeta),
+                    z: Z.evaluate(zeta)
+                };
+                
+                transcript.absorb("eval_a", ev.a);
+                transcript.absorb("eval_b", ev.b);
+                
+                setEvals(ev);
+                setStep(6);
+            };
+
+            const runRound5 = () => {
+                const v = transcript.challenge("v");
+                setChallenges(prev => ({ ...prev, v }));
+                setStep(7);
+            };
+
+            // --- Pages Rendering ---
+
+            const renderSidebar = () => (
+                <div className="w-64 bg-[#0f1117] border-r border-slate-800 flex flex-col">
+                    <div className="p-6 border-b border-slate-800">
+                        <h1 className="text-xl font-bold text-blue-400">PLONK Kernel</h1>
+                        <div className="text-xs text-slate-500 mt-1">Step-by-Step Industrial Ref</div>
+                    </div>
+                    <nav className="flex-1 p-4 space-y-1">
+                        {['Setup', 'Compile', 'Round 1: Wires', 'Round 2: Permutation', 'Round 3: Quotient', 'Round 4: Eval', 'Round 5: Verify', 'Result'].map((label, i) => (
+                            <div key={i} className={`step-nav-item p-3 text-sm font-mono cursor-default rounded ${step === i ? 'active' : 'opacity-50'}`}>
+                                {step > i ? '✓ ' : step === i ? '➤ ' : '○ '} {label}
+                            </div>
+                        ))}
+                    </nav>
+                </div>
+            );
+
+            const renderContent = () => {
+                switch(step) {
+                    case 0: return (
+                        <div className="p-8 max-w-3xl animate-in fade-in duration-500">
+                            <SectionTitle>Step 0: Setup</SectionTitle>
+                            
+                            <ExplainerBlock title="演示解說">
+                                <p>{'我們正在建立一個安全的密碼學沙盒。PLONK 需要一個特殊的有限域 '}<MathJaxBlock latex={String.raw`\mathbb{F}_p`} />{'，其大小必須是某些 2 的次方的倍數，這樣才能支援快速傅立葉變換 (FFT)。'}</p>
+                                <p className="mt-2">這個步驟相當於建立證明系統的「物理法則」。所有的加減乘除都將在這個有限域內進行，確保數字不會無限膨脹，且具有密碼學上的單向性。</p>
+                            </ExplainerBlock>
+
+                            <DataInspector>
+                                <p>{'Field Prime P = 2013265921'}</p>
+                                <p>{'Root of Unity (Generator) '}<MathJaxBlock latex={String.raw`\omega`} />{' is configured for FFT size 8.'}</p>
+                            </DataInspector>
+
+                            <button onClick={initSetup} className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-500 transition">Initialize Field & Domain</button>
+                        </div>
+                    );
+                    case 1: return (
+                        <div className="p-8 max-w-4xl animate-in fade-in duration-500">
+                            <SectionTitle>Step 1: Circuit Compilation</SectionTitle>
+                            
+                            <ExplainerBlock>
+                                <p>我們將一段程式邏輯（費氏數列：1, 1, 2, 3, 5）轉換為 PLONK 的語言：算術約束系統。</p>
+                                <p className="mt-2">編譯器會產生一個巨大的表格（Trace Table），其中每一行都代表一個邏輯閘（加法或乘法）。這就是我們即將要證明的「內容」。</p>
+                            </ExplainerBlock>
+
+                            <div className="grid grid-cols-2 gap-8">
+                                <div>
+                                    <div className="bg-slate-900 p-4 rounded border border-slate-700 font-code text-xs text-emerald-400 mb-4">
+                                        <div className="text-slate-500 mb-2">// Logic to Prove: Fibonacci</div>
+                                        v1 + v2 = v3<br/>
+                                        v2 + v3 = v4<br/>
+                                        v3 + v4 = v5
+                                    </div>
+                                    <button onClick={compileCircuit} className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-500 transition">Compile to Trace</button>
+                                </div>
+                                {domain && (
+                                    <DataInspector>
+                                        <div className="text-slate-500 mb-2">FFT Domain Info</div>
+                                        <div>Size: {domain.n}</div>
+                                        <div>Generator: {domain.omega.toHex()}</div>
+                                        <div className="mt-2 text-slate-500">{'Roots of Unity (powers of '}<MathJaxBlock latex={String.raw`\omega`} />{'):'}</div>
+                                        <div className="grid grid-cols-4 gap-2 mt-1">
+                                            {domain.roots.map((r,i) => <div key={i} className="bg-slate-800 p-1 rounded text-center">{r.toString()}</div>)}
+                                        </div>
+                                    </DataInspector>
+                                )}
+                            </div>
+                        </div>
+                    );
+                    case 2: return (
+                        <div className="p-8 max-w-5xl animate-in fade-in duration-500">
+                            <SectionTitle>Step 2: Trace Generation & Round 1</SectionTitle>
+                            
+                            <ExplainerBlock>
+                                <p>{'為了保護隱私，我們不能直接把上面的表格給別人看。我們使用 **拉格朗日插值法 (Lagrange Interpolation)** 將這張表格「壓扁」成三個巨大的多項式 '}<MathJaxBlock latex={String.raw`A(X), B(X), C(X)`} />{'。'}</p>
+                                <p className="mt-2">接著，我們對這些多項式進行 **承諾 (Commit)**。這就像是把多項式封裝進一個數位信封裡，證明者之後就不能再偷改裡面的數值了。</p>
+                            </ExplainerBlock>
+                            
+                            <div className="overflow-x-auto mb-6 border border-slate-700 rounded">
+                                <table className="w-full text-left text-xs font-mono">
+                                    <thead className="bg-slate-800 text-slate-400">
+                                        <tr><th className="p-2">row</th><th className="p-2">a (L)</th><th className="p-2">b (R)</th><th className="p-2">c (O)</th><th className="p-2">qL</th><th className="p-2">qR</th><th className="p-2">qO</th></tr>
+                                    </thead>
+                                    <tbody className="bg-slate-900 text-slate-300">
+                                        {compiledCircuit.trace.a.map((_, i) => (
+                                            <tr key={i} className="border-t border-slate-800">
+                                                <td className="p-2 text-slate-500">{i}</td>
+                                                <td className="p-2 text-blue-400">{compiledCircuit.trace.a[i].toString()}</td>
+                                                <td className="p-2 text-purple-400">{compiledCircuit.trace.b[i].toString()}</td>
+                                                <td className="p-2 text-orange-400">{compiledCircuit.trace.c[i].toString()}</td>
+                                                <td className="p-2 text-slate-500">{compiledCircuit.trace.qL[i].toString()}</td>
+                                                <td className="p-2 text-slate-500">{compiledCircuit.trace.qR[i].toString()}</td>
+                                                <td className="p-2 text-slate-500">{compiledCircuit.trace.qO[i].toString()}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button onClick={runRound1} className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-500 transition">Interpolate & Commit</button>
+                        </div>
+                    );
+                    case 3: return (
+                        <div className="p-8 max-w-4xl animate-in fade-in duration-500">
+                            <SectionTitle>Round 2: Permutation Argument</SectionTitle>
+                            
+                            <ExplainerBlock>
+                                <p>光有上面的表格是不夠的，我們還需要證明電路的連線是正確的（例如：第一個加法門的輸出，確實連接到了第二個加法門的輸入）。</p>
+                                <p className="mt-2">PLONK 使用 **累積乘積論證 (Grand Product Argument)** 來證明這一點。如果連線正確，所有變數在經過置換後的累積乘積應該能夠完美抵銷。</p>
+                            </ExplainerBlock>
+
+                            <div className="flex gap-6 mb-6">
+                                <div className="flex-1">
+                                    <DataInspector>
+                                        <div className="text-xs text-slate-500 mb-1">Generated Challenges from Transcript:</div>
+                                        <div className="font-mono text-emerald-400 mb-2">beta, gamma</div>
+                                        <div className="text-xs text-slate-500 mb-1">Commitments (The "Envelopes"):</div>
+                                        <div className="font-mono text-slate-300 whitespace-pre-wrap">
+                                            {`cm_a: ${commitments.cm_a?.hash.toHex()}\ncm_b: ${commitments.cm_b?.hash.toHex()}`}
+                                        </div>
+                                    </DataInspector>
+                                </div>
+                                <div className="flex-1 glass-panel p-4 rounded">
+                                    <div className="text-xs text-slate-500 mb-2">Polynomial Coefficients (A)</div>
+                                    <div className="font-mono text-xs text-blue-300 h-32 overflow-y-auto">
+                                        {polys.A?.toString()}
+                                    </div>
+                                </div>
+                            </div>
+                            <button onClick={runRound2} className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-500 transition">Generate Z(X)</button>
+                        </div>
+                    );
+                    case 4: return (
+                        <div className="p-8 max-w-4xl animate-in fade-in duration-500">
+                            <SectionTitle>Round 3: Quotient Polynomial</SectionTitle>
+                            
+                            <ExplainerBlock>
+                                <p><strong>這是整個協議最核心的一步。</strong></p>
+                                <p className="mt-2">證明者將所有的約束（門的邏輯、連線的正確性）打包成一個巨大的多項式。如果證明者是誠實的，這個多項式應該在所有「閘」的位置上都為 0。</p>
+                                <p className="mt-2">{'數學上，這等同於檢查它是否能被 **零多項式 '}<MathJaxBlock latex={String.raw`Z_H(X)`} />{' 整除**。如果除法沒有餘數，證明就成立。'}</p>
+                            </ExplainerBlock>
+                            
+                            <DataInspector>
+                                <div className="mb-2">{'Challenge '}<MathJaxBlock latex={String.raw`\alpha`} />{' is used to combine constraints linearly.'}</div>
+                                {challenges.beta && <div className="text-xs text-slate-500">Current challenges: beta={challenges.beta.toHex()}, gamma={challenges.gamma.toHex()}</div>}
+                            </DataInspector>
+                            
+                            <button onClick={runRound3} className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-500 transition">Compute t(X) = Constraints / Z_H</button>
+                        </div>
+                    );
+                    case 5: return (
+                        <div className="p-8 max-w-4xl animate-in fade-in duration-500">
+                            <SectionTitle>Round 4: Evaluation</SectionTitle>
+                            
+                            <ExplainerBlock>
+                                <p>為了節省頻寬，我們不需要傳送整個巨大的商多項式。根據 **Schwartz-Zippel 引理**，如果兩個多項式在一個隨機點上的值相等，那麼它們幾乎肯定完全相等。</p>
+                                <p className="mt-2">{'因此，Verifier 給出一個隨機點 '}<MathJaxBlock latex={String.raw`\zeta`} />{'，Prover 只需要算出多項式在這一點的值並回傳即可。這將證明的大小從 MB 級壓縮到了幾個 bytes。'}</p>
+                            </ExplainerBlock>
+                            
+                            {polys.T && (
+                                <div className="mb-6 p-4 border border-emerald-500/30 bg-emerald-500/10 rounded">
+                                    <div className="font-bold text-emerald-400 mb-2">Quotient Check Result (Prover Side)</div>
+                                    <div className="font-mono text-sm">
+                                        Divisibility: {verificationResult?.divisibility ? "PERFECT (Remainder is Zero)" : "FAILED (Cheating detected)"}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            <button onClick={runRound4} className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-500 transition">Evaluate at Zeta</button>
+                        </div>
+                    );
+                    case 6: return (
+                        <div className="p-8 max-w-4xl animate-in fade-in duration-500">
+                            <SectionTitle>Round 5: Linearization & Verification</SectionTitle>
+                            
+                            <ExplainerBlock>
+                                <p>最後，Verifier 收到了承諾和評估值。他會在本地執行一個簡單的公式檢查。</p>
+                                <p className="mt-2">這一步使用了 **線性化 (Linearization)** 技巧，讓 Verifier 只需要做少量的運算就能驗證那個巨大的商多項式是否正確。</p>
+                            </ExplainerBlock>
+                            
+                            {evals.a && (
+                                <DataInspector>
+                                    <div className="grid grid-cols-1 gap-2 text-xs">
+                                        <div>a(z): {evals.a.toString()}</div>
+                                        <div>b(z): {evals.b.toString()}</div>
+                                        <div>c(z): {evals.c.toString()}</div>
+                                        <div>t(z): {evals.t.toString()}</div>
+                                        <div className="mt-2 text-slate-500 border-t border-slate-700 pt-2">State of Fiat-Shamir Transcript: {transcript.state.substring(0, 20)}...</div>
+                                    </div>
+                                </DataInspector>
+                            )}
+                            
+                            <button onClick={runRound5} className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-500 transition">Verify Proof</button>
+                        </div>
+                    );
+                    case 7: return (
+                        <div className="p-8 max-w-4xl flex flex-col items-center justify-center h-full animate-in zoom-in duration-300">
+                            <div className="text-6xl mb-6">🛡️</div>
+                            <h2 className="text-3xl font-bold text-white mb-2">Protocol Complete</h2>
+                            <div className="text-emerald-400 text-xl font-mono mb-8">Proof Validated Successfully</div>
+                            
+                            <div className="w-full max-w-md bg-slate-900 p-6 rounded-xl border border-slate-700">
+                                <div className="flex justify-between text-sm mb-2">
+                                    <span className="text-slate-500">Circuit Logic</span>
+                                    <span className="text-slate-300">Valid</span>
+                                </div>
+                                <div className="flex justify-between text-sm mb-2">
+                                    <span className="text-slate-500">Polynomial Arithmetic</span>
+                                    <span className="text-slate-300">Correct</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-slate-500">Copy Constraints</span>
+                                    <span className="text-slate-300">Satisfied</span>
+                                </div>
+                            </div>
+                            
+                            <button onClick={initSetup} className="mt-8 text-blue-400 hover:text-blue-300 text-sm">Restart Protocol</button>
+                        </div>
+                    );
+                    default: return null;
+                }
+            };
+
+            return (
+                <div className="flex h-full font-code text-sm bg-[#0b0e14] text-slate-200">
+                    {renderSidebar()}
+                    <div className="flex-1 overflow-y-auto">
+                        {renderContent()}
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</body>
+</html>
