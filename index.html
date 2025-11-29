@@ -10,21 +10,46 @@
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                typeset: true
             }
         };
     </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Mermaid JS -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    
+    <!-- Mermaid JS (使用 9.4.3 穩定版以符合 index.html 的表現) -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@9.4.3/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // 採用 index.html 的初始化邏輯，防止圖表跳動 (FOUC)
             mermaid.initialize({ 
-                startOnLoad: true,
+                startOnLoad: false,
                 theme: 'neutral',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                 securityLevel: 'loose',
-                flowchart: { curve: 'basis', htmlLabels: true }
+                flowchart: { 
+                    curve: 'basis', 
+                    htmlLabels: true,
+                    useMaxWidth: false // 關鍵：防止圖表被強制縮小
+                }
+            });
+
+            const mermaidNodes = document.querySelectorAll('.mermaid');
+            
+            // 手動渲染並淡入顯示
+            mermaid.init(undefined, mermaidNodes).then(() => {
+                mermaidNodes.forEach(node => {
+                    node.style.visibility = 'visible';
+                    node.style.opacity = '1';
+                });
+            }).catch(err => {
+                console.error("Mermaid rendering failed:", err);
+                mermaidNodes.forEach(node => {
+                    node.style.visibility = 'visible';
+                    node.style.opacity = '1';
+                });
             });
         });
     </script>
@@ -210,6 +235,30 @@
             color: white;
             border-color: var(--link-color);
         }
+        
+        /* Chart Container Optimization (from index.html) */
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        /* Mermaid Stability Styles */
+        .mermaid {
+            visibility: hidden; 
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .mermaid svg {
+            max-width: none !important;
+            height: auto;
+        }
 
         @media (max-width: 768px) {
             body {
@@ -224,6 +273,9 @@
             }
             main {
                 padding: 1.5rem;
+            }
+            .chart-container {
+                justify-content: flex-start;
             }
         }
     </style>
@@ -347,7 +399,8 @@
         <p>PLONK 的運作可以分為四個主要階段：</p>
         
         <!-- Mermaid Diagram Insertion -->
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             %% 定義樣式
             classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
@@ -410,6 +463,7 @@
             SRS -.-> VerifyCheck
             
             linkStyle default stroke:#333,stroke-width:1px;
+            </div>
         </div>
 
         <ol>
@@ -569,7 +623,8 @@
         </ul>
         <p>其中 <span class="math">\(x\)</span> 是 MPC 儀式產生的秘密元素。</p>
 
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph LR
             %% 節點樣式
             classDef actor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
@@ -599,6 +654,7 @@
             Step3 -.-> Toxic
             StepN --> SRS
             Step2 --> StepN
+            </div>
         </div>
     </section>
 
@@ -627,7 +683,8 @@
           <li><strong>承諾 MSM</strong>：使用 KZG PCS 對這些多項式做承諾，得到 Verification Key。</li>
         </ol>
 
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             %% 樣式
             classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,stroke-dasharray: 5 5;
@@ -659,6 +716,7 @@
             
             VK("Verification Key"):::artifact
             Commit --> VK
+            </div>
         </div>
     </section>
 
@@ -726,7 +784,8 @@
         </p>
 
         <!-- Detailed Proving Flowchart -->
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             classDef round fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
             classDef challenge fill:#fbe9e7,stroke:#d84315,stroke-width:2px,stroke-dasharray: 5 5;
@@ -780,6 +839,7 @@
                 Out5("Output Proofs"):::output
                 R5Step1 --> Open5 --> Out5
             end
+            </div>
         </div>
     </section>
 
@@ -814,7 +874,8 @@
         </p>
 
         <!-- Detailed Verification Flowchart -->
-        <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
+        <div class="chart-container">
+            <div class="mermaid">
             graph TD
             classDef input fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
             classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
@@ -859,6 +920,7 @@
             Challenges --> PI_Eval
             PI_Eval --> CalcR0
             CalcE --> Pairing
+            </div>
         </div>
     </section>
 
@@ -913,6 +975,9 @@
         <p>
             在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PLONK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
         </p>
+        <div style="display: flex; justify-content: center; margin: 2rem 0;">
+            <a href="demo.html" class="btn" style="background-color: var(--primary-color); color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 4px;">前往 Live Demo</a>
+        </div>
     </section>
 
     <section id="security">
@@ -956,14 +1021,6 @@
         <p>
             未來的研究包括：(1) 替換底層的多項式承諾方案（如使用 Halo 的 IPA 或 FRI）；(2) 設計自定義閘 (Custom Gates) 與查找表 (Lookup Tables)；(3) 深化與遞迴 SNARK 的整合。
         </p>
-
-        <h3>12.4 互動式演示 (Interactive Demo)</h3>
-        <p>
-            為了幫助讀者更直觀地理解上述複雜的數學與協議流程，本報告特別製作了一個互動式演示頁面。您可以在該頁面中模擬 Prover 與 Verifier 的互動，並觀察各階段多項式的變化。
-        </p>
-        <div style="display: flex; justify-content: center; margin: 2rem 0;">
-            <a href="demo.html" class="btn" style="background-color: var(--primary-color); color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 4px;">前往 Live Demo</a>
-        </div>
     </section>
 
 </main>
