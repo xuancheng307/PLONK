@@ -238,15 +238,6 @@
             font-weight: 500;
         }
 
-        /* Navigation Buttons */
-        .section-nav {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 3rem;
-            padding-top: 1rem;
-            border-top: 1px dashed var(--border-color);
-        }
-
         .btn {
             display: inline-block;
             padding: 0.5rem 1rem;
@@ -329,11 +320,7 @@
         <p>
             本報告將從「系統角色」與「技術流程」的角度解構 PLONK 協定。我們將詳細探討其如何透過多項式承諾方案（Polynomial Commitment Scheme）與多項式互動協議（Polynomial Interactive Oracle Proofs）來構建 SNARK。重點將放在解析其獨特的 permutation check 機制、Prover 的五輪互動流程，以及 Verifier 如何透過常數次配對運算完成高效驗證，從而實現一個通用、高效且安全的 zk-SNARK 系統。
         </p>
-        <div class="section-nav">
-            <a href="#" class="btn disabled">上一節</a>
-            <a href="#intro" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="intro">
         <h2>1. 前言與動機 (Introduction)</h2>
@@ -357,11 +344,7 @@
                 <li><strong>第 8–10 章</strong>：分析 PLONK 的實際效能表現、安全性論證，並總結其在隱私計算領域的應用前景與未來發展。</li>
             </ul>
         </p>
-        <div class="section-nav">
-            <a href="#abstract" class="btn">上一節</a>
-            <a href="#system-roles" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="system-roles">
         <h2>2. 系統與角色模型 (System Roles)</h2>
@@ -395,11 +378,7 @@
         <p>
             <strong>Lemma 2.2 的直覺</strong>：AGM 允許我們將複雜的雙線性配對檢查（Real Pairing Check）還原為多項式恆等式檢查（Ideal Polynomial Check）。具體來說，如果一個代數對手能欺騙 Pairing Check，則相當於他在不知情的情況下解決了離散對數問題（Q-DLOG）。這確保了只要 Polynomial Protocol 是安全的（具有 Knowledge Soundness），編譯後的 SNARK 就是安全的。
         </p>
-        <div class="section-nav">
-            <a href="#intro" class="btn">上一節</a>
-            <a href="#overview" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="overview">
         <h2>3. 整體流程概觀 (Overview)</h2>
@@ -563,12 +542,7 @@
             </ol>
             因此，一個系統只要做一次通用的 MPC setup（生成 SRS），之後可以不斷「上新電路」，每個電路只需要多一份 VK，不用每次重來一次 setup 儀式。這就是「universal SRS」在實務上的意義。
         </p>
-
-        <div class="section-nav">
-            <a href="#system-roles" class="btn">上一節</a>
-            <a href="#math" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="math">
         <h2>4. 數學與建模基礎 (Math Foundation)</h2>
@@ -600,11 +574,7 @@
             <strong>Polynomial Protocol</strong> 是一個抽象模型，Prover 將多項式發送給理想第三方 <span class="math">\(\mathcal{I}\)</span>，Verifier 查詢這些多項式在隨機點的評估值，並檢查多項式恆等式（Polynomial Identities）。
             <strong>Ranged Protocol</strong> 則處理如「對於所有 <span class="math">\(x \in H\)</span>，<span class="math">\(P(x)=0\)</span>」這類約束。這在代數上等價於證明 <span class="math">\(P(X)\)</span> 能被 <span class="math">\(Z_H(X)\)</span> 整除，即 <span class="math">\(P(X) = Q(X) \cdot Z_H(X)\)</span>。
         </p>
-        <div class="section-nav">
-            <a href="#overview" class="btn">上一節</a>
-            <a href="#permutation" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="permutation">
         <h2>5. Permutation Argument</h2>
@@ -634,11 +604,7 @@
             例如，左輸入的位置標記為 <span class="math">\(x\)</span>，右輸入標記為 <span class="math">\(k_1 x\)</span>，輸出標記為 <span class="math">\(k_2 x\)</span>。
             Copy constraints 透過置換 <span class="math">\(\sigma\)</span> 將這些位置連結起來。如果 <span class="math">\(Z(X)\)</span> 通過檢查，則保證了電路中所有的連線關係（例如 gate A 的輸出等於 gate B 的輸入）都是正確的。
         </p>
-        <div class="section-nav">
-            <a href="#math" class="btn">上一節</a>
-            <a href="#setup" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <!-- NEW SECTION: Setup -->
     <section id="setup">
@@ -695,12 +661,7 @@
             Step2 --> StepN
             </div>
         </div>
-
-        <div class="section-nav">
-            <a href="#permutation" class="btn">上一節</a>
-            <a href="#preprocessing" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <!-- NEW SECTION: Preprocessing -->
     <section id="preprocessing">
@@ -759,12 +720,7 @@
             Commit --> VK
             </div>
         </div>
-
-        <div class="section-nav">
-            <a href="#setup" class="btn">上一節</a>
-            <a href="#proving" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="proving">
         <h2>8. Prover 流程 (Proving)</h2>
@@ -879,12 +835,7 @@
             end
             </div>
         </div>
-
-        <div class="section-nav">
-            <a href="#preprocessing" class="btn">上一節</a>
-            <a href="#verification" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="verification">
         <h2>9. Verifier 流程 (Verification)</h2>
@@ -954,12 +905,7 @@
             CombineE --> Pairing
             </div>
         </div>
-
-        <div class="section-nav">
-            <a href="#proving" class="btn">上一節</a>
-            <a href="#performance" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="performance">
         <h2>10. 效能與實作 (Performance)</h2>
@@ -1008,11 +954,7 @@
         <p>
             在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PLONK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
         </p>
-        <div class="section-nav">
-            <a href="#verification" class="btn">上一節</a>
-            <a href="#security" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="security">
         <h2>11. 安全性與擴充 (Security)</h2>
@@ -1037,11 +979,7 @@
         <p>
             PLONK 與 Fractal 或 Marlin 等系統的主要區別在於算術化（Arithmetization）的選擇。Marlin 使用雙變數稀疏多項式（bi-variate sparse polynomials）來處理 R1CS，而 PLONK 使用基於加法閘與乘法閘的約束系統，並透過 Permutation Argument 處理線路連接。這使得 PLONK 在處理特定類型的「扇入（fan-in）為 2」的電路時更為高效。
         </p>
-        <div class="section-nav">
-            <a href="#performance" class="btn">上一節</a>
-            <a href="#conclusion" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="conclusion">
         <h2>12. 結論 (Conclusion)</h2>
@@ -1060,11 +998,7 @@
         <p>
             未來的研究與優化方向包括：(1) 替換底層的多項式承諾方案（如使用 Halo 的 IPA 或 FRI），以移除對配對友善曲線的依賴或進一步減少 setup 需求；(2) 設計自定義閘（Custom Gates）與查找表（Lookup Tables，如 Plookup），以支援更複雜的運算邏輯並減少電路大小；(3) 深化與遞迴 SNARK（Recursive SNARK）的整合，實現無限深度的證明聚合與區塊鏈狀態壓縮。
         </p>
-        <div class="section-nav">
-            <a href="#security" class="btn">上一節</a>
-            <a href="#" class="btn disabled">下一節</a>
-        </div>
-    </section>
+</section>
 
     <section id="performance">
         <h2> 實作 (Performance)</h2>
@@ -1085,12 +1019,7 @@
                 開啟 PLONK 演示頁面 ↗
             </a>
         </div>
-
-        <div class="section-nav">
-            <a href="#verification" class="btn">上一節</a>
-            <a href="#security" class="btn">下一節</a>
-        </div>
-    </section>
+</section>
 </main>
 
 </body>
