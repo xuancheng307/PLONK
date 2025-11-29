@@ -8,19 +8,20 @@
     <script>
         window.MathJax = {
             tex: {
-                inlineMath: [['$', '$'], ['\(', '\)']],
-                displayMath: [['$$', '$$'], ['\[', '\]']]
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
             }
         };
     </script>
     <!-- MathJax for rendering LaTeX formulas -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- Mermaid JS for Diagrams -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    
+    <!-- Mermaid JS (FIXED: Using v9.4.3 for global variable support) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            mermaid.initialize({
+            mermaid.initialize({ 
                 startOnLoad: true,
                 theme: 'neutral',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -317,10 +318,10 @@
         
         <h4>現實世界參與者</h4>
         <ul>
-            <li><strong>Setup 參與者 (Setup Participants)</strong>：負責執行 MPC 儀式，生成 monomials SRS <span class="math">\( [x^i]_1, [x^i]_2 \)</span>。</li>
-            <li><strong>電路設計者 (Circuit Designer)</strong>：定義約束系統 <span class="math">\( \mathcal{C} \)</span>，產生預處理參數（選擇子與置換承諾），即 Verification Key。</li>
-            <li><strong>證明者 (Prover)</strong>：持有 witness，計算證明 <span class="math">\( \pi \)</span>。</li>
-            <li><strong>驗證者 (Verifier)</strong>：驗證證明 <span class="math">\( \pi \)</span>。</li>
+            <li><strong>Setup 參與者 (Setup Participants)</strong>：負責執行 MPC 儀式，生成 monomials SRS <span class="math">$\{ [x^i]_1, [x^i]_2 \}$</span>。</li>
+            <li><strong>電路設計者 (Circuit Designer)</strong>：定義約束系統 <span class="math">\(\mathcal{C}\)</span>，產生預處理參數（選擇子與置換承諾），即 Verification Key。</li>
+            <li><strong>證明者 (Prover)</strong>：持有 witness，計算證明 <span class="math">\(\pi\)</span>。</li>
+            <li><strong>驗證者 (Verifier)</strong>：驗證證明 <span class="math">\(\pi\)</span>。</li>
         </ul>
 
         <h4>抽象模型角色 (Polynomial IOP)</h4>
@@ -331,7 +332,7 @@
 
         <h3>2.3 對手模型與 AGM 安全性</h3>
         <p>
-            PlonK 的安全性分析基於<strong>代數群模型（Algebraic Group Model, AGM）</strong>。在此模型中，每當對手輸出一個群元素 <span class="math">\( Y \)</span>，他必須同時提供該元素如何由輸入元素 <span class="math">\( X_1, \dots, X_m \)</span> 線性組合而成的係數。
+            PlonK 的安全性分析基於<strong>代數群模型（Algebraic Group Model, AGM）</strong>。在此模型中，每當對手輸出一個群元素 <span class="math">\(Y\)</span>，他必須同時提供該元素如何由輸入元素 <span class="math">\(X_1, \dots, X_m\)</span> 線性組合而成的係數。
         </p>
         <p>
             <strong>Lemma 2.2 的直覺</strong>：AGM 允許我們將複雜的雙線性配對檢查（Real Pairing Check）還原為多項式恆等式檢查（Ideal Polynomial Check）。具體來說，如果一個代數對手能欺騙 Pairing Check，則相當於他在不知情的情況下解決了離散對數問題（Q-DLOG）。這確保了只要 Polynomial Protocol 是安全的（具有 Knowledge Soundness），編譯後的 SNARK 就是安全的。
@@ -424,15 +425,15 @@
             </li>
             <li><strong>電路預處理 (Preprocessing)</strong>：
                 <ul>
-                    <li>針對特定電路 <span class="math">\( \mathcal{C} \)</span> 進行編譯。</li>
-                    <li>產生 Selector 多項式 (<span class="math">\( q_L, q_R, \dots \)</span>) 與 Permutation 多項式 (<span class="math">\( S_{\sigma} \)</span>)。</li>
+                    <li>針對特定電路 <span class="math">\(\mathcal{C}\)</span> 進行編譯。</li>
+                    <li>產生 Selector 多項式 (<span class="math">\(q_L, q_R, \dots\)</span>) 與 Permutation 多項式 (<span class="math">\(S_{\sigma}\)</span>)。</li>
                     <li>計算並固定這些多項式的承諾（Commitments），成為 Verification Key。</li>
                 </ul>
             </li>
             <li><strong>證明生成 (Proving) - Round 1~5</strong>：
                 <ul>
                     <li>Prover 根據私密輸入 (Witness) 與公開輸入 (Public Input)，執行 5 輪互動協議。</li>
-                    <li>生成包含 9 個群元素與 6 個純量值的證明 <span class="math">\( \pi \)</span>。</li>
+                    <li>生成包含 9 個群元素與 6 個純量值的證明 <span class="math">\(\pi\)</span>。</li>
                 </ul>
             </li>
             <li><strong>驗證 (Verification)</strong>：
@@ -454,8 +455,8 @@
 
         <h3>3.3 角色與步驟對照表</h3>
         <ul>
-            <li><strong>Setup</strong>：產生 SRS <span class="math">\( \mathsf{srs} \)</span>。</li>
-            <li><strong>Designer</strong>：輸出 <span class="math">\( [q_L]_1, [q_R]_1, \dots, [S_{\sigma 1}]_1, [S_{\sigma 2}]_1, [S_{\sigma 3}]_1 \)</span>。</li>
+            <li><strong>Setup</strong>：產生 SRS <span class="math">\(\mathsf{srs}\)</span>。</li>
+            <li><strong>Designer</strong>：輸出 <span class="math">\([q_L]_1, [q_R]_1, \dots, [S_{\sigma 1}]_1, [S_{\sigma 2}]_1, [S_{\sigma 3}]_1\)</span>。</li>
             <li><strong>Prover</strong>：
                 <ul>
                     <li>Round 1: Commit wires $a, b, c$。</li>
@@ -478,21 +479,21 @@
 
         <h3>4.1 有限域、群與配對</h3>
         <p>
-            PlonK 運作在有限域 <span class="math">\( \mathbb{F} \)</span> 上。使用雙線性配對群 <span class="math">\( e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T \)</span>，其中 <span class="math">\( \mathbb{G}_1, \mathbb{G}_2, \mathbb{G}_T \)</span> 為階數為質數 <span class="math">\( p \)</span> 的群。配對函數 <span class="math">\( e \)</span> 具有雙線性性質，是驗證多項式乘法關係的基礎。
+            PlonK 運作在有限域 <span class="math">\(\mathbb{F}\)</span> 上。使用雙線性配對群 <span class="math">\(e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T\)</span>，其中 <span class="math">\(\mathbb{G}_1, \mathbb{G}_2, \mathbb{G}_T\)</span> 為階數為質數 <span class="math">\(p\)</span> 的群。配對函數 <span class="math">\(e\)</span> 具有雙線性性質，是驗證多項式乘法關係的基礎。
         </p>
 
         <h3>4.2 乘法子群與 Lagrange 基底</h3>
         <p>
-            為了高效進行快速傅立葉變換（FFT）與多項式運算，PlonK 選擇一個階數為 <span class="math">\( n \)</span> 的乘法子群 <span class="math">\( H = \{1, \omega, \dots, \omega^{n-1}\} \subset \mathbb{F}^* \)</span>，其中 <span class="math">\( \omega \)</span> 是本原 <span class="math">\( n \)</span> 次單位根。這允許我們使用 Lagrange 基底 <span class="math">\( \{L_i(X)\}_{i=1}^n \)</span> 來表示多項式，其中 <span class="math">\( L_i(\omega^{j}) = \delta_{ij} \)</span>。
-            這種表示法使得在 <span class="math">\( H \)</span> 上定義的約束非常稀疏且易於計算。零多項式定義為 <span class="math">\( Z_H(X) = X^n - 1 \)</span>，它在 <span class="math">\( H \)</span> 中所有點上皆為零。
+            為了高效進行快速傅立葉變換（FFT）與多項式運算，PlonK 選擇一個階數為 <span class="math">\(n\)</span> 的乘法子群 <span class="math">\(H = \{1, \omega, \dots, \omega^{n-1}\} \subset \mathbb{F}^*\)</span>，其中 <span class="math">\(\omega\)</span> 是本原 <span class="math">\(n\)</span> 次單位根。這允許我們使用 Lagrange 基底 <span class="math">\(\{L_i(X)\}_{i=1}^n\)</span> 來表示多項式，其中 <span class="math">\(L_i(\omega^{j}) = \delta_{ij}\)</span>。
+            這種表示法使得在 <span class="math">\(H\)</span> 上定義的約束非常稀疏且易於計算。零多項式定義為 <span class="math">\(Z_H(X) = X^n - 1\)</span>，它在 <span class="math">\(H\)</span> 中所有點上皆為零。
         </p>
 
         <h3>4.3 多項式承諾 (KZG PCS)</h3>
         <p>
             PlonK 使用 Kate-Zaverucha-Goldberg (KZG) 多項式承諾方案。前文已提及，這需要通用的 SRS。
             <ul>
-                <li><strong>Commit</strong>: Prover 計算 <span class="math">\( [f]_1 = f(x) \cdot G_1 \)</span>。</li>
-                <li><strong>Open</strong>: Prover 證明 <span class="math">\( f(z) = y \)</span>，產生證明 <span class="math">\( \pi = \frac{f(X)-y}{X-z} \)</span> 的承諾。</li>
+                <li><strong>Commit</strong>: Prover 計算 <span class="math">\([f]_1 = f(x) \cdot G_1\)</span>。</li>
+                <li><strong>Open</strong>: Prover 證明 <span class="math">\(f(z) = y\)</span>，產生證明 <span class="math">\(\pi = \frac{f(X)-y}{X-z}\)</span> 的承諾。</li>
                 <li><strong>Verify</strong>: Verifier 透過配對檢查承諾的正確性。</li>
             </ul>
             KZG 支援批次開啟（batched opening），這對減少 PlonK proof 大小至關重要。
@@ -500,8 +501,8 @@
 
         <h3>4.4 Polynomial protocol 與 Ranged protocol</h3>
         <p>
-            <strong>Polynomial Protocol</strong> 是一個抽象模型，Prover 將多項式發送給理想第三方 <span class="math">\( \mathcal{I} \)</span>，Verifier 查詢這些多項式在隨機點的評估值，並檢查多項式恆等式（Polynomial Identities）。
-            <strong>Ranged Protocol</strong> 則處理如「對於所有 <span class="math">\( x \in H \)</span>，<span class="math">\( P(x)=0 \)</span>」這類約束。這在代數上等價於證明 <span class="math">\( P(X) \)</span> 能被 <span class="math">\( Z_H(X) \)</span> 整除，即 <span class="math">\( P(X) = Q(X) \cdot Z_H(X) \)</span>。
+            <strong>Polynomial Protocol</strong> 是一個抽象模型，Prover 將多項式發送給理想第三方 <span class="math">\(\mathcal{I}\)</span>，Verifier 查詢這些多項式在隨機點的評估值，並檢查多項式恆等式（Polynomial Identities）。
+            <strong>Ranged Protocol</strong> 則處理如「對於所有 <span class="math">\(x \in H\)</span>，<span class="math">\(P(x)=0\)</span>」這類約束。這在代數上等價於證明 <span class="math">\(P(X)\)</span> 能被 <span class="math">\(Z_H(X)\)</span> 整除，即 <span class="math">\(P(X) = Q(X) \cdot Z_H(X)\)</span>。
         </p>
         <div class="section-nav">
             <a href="#overview" class="btn">上一節</a>
@@ -514,31 +515,29 @@
 
         <h3>5.1 單一多項式的 Permutation Check</h3>
         <p>
-            PlonK 的核心創新在於其置換論證。基於 Bayer-Groth 的想法，若要證明兩個序列 <span class="math">\( (a_1, \dots, a_n) \)</span> 與 <span class="math">\( (b_1, \dots, b_n) \)</span> 是彼此的置換（即包含相同的元素集合），我們可以引入隨機數 <span class="math">\( \beta, \gamma \)</span>，並證明多項式乘積相等：
-            <span class="math">\( \\prod_{i=1}^n (a_i + \beta \cdot i + \gamma) = \prod_{i=1}^n (b_i + \beta \cdot \sigma(i) + \gamma) \)</span>
+            PlonK 的核心創新在於其置換論證。基於 Bayer-Groth 的想法，若要證明兩個序列 <span class="math">\((a_1, \dots, a_n)\)</span> 與 <span class="math">\((b_1, \dots, b_n)\)</span> 是彼此的置換（即包含相同的元素集合），我們可以引入隨機數 <span class="math">\(\beta, \gamma\)</span>，並證明多項式乘積相等：
+            <span class="math">\[ \prod_{i=1}^n (a_i + \beta \cdot i + \gamma) = \prod_{i=1}^n (b_i + \beta \cdot \sigma(i) + \gamma) \]</span>
         </p>
 
         <h3>5.2 Grand Product 遞迴關係</h3>
         <p>
-            PlonK 定義了一個累加多項式 <span class="math">\( Z(X) \)</span> 來追蹤上述乘積的過程。我們要求 <span class="math">\( Z(X) \)</span> 在子群 <span class="math">\( H \)</span> 上滿足遞迴關係：
+            PlonK 定義了一個累加多項式 <span class="math">\(Z(X)\)</span> 來追蹤上述乘積的過程。我們要求 <span class="math">\(Z(X)\)</span> 在子群 <span class="math">\(H\)</span> 上滿足遞迴關係：
         </p>
-        <p>令 <span class="math">Z(\omega^0)=1</span>，對於所有 <span class="math">x \in H</span> 有遞迴關係：
-        <span class="math">
-          Z(\omega x) = Z(x) \cdot 
-            \frac{a'(x)}{b'(x)}
-          = Z(x) \cdot 
-            \frac{a(x)+\beta \cdot \mathrm{SID}(x) + \gamma}
-                 {b(x)+\beta \cdot S_\sigma(x) + \gamma}
-        </span>
-        ，其中 <span class="math">a(x),b(x)</span> 為 wire 多項式，<span class="math">S_\sigma(x)</span> 為置換後的位置。</p>
+        <ul>
+            <li><strong>初始條件</strong>：<span class="math">\(Z(1) = 1\)</span></li>
+            <li><strong>遞迴步驟</strong>：對於所有 <span class="math">\(x \in H\)</span>，
+                <span class="math">\[ Z(\omega x) = Z(x) \cdot \frac{f'(x)}{g'(x)} \]</span>
+                其中 <span class="math">\(f'(x)\)</span> 與 <span class="math">\(g'(x)\)</span> 是包含了 shift 與 challenge 的分子分母項。
+            </li>
+            <li><strong>終止檢查</strong>：若序列是置換，則最後一步會回到 1，即 <span class="math">\(Z(\omega^{n-1} \cdot \omega) = Z(1) = 1\)</span>。</li>
+        </ul>
 
         <h3>5.3 Extended Permutation 與 Copy Constraints</h3>
         <p>
-            為了同時處理電路的三組 wire <span class="math">\( a(X), b(X), c(X) \)</span>，PlonK 將它們「串接」起來。但因為都在同一個域 <span class="math">\( H \)</span> 上定義，我們不能簡單串接，而是使用廣義位置索引 <span class="math">\( k_1, k_2 \)</span>（quadratic non-residues）來區分不同 wire 的位置。
-            例如，左輸入的位置標記為 <span class="math">\( x \)</span>，右輸入標記為 <span class="math">\( k_1 x \)</span>，輸出標記為 <span class="math">\( k_2 x \)</span>。
-            Copy constraints 透過置換 <span class="math">\( \sigma \)</span> 將這些位置連結起來。如果 <span class="math">\( Z(X) \)</span> 通過檢查，則保證了電路中所有的連線關係（例如 gate A 的輸出等於 gate B 的輸入）都是正確的。
+            為了同時處理電路的三組 wire <span class="math">\(a(X), b(X), c(X)\)</span>，PlonK 將它們「串接」起來。但因為都在同一個域 <span class="math">\(H\)</span> 上定義，我們不能簡單串接，而是使用廣義位置索引 <span class="math">\(k_1, k_2\)</span>（quadratic non-residues）來區分不同 wire 的位置。
+            例如，左輸入的位置標記為 <span class="math">\(x\)</span>，右輸入標記為 <span class="math">\(k_1 x\)</span>，輸出標記為 <span class="math">\(k_2 x\)</span>。
+            Copy constraints 透過置換 <span class="math">\(\sigma\)</span> 將這些位置連結起來。如果 <span class="math">\(Z(X)\)</span> 通過檢查，則保證了電路中所有的連線關係（例如 gate A 的輸出等於 gate B 的輸入）都是正確的。
         </p>
-        <p>為了同時處理多個 wire，多項式會依照位置乘上 <span class="math">k_1</span> 或 <span class="math">k_2</span> 來區分。Permutation 多項式透過 <span class="math">\(\sigma(T_C)\)</span> 連結相同 partition 內的節點，以檢驗 copy constraints。</p>
         <div class="section-nav">
             <a href="#math" class="btn">上一節</a>
             <a href="#setup" class="btn">下一節</a>
@@ -555,16 +554,17 @@
 
         <h3>6.1 MPC 儀式與 Toxic Waste</h3>
         <p>
-            Setup 過程通常透過多方計算（MPC）儀式進行，稱為 "Powers of Tau"。目標是生成一系列 <span class="math">\( \tau \)</span> 的冪次加密值，同時確保沒有任何單一參與者知道 <span class="math">\( \tau \)</span> 的具體數值（稱為 Toxic Waste）。只要儀式中至少有一位參與者是誠實並銷毀了隨機數，整個 Setup 就是安全的。
+            Setup 過程通常透過多方計算（MPC）儀式進行，稱為 "Powers of Tau"。目標是生成一系列 <span class="math">\(\tau\)</span> 的冪次加密值，同時確保沒有任何單一參與者知道 <span class="math">\(\tau\)</span> 的具體數值（稱為 Toxic Waste）。只要儀式中至少有一位參與者是誠實並銷毀了隨機數，整個 Setup 就是安全的。
         </p>
         
         <h3>6.2 Monomial Basis SRS</h3>
-        <p>PlonK 使用單項式基底 (Monomial Basis) 的 SRS，其 G₁、G₂ 元素包括：</p>
-        <ul>
-          <li><strong>G<sub>1</sub> 元素：</strong> <span class="math">[1]_1, [r]_1, [r^2]_1, \dots, [r^d]_1</span>，用於承諾多項式。</li>
-          <li><strong>G<sub>2</sub> 元素：</strong> <span class="math">[1]_2, [r]_2</span>（多數實作僅需 <span class="math">[1]_2</span> 用於 Pairing 驗證）。</li>
-        </ul>
-        <p>其中 <span class="math">r</span> 是 MPC 儀式產生的秘密元素，支持多項式的最高次數為 <span class="math">d</span>。</p>
+        <p>
+            PlonK 需要的 SRS 形式為單項式基底（Monomial Basis）。對於支援最大階數為 <span class="math">\(d\)</span> 的多項式，SRS 包含：
+            <ul>
+                <li><span class="math">\(\mathbb{G}_1\)</span> 上的冪次：<span class="math">\([1]_1, [\tau]_1, [\tau^2]_1, \dots, [\tau^d]_1\)</span></li>
+                <li><span class="math">\(\mathbb{G}_2\)</span> 上的冪次：<span class="math">\([1]_2, [\tau]_2\)</span> （僅需第一項用於 Pairing 驗證）</li>
+            </ul>
+        </p>
 
         <div class="mermaid" style="display: flex; justify-content: center; margin: 2rem 0;">
             graph LR
@@ -615,11 +615,10 @@
         <h3>7.1 約束系統的算術化</h3>
         <p>
             電路被表示為一組加法閘與乘法閘。預處理階段會生成以下多項式（在 Lagrange 基底上）：
-            <ol>
-              <li>邏輯定義：將算術電路表示成閘 (Gates)、線路 (Wires)、R1CS。</li>
-              <li>多項式生成：計算 Selector 多項式 <span class="math">q_L,q_R,q_O,q_M,q_C</span> 與置換多項式 <span class="math">S_{\sigma 1},S_{\sigma 2},S_{\sigma 3}</span>。</li>
-              <li>承諾 MSM：使用 KZG PCS 對這些多項式做承諾，得到 Verification Key。</li>
-            </ol>
+            <ul>
+                <li><strong>選擇子多項式 (Selector Polynomials)</strong>：<span class="math">\(q_L, q_R, q_O, q_M, q_C\)</span>。這些多項式在每個閘的位置 <span class="math">\(\omega^i\)</span> 上定義了該閘的類型（例如加法閘則 <span class="math">\(q_L=1, q_R=1, q_O=-1\)</span>）。</li>
+                <li><strong>置換多項式 (Permutation Polynomials)</strong>：<span class="math">\(S_{\sigma 1}, S_{\sigma 2}, S_{\sigma 3}\)</span>。這些多項式編碼了電路中的線路連接資訊（Copy Constraints）。</li>
+            </ul>
         </p>
 
         <h3>7.2 驗證金鑰生成</h3>
@@ -677,47 +676,41 @@
 
         <h3>8.2 Round 1：Wire 多項式</h3>
         <p>
-            Prover 生成 wire 多項式 <span class="math">\( a(X), b(X), c(X) \)</span>。
+            Prover 生成 wire 多項式 <span class="math">\(a(X), b(X), c(X)\)</span>。
             為了確保<strong>零知識性（Zero-Knowledge）</strong>，這些多項式不僅僅是插值 witness，還加上了隨機 blinding 因子：
-            <span class="math">\( \\begin{equation*} a(X) = a_{logic}(X) + (b_1 X + b_2)Z_H(X) \\end{equation*} \)</span>
-            這些隨機項確保了即便多項式被公開部分資訊，也無法反推原始 witness。Prover 計算並發送承諾 <span class="math">\( [a]_1, [b]_1, [c]_1 \)</span>。
+            <span class="math">\[ a(X) = a_{logic}(X) + (b_1 X + b_2)Z_H(X) \]</span>
+            這些隨機項確保了即便多項式被公開部分資訊，也無法反推原始 witness。Prover 計算並發送承諾 <span class="math">\([a]_1, [b]_1, [c]_1\)</span>。
         </p>
 
         <h3>8.3 Round 2：Permutation Polynomial z</h3>
         <p>
-            Verifier 發送挑戰 <span class="math">\( \beta, \gamma \)</span>。Prover 根據 Permutation Argument 的邏輯建構累加多項式 <span class="math">\( z(X) \)</span>。
-            <span class="math">\( z(X) \)</span> 同樣包含 blinding 隨機項。Prover 計算並發送 <span class="math">\( [z]_1 \)</span>。
+            Verifier 發送挑戰 <span class="math">\(\beta, \gamma\)</span>。Prover 根據 Permutation Argument 的邏輯建構累加多項式 <span class="math">\(z(X)\)</span>。
+            <span class="math">\(z(X)\)</span> 同樣包含 blinding 隨機項。Prover 計算並發送 <span class="math">\([z]_1\)</span>。
         </p>
 
         <h3>8.4 Round 3：Quotient Polynomial t</h3>
         <p>
-            Verifier 發送挑戰 <span class="math">\( \alpha \)</span>。Prover 必須證明所有約束成立。他將三種約束用 <span class="math">\( \alpha \)</span> 線性組合起來：
-            <span class="math">
-            t(X) = \frac{1}{Z_H(X)} \left( \text{GateConstraints}(X) + \alpha \cdot \text{PermutationCheck}(X) + \alpha^2 \cdot \text{L1Check}(X) \right)
-            </span>
-            由於 <span class="math">\( t(X) \)</span> 的次數可達 <span class="math">\( 3n \)</span>，超過了 SRS 的支援範圍 <span class="math">\( n \)</span>，因此必須拆解成三部分 <span class="math">\( t_{lo}, t_{mid}, t_{hi} \)</span> 分別 commit。Prover 發送 <span class="math">\( [t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1 \)</span>。
+            Verifier 發送挑戰 <span class="math">\(\alpha\)</span>。Prover 必須證明所有約束成立。他將三種約束用 <span class="math">\(\alpha\)</span> 線性組合起來：
+            <span class="math">\[ t(X) = \frac{1}{Z_H(X)} \left( \text{GateConstraints}(X) + \alpha \cdot \text{PermutationCheck}(X) + \alpha^2 \cdot \text{L1Check}(X) \right) \]</span>
+            由於 <span class="math">\(t(X)\)</span> 的次數可達 <span class="math">\(3n\)</span>，超過了 SRS 的支援範圍 <span class="math">\(n\)</span>，因此必須拆解成三部分 <span class="math">\(t_{lo}, t_{mid}, t_{hi}\)</span> 分別 commit。Prover 發送 <span class="math">\([t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1\)</span>。
         </p>
 
         <h3>8.5 Round 4：Evaluations</h3>
         <p>
-            Verifier 發送挑戰點 <span class="math">\( z \)</span>。Prover 不直接打開多項式，而是只傳送它們在 <span class="math">\( z \)</span> 點的評估值（純量）：
-            <span class="math">\( \bar a, \bar b, \bar c, \bar S_{\sigma 1}, \bar S_{\sigma 2}, \bar z(\omega z) \)</span>
+            Verifier 發送挑戰點 <span class="math">\(z\)</span>。Prover 不直接打開多項式，而是只傳送它們在 <span class="math">\(z\)</span> 點的評估值（純量）：
+            <span class="math">\[ \bar{a}, \bar{b}, \bar{c}, \bar{S}_{\sigma 1}, \bar{S}_{\sigma 2}, \bar{t}, \bar{z}(\omega z) \]</span>
             注意：
-            <ol>
-              <li><span class="math">S_{\sigma 3}</span> 不需要傳送評估值（Verifier 可自行由預處理資料推導）。</li>
-              <li>Permutation polynomial <span class="math">z(X)</span> 需要在 shift 點 <span class="math">\( \omega z \)</span> 進行評估，以驗證遞迴關係。</li>
-              <li>商多項式 <span class="math">t(X)</span> 的貢獻透過 <span class="math">t_{\text{lo}}, t_{\text{mid}}, t_{\text{hi}}</span> 的承諾以及零多項式 <span class="math">Z_H</span> 合併到線性化多項式 <span class="math">r(X)</span> 中，故無需額外傳送 <span class="math">\( \bar t \)</span>。</li>
-            </ol>
+            1. <span class="math">\(S_{\sigma 3}\)</span> 不需要傳送評估值（Verifier 可自行推導，節省頻寬）。
+            2. Permutation polynomial <span class="math">\(z(X)\)</span> 需要在 shift 點 <span class="math">\(\omega z\)</span> 進行評估，以驗證遞迴關係。
         </p>
 
         <h3>8.6 Round 5：Linearisation 與 Opening Proof</h3>
         <p>
-            Verifier 發送挑戰 <span class="math">\( v \)</span>。
-            <strong>Linearization (線性化)</strong>：為了避免 Verifier 執行昂貴的高次多項式運算，Prover 建構一個線性化多項式 <span class="math">\( r(X) \)</span>。這個多項式將部分變數替換為 Round 4 的常數評估值，只保留必要的未知項。
-            線性化多項式 <span class="math">\( r(X) \)</span> 將多項式恆等式的高次結構壓縮成一次性的線性組合，使得驗證者只需在 <span class="math">X=z</span> 點與 <span class="math">X=\omega z</span> 點打開。
+            Verifier 發送挑戰 <span class="math">\(v\)</span>。
+            <strong>Linearization (線性化)</strong>：為了避免 Verifier 執行昂貴的高次多項式運算，Prover 建構一個線性化多項式 <span class="math">\(r(X)\)</span>。這個多項式將部分變數替換為 Round 4 的常數評估值，只保留必要的未知項。
             最後，Prover 產生兩個 Opening Proofs：
-            1. <span class="math">\( W_z(X) \)</span>：證明 <span class="math">\( r(X) \)</span> 及其他多項式在 <span class="math">\( z \)</span> 點的值正確。
-            2. <span class="math">\( W_{z\omega}(X) \)</span>：證明 <span class="math">\( z(X) \)</span> 在 <span class="math">\( \omega z \)</span> 點的值正確。
+            1. <span class="math">\(W_z(X)\)</span>：證明 <span class="math">\(r(X)\)</span> 及其他多項式在 <span class="math">\(z\)</span> 點的值正確。
+            2. <span class="math">\(W_{z\omega}(X)\)</span>：證明 <span class="math">\(z(X)\)</span> 在 <span class="math">\(\omega z\)</span> 點的值正確。
         </p>
 
         <!-- Detailed Proving Flowchart -->
@@ -727,52 +720,52 @@
             classDef challenge fill:#fbe9e7,stroke:#d84315,stroke-width:2px,stroke-dasharray: 5 5;
             classDef output fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
 
-            Start(("開始")) --> R1Step1
+            Start(("開始")) --> R1
             
             subgraph R1 ["Round 1"]
-                R1Step1("計算 Wire Polynomials"):::round
+                Step1("計算 Wire Polynomials"):::round
                 Blind1("Blinding 處理"):::round
-                Com1("Output Commitments"):::output
-                R1Step1 --> Blind1 --> Com1
+                Com1("Output: Commitments"):::output
+                Step1 --> Blind1 --> Com1
             end
 
-            Chal1("挑戰 Beta Gamma"):::challenge
-            Com1 --> Chal1 --> R2Step1
+            Chal1("挑戰: Beta Gamma"):::challenge
+            Com1 --> Chal1 --> R2
 
             subgraph R2 ["Round 2"]
-                R2Step1("計算 Acc Poly z"):::round
+                Step2("計算 Acc Poly z"):::round
                 Blind2("Blinding"):::round
-                Com2("Output z Commit"):::output
-                R2Step1 --> Blind2 --> Com2
+                Com2("Output: z Commit"):::output
+                Step2 --> Blind2 --> Com2
             end
 
-            Chal2("挑戰 Alpha"):::challenge
-            Com2 --> Chal2 --> R3Step1
+            Chal2("挑戰: Alpha"):::challenge
+            Com2 --> Chal2 --> R3
 
             subgraph R3 ["Round 3"]
-                R3Step1("計算 Quotient t"):::round
-                Split3("拆分 t lo mid hi"):::round
-                Com3("Output t Commits"):::output
-                R3Step1 --> Split3 --> Com3
+                Step3("計算 Quotient t"):::round
+                Split3("拆分 t_lo, t_mid, t_hi"):::round
+                Com3("Output: t Commits"):::output
+                Step3 --> Split3 --> Com3
             end
 
-            Chal3("挑戰 z 點"):::challenge
-            Com3 --> Chal3 --> R4Step1
+            Chal3("挑戰: z 點"):::challenge
+            Com3 --> Chal3 --> R4
 
             subgraph R4 ["Round 4"]
-                R4Step1("計算 Evaluations"):::round
-                Out4("Output Scalars"):::output
-                R4Step1 --> Out4
+                Step4("計算 Evaluations"):::round
+                Out4("Output: Scalars"):::output
+                Step4 --> Out4
             end
 
-            Chal4("挑戰 v"):::challenge
-            Out4 --> Chal4 --> R5Step1
+            Chal4("挑戰: v"):::challenge
+            Out4 --> Chal4 --> R5
 
             subgraph R5 ["Round 5"]
-                R5Step1("Linearization"):::round
+                Step5("Linearization"):::round
                 Open5("計算 Opening Proofs"):::round
-                Out5("Output Proofs"):::output
-                R5Step1 --> Open5 --> Out5
+                Out5("Output: Proofs"):::output
+                Step5 --> Open5 --> Out5
             end
         </div>
 
@@ -787,25 +780,21 @@
 
         <h3>9.1 驗證輸入與公開參數</h3>
         <p>
-            Verifier 擁有 SRS、電路預處理承諾（Verification Key）、以及 Public Input <span class="math">\( x \)</span>。收到的 Proof 包含承諾值與評估值。
+            Verifier 擁有 SRS、電路預處理承諾（Verification Key）、以及 Public Input <span class="math">\(x\)</span>。收到的 Proof 包含承諾值與評估值。
         </p>
 
         <h3>9.2 挑戰值重建與 Public Input</h3>
         <p>
             Verifier 根據 Transcript 重建所有隨機挑戰值。
-            接著，Verifier 必須自行處理 Public Input。這對應於多項式 <span class="math">\( PI(X) = \sum_{i} x_i L_i(X) \)</span>。Verifier 計算 <span class="math">\( PI(z) \)</span> 的值，這確保了 Prover 使用了正確的公開輸入來生成證明。
+            接著，Verifier 必須自行處理 Public Input。這對應於多項式 <span class="math">\(PI(X) = \sum_{i} x_i L_i(X)\)</span>。Verifier 計算 <span class="math">\(PI(z)\)</span> 的值，這確保了 Prover 使用了正確的公開輸入來生成證明。
         </p>
 
         <h3>9.3 Batched Pairing 檢查</h3>
         <p>
-            Verifier 將所有需要驗證的多項式恆等式（Gate, Permutation, Evaluation correctness）透過隨機係數 <span class="math">\( v \)</span> 和 <span class="math">\( u \)</span> 壓縮成一個大的線性組合。
-            最終，Verifier 將所有約束打包成單一配對等式：
-            <span class="math">
-              eig([W_z] + u [W_{z\omega}], [x]_2ig)
-              \stackrel{?}{=}
-              eig(z\,[W_z] + u\,z\omega\[W_{z\omega}] + [F]_1 - [E]_1,\,[1]_2ig),
-            </span>
-            其中 <span class="math">u</span> 為隨機係數、<span class="math">[F]_1</span> 是各多項式承諾按挑戰值線性組合後的結果，<span class="math">[E]_1</span> 則對應於評估值的線性組合。若等式成立，則保證所有底層約束皆被滿足。
+            Verifier 將所有需要驗證的多項式恆等式（Gate, Permutation, Evaluation correctness）透過隨機係數 <span class="math">\(v\)</span> 和 <span class="math">\(u\)</span> 壓縮成一個大的線性組合。
+            最終，根據 KZG 的性質，只需要檢查單一個配對等式：
+            <span class="math">\[ e([W_z] + u[W_{z\omega}], [x]_2) \stackrel{?}{=} e(z \cdot [W_z] + u z\omega \cdot [W_{z\omega}] + [F]_1 - [E]_1, [1]_2) \]</span>
+            其中 <span class="math">\([F]_1\)</span> 是承諾的線性組合，<span class="math">\([E]_1\)</span> 是評估值的線性組合。若等式成立，則保證所有底層約束皆被滿足。
         </p>
 
         <!-- Detailed Verification Flowchart -->
@@ -837,7 +826,7 @@
             end
             
             subgraph FinalCheck ["4. Pairing Check"]
-                Pairing("Pairing Check 驗證"):::check
+                Pairing{"Pairing Check 驗證"}:::check
                 Valid(["Valid Proof"])
                 Invalid(["Reject"])
                 
@@ -864,7 +853,7 @@
 
         <h3>10.1 Prover / Verifier 複雜度</h3>
         <p>
-            根據論文分析與實作數據，PlonK 的 Prover 複雜度主要由 <span class="math">\( 9(n+a) \)</span> 次 <span class="math">\( \mathbb{G}_1 \)</span> 指數運算主導，其中 <span class="math">\( n \)</span> 是乘法子群大小（近似電路閘數），<span class="math">\( a \)</span> 是 wire 數量。與 Sonic 相比，PlonK 移除了大量的昂貴計算，使得 Prover 速度顯著提升。Verifier 的複雜度固定為 2 次配對運算，這與 Groth16（3 次配對）相當甚至更優，屬於常數等級驗證。
+            根據論文分析與實作數據，PlonK 的 Prover 複雜度主要由 <span class="math">\(9(n+a)\)</span> 次 <span class="math">\(\mathbb{G}_1\)</span> 指數運算主導，其中 <span class="math">\(n\)</span> 是乘法子群大小（近似電路閘數），<span class="math">\(a\)</span> 是 wire 數量。與 Sonic 相比，PlonK 移除了大量的昂貴計算，使得 Prover 速度顯著提升。Verifier 的複雜度固定為 2 次配對運算，這與 Groth16（3 次配對）相當甚至更優，屬於常數等級驗證。
         </p>
 
         <h3>10.2 與 Groth16 / Sonic / Marlin 的比較</h3>
@@ -904,7 +893,7 @@
 
         <h3>10.3 實作與 Benchmark 結果</h3>
         <p>
-            在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\( 2^{20} \)</span> constraints）級別的電路，PlonK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
+            在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PlonK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
         </p>
         <div class="section-nav">
             <a href="#verification" class="btn">上一節</a>
@@ -923,7 +912,7 @@
 
         <h3>11.2 零知識性與 Blinding 技巧</h3>
         <p>
-            為了達成零知識性（Zero-Knowledge），PlonK 在 Prover 產生的每一個關鍵多項式（wire 多項式 <span class="math">\( a, b, c \)</span>, 排列多項式 <span class="math">\( z \)</span>, 商多項式 <span class="math">\( t \)</span>）中都加入了 <span class="math">\( Z_H(X) \)</span> 的隨機倍數。這些隨機項在 <span class="math">\( H \)</span> 上的評估值為零，不影響約束檢查，但在 <span class="math">\( H \)</span> 之外的查詢點（如 Verifier 的挑戰點 <span class="math">\( z \)</span>）提供了完全的隨機掩蓋，確保 Verifier 無法從評估值中推導出關於 witness 的任何資訊。
+            為了達成零知識性（Zero-Knowledge），PlonK 在 Prover 產生的每一個關鍵多項式（wire 多項式 <span class="math">\(a, b, c\)</span>, 排列多項式 <span class="math">\(z\)</span>, 商多項式 <span class="math">\(t\)</span>）中都加入了 <span class="math">\(Z_H(X)\)</span> 的隨機倍數。這些隨機項在 <span class="math">\(H\)</span> 上的評估值為零，不影響約束檢查，但在 <span class="math">\(H\)</span> 之外的查詢點（如 Verifier 的挑戰點 <span class="math">\(z\)</span>）提供了完全的隨機掩蓋，確保 Verifier 無法從評估值中推導出關於 witness 的任何資訊。
         </p>
 
         <h3>11.3 通用 / 可更新 SRS 的安全性</h3>
