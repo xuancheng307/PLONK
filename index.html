@@ -702,7 +702,6 @@
         <p>
             Verifier 發送挑戰點 <span class="math">\( z \)</span>。Prover 不直接打開多項式，而是只傳送它們在 <span class="math">\( z \)</span> 點的評估值（純量）：
             <span class="math">\( \bar a, \bar b, \bar c, \bar S_{\sigma 1}, \bar S_{\sigma 2}, \bar z(\omega z) \)</span>
-            特別注意，PlonK 最終版僅傳送上述 6 個值；<span class="math">t(z)</span> 與 <span class="math">S_{\sigma 3}(z)</span> 不會被單獨送出，因為它們分別被線性化多項式與預處理資料吸收。
             注意：
             <ol>
               <li><span class="math">S_{\sigma 3}</span> 不需要傳送評估值（Verifier 可自行由預處理資料推導）。</li>
