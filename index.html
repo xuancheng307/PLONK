@@ -21,7 +21,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <!-- Mermaid JS (v9.4.3 Stable) -->
+    <!-- Mermaid JS (v9.4.3 Stable - Using CDN for compatibility) -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@9.4.3/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -42,6 +42,7 @@
             // 這樣可以避免原始碼直接顯示在頁面上的問題
             const mermaidNodes = document.querySelectorAll('.mermaid');
             
+            // 使用 mermaid.init 進行手動渲染
             mermaid.init(undefined, mermaidNodes).then(() => {
                 // 渲染成功後，讓圖表顯示出來
                 mermaidNodes.forEach(node => {
@@ -50,6 +51,11 @@
                 });
             }).catch(err => {
                 console.error("Mermaid rendering failed:", err);
+                // 如果渲染失敗，至少讓原始碼顯示出來以便除錯
+                mermaidNodes.forEach(node => {
+                    node.style.visibility = 'visible';
+                    node.style.opacity = '1';
+                });
             });
         });
     </script>
