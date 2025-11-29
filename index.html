@@ -1065,7 +1065,32 @@
             <a href="#" class="btn disabled">下一節</a>
         </div>
     </section>
+<!-- ... existing code ... -->
+    <section id="performance">
+        <h2>10. 效能與實作 (Performance)</h2>
+        <!-- ... existing content of section 10 ... -->
+        
+        <h3>10.3 實作與 Benchmark 結果</h3>
+        <p>
+            在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PLONK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
+        </p>
 
+        <!-- 新增的 DEMO 連結區塊 -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background-color: #e3f2fd; border-left: 5px solid #2196f3; border-radius: 4px;">
+            <h4 style="margin-top: 0; color: #0d47a1;">🚀 互動式演示 (Interactive Demo)</h4>
+            <p>
+                為了更直觀地理解 PLONK 的運作流程，我們準備了一個簡單的網頁演示。您可以親自體驗證明生成的過程。
+            </p>
+            <a href="demo.html" target="_blank" class="btn" style="background-color: #2196f3; color: white; border: none; padding: 0.75rem 1.5rem; font-weight: bold; text-decoration: none; display: inline-block; border-radius: 4px; transition: background-color 0.3s;">
+                開啟 PLONK 演示頁面 ↗
+            </a>
+        </div>
+
+        <div class="section-nav">
+            <a href="#verification" class="btn">上一節</a>
+            <a href="#security" class="btn">下一節</a>
+        </div>
+    </section>
 </main>
 
 </body>
