@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>PlonK 協定技術報告</title>
+    <title>PLONK 協定技術報告</title>
     
     <!-- MathJax Configuration -->
     <script>
@@ -223,6 +223,15 @@
             justify-content: center;
         }
         
+        /* Author Info */
+        .author-info {
+            margin-top: -1.5rem;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #555;
+            font-weight: 500;
+        }
+
         /* Navigation Buttons */
         .section-nav {
             display: flex;
@@ -276,7 +285,7 @@
 <body>
 
 <aside class="sidebar">
-    <h1>PlonK 技術報告</h1>
+    <h1>PLONK 技術報告</h1>
     <nav>
         <ul>
             <li><a href="#abstract">0. 摘要 (Abstract)</a></li>
@@ -300,14 +309,15 @@
 
     <section id="abstract">
         <h2>0. 摘要 (Abstract)</h2>
+        <div class="author-info">報告人：高璿程</div>
         <p>
             零知識簡潔非互動式知識論證（zk-SNARK）在區塊鏈隱私與擴展性應用中扮演關鍵角色。早期的 SNARK 方案（如 Groth16）依賴針對特定電路的 trusted setup，這在實際部署中產生了巨大的管理成本與安全隱憂。Sonic 協定雖然引入了通用且可更新（universal and updatable）的結構參考字串（SRS），解決了電路相依性的問題，但其證明者（Prover）的計算成本過高，導致生成證明極其緩慢，難以滿足實際應用需求。
         </p>
         <p>
-            本報告分析的 PlonK 協定，旨在解決上述效能瓶頸。PlonK 的核心貢獻在於提出了一種基於拉格朗日基底（Lagrange bases）與乘法子群（multiplicative subgroup）的算術化方案，並結合了一種新穎的置換論證（permutation argument）來簡化電路中線路連接（wiring）的檢查。相較於 Sonic，PlonK 顯著降低了 Prover 所需的群指數運算次數，將複雜度從與電路大小相關的巨大常數倍數大幅縮減，使其證明生成速度提升了數倍至一個數量級。
+            本報告分析的 PLONK 協定，旨在解決上述效能瓶頸。PLONK 的核心貢獻在於提出了一種基於拉格朗日基底（Lagrange bases）與乘法子群（multiplicative subgroup）的算術化方案，並結合了一種新穎的置換論證（permutation argument）來簡化電路中線路連接（wiring）的檢查。相較於 Sonic，PLONK 顯著降低了 Prover 所需的群指數運算次數，將複雜度從與電路大小相關的巨大常數倍數大幅縮減，使其證明生成速度提升了數倍至一個數量級。
         </p>
         <p>
-            本報告將從「系統角色」與「技術流程」的角度解構 PlonK 協定。我們將詳細探討其如何透過多項式承諾方案（Polynomial Commitment Scheme）與多項式互動協議（Polynomial Interactive Oracle Proofs）來構建 SNARK。重點將放在解析其獨特的 permutation check 機制、Prover 的五輪互動流程，以及 Verifier 如何透過常數次配對運算完成高效驗證，從而實現一個通用、高效且安全的 zk-SNARK 系統。
+            本報告將從「系統角色」與「技術流程」的角度解構 PLONK 協定。我們將詳細探討其如何透過多項式承諾方案（Polynomial Commitment Scheme）與多項式互動協議（Polynomial Interactive Oracle Proofs）來構建 SNARK。重點將放在解析其獨特的 permutation check 機制、Prover 的五輪互動流程，以及 Verifier 如何透過常數次配對運算完成高效驗證，從而實現一個通用、高效且安全的 zk-SNARK 系統。
         </p>
         <div class="section-nav">
             <a href="#" class="btn disabled">上一節</a>
@@ -323,18 +333,18 @@
             zk-SNARK 技術允許證明者向驗證者證明某個計算結果的正確性，而不洩露任何私密輸入。一個理想的「完全簡潔（fully succinct）」SNARK 應滿足四個條件：(1) SRS 生成時間短且安全，(2) Prover 計算效率高，(3) Proof 長度極短（如常數大小），(4) Verifier 驗證時間極短（如常數時間或對數時間）。早期的 Groth16 方案雖然在後兩者表現優異，但其 SRS 綁定特定電路，一旦電路邏輯修改，就需要重新進行多方計算儀式（MPC setup），這極大限制了靈活性。
         </p>
 
-        <h3>1.2 Sonic 的限制與 PlonK 的目標</h3>
+        <h3>1.2 Sonic 的限制與 PLONK 的目標</h3>
         <p>
-            Sonic 協定是首個實現「通用且可更新 SRS」的實用 zk-SNARK，這意味著同一個 SRS 可以支援所有不超過特定大小的電路，且 SRS 可以隨時由新的參與者更新以增強安全性。然而，Sonic 在追求通用性的同時付出了代價：其 Prover 需要進行大量的昂貴群運算，使得證明生成變得笨重且緩慢。PlonK 的設計目標正是在保留 Sonic 通用性與可更新性優勢的同時，大幅優化 Prover 的計算複雜度，並減少 SRS 的大小，使其更接近 Groth16 的效能水準。
+            Sonic 協定是首個實現「通用且可更新 SRS」的實用 zk-SNARK，這意味著同一個 SRS 可以支援所有不超過特定大小的電路，且 SRS 可以隨時由新的參與者更新以增強安全性。然而，Sonic 在追求通用性的同時付出了代價：其 Prover 需要進行大量的昂貴群運算，使得證明生成變得笨重且緩慢。PLONK 的設計目標正是在保留 Sonic 通用性與可更新性優勢的同時，大幅優化 Prover 的計算複雜度，並減少 SRS 的大小，使其更接近 Groth16 的效能水準。
         </p>
 
         <h3>1.3 本報告的架構與閱讀方式</h3>
         <p>
-            本報告將按以下結構深入剖析 PlonK：
+            本報告將按以下結構深入剖析 PLONK：
             <ul>
                 <li><strong>第 2 章</strong>：定義系統中的參與角色、信任模型與對手模型。</li>
                 <li><strong>第 3–7 章</strong>：這是本報告的核心，將依序介紹整體運作流程、底層數學基礎（多項式承諾與域運算）、核心的 Permutation Argument 機制，並詳細拆解 Prover 的證明生成步驟與 Verifier 的驗證邏輯。</li>
-                <li><strong>第 8–10 章</strong>：分析 PlonK 的實際效能表現、安全性論證，並總結其在隱私計算領域的應用前景與未來發展。</li>
+                <li><strong>第 8–10 章</strong>：分析 PLONK 的實際效能表現、安全性論證，並總結其在隱私計算領域的應用前景與未來發展。</li>
             </ul>
         </p>
         <div class="section-nav">
@@ -348,15 +358,15 @@
 
         <h3>2.1 系統概觀與信任模型</h3>
         <p>
-            PlonK 建立在通用參考字串（Universal Structured Reference String, SRS）模型之上。與傳統電路專用 SRS 不同，通用的 SRS 透過多方計算（MPC）儀式生成，具有「可更新（updatable）」特性。此模型大幅降低了信任門檻，只要儀式中至少有一位參與者是誠實的，生成的 SRS 就是安全的。
+            PLONK 建立在通用參考字串（Universal Structured Reference String, SRS）模型之上。與傳統電路專用 SRS 不同，通用的 SRS 透過多方計算（MPC）儀式生成，具有「可更新（updatable）」特性。此模型大幅降低了信任門檻，只要儀式中至少有一位參與者是誠實的，生成的 SRS 就是安全的。
         </p>
 
         <h3>2.2 主要角色</h3>
-        <p>在理解 PlonK 時，我們區分「現實世界中的參與者」與「安全證明模型中的角色」：</p>
+        <p>在理解 PLONK 時，我們區分「現實世界中的參與者」與「安全證明模型中的角色」：</p>
         
         <h4>現實世界參與者</h4>
         <ul>
-            <li><strong>Setup 參與者 (Setup Participants)</strong>：負責執行 MPC 儀式，生成 monomials SRS <span class="math">$\{ [x^i]_1, [x^i]_2 \}$</span>。</li>
+            <li><strong>Setup 參與者 (Setup Participants)</strong>：負責執行 MPC 儀式，生成 monomials SRS：在 $\mathbb{G}_1$ 上包含 $[x^i]_1$ ($i=0,\dots,d-1$)，在 $\mathbb{G}_2$ 上只需要 $[1]_2, [x]_2$ 兩個元素，用來進行配對檢查。這份 SRS 只跟「最大的多項式次數上界」有關，而不綁定任何特定電路。</li>
             <li><strong>電路設計者 (Circuit Designer)</strong>：定義約束系統 <span class="math">\(\mathcal{C}\)</span>，產生預處理參數（選擇子與置換承諾），即 Verification Key。</li>
             <li><strong>證明者 (Prover)</strong>：持有 witness，計算證明 <span class="math">\(\pi\)</span>。</li>
             <li><strong>驗證者 (Verifier)</strong>：驗證證明 <span class="math">\(\pi\)</span>。</li>
@@ -370,7 +380,7 @@
 
         <h3>2.3 對手模型與 AGM 安全性</h3>
         <p>
-            PlonK 的安全性分析基於<strong>代數群模型（Algebraic Group Model, AGM）</strong>。在此模型中，每當對手輸出一個群元素 <span class="math">\(Y\)</span>，他必須同時提供該元素如何由輸入元素 <span class="math">\(X_1, \dots, X_m\)</span> 線性組合而成的係數。
+            PLONK 的安全性分析基於<strong>代數群模型（Algebraic Group Model, AGM）</strong>。在此模型中，每當對手輸出一個群元素 <span class="math">\(Y\)</span>，他必須同時提供該元素如何由輸入元素 <span class="math">\(X_1, \dots, X_m\)</span> 線性組合而成的係數。
         </p>
         <p>
             <strong>Lemma 2.2 的直覺</strong>：AGM 允許我們將複雜的雙線性配對檢查（Real Pairing Check）還原為多項式恆等式檢查（Ideal Polynomial Check）。具體來說，如果一個代數對手能欺騙 Pairing Check，則相當於他在不知情的情況下解決了離散對數問題（Q-DLOG）。這確保了只要 Polynomial Protocol 是安全的（具有 Knowledge Soundness），編譯後的 SNARK 就是安全的。
@@ -385,7 +395,7 @@
         <h2>3. 整體流程概觀 (Overview)</h2>
 
         <h3>3.1 協定生命週期</h3>
-        <p>PlonK 的運作可以分為四個主要階段：</p>
+        <p>PLONK 的運作可以分為四個主要階段：</p>
         
         <!-- Mermaid Diagram Insertion -->
         <div class="chart-container">
@@ -508,6 +518,42 @@
             </li>
             <li><strong>Verifier</strong>：重建挑戰值，執行配對驗證。</li>
         </ul>
+
+        <h3>3.4 通用 SRS 與更換電路的實際流程</h3>
+        <p>
+            PLONK 的「通用 SRS」並不是什麼都不用管，而是：同一份 SRS 可以支援所有「多項式次數不超過某個上限」的電路。換電路時，只需要重新做「電路預處理」，不需要重新跑一次昂貴的 MPC setup。
+            可以把整個過程拆成兩個層次：
+        </p>
+        <p><strong>（1）一次性的 Universal Setup（只做一次）</strong></p>
+        <ul>
+            <li>在多方儀式中選出一個隨機秘密值 $x \in \mathbb{F}$，建立 monomial SRS：
+            $[1]_1, [x]_1, \dots, [x^{d-1}]_1, [1]_2, [x]_2$。</li>
+            <li>這裡的 $d$ 對應「最大支援 degree」，也就是你想支援的最大電路大小。之後所有電路裡出現的多項式（wire、多項式約束、permutation 等）都必須是 degree < $d$ 才能用這份 SRS 承諾。</li>
+        </ul>
+        <p><strong>（2）針對每一個電路 $\mathcal{C}$ 的預處理（可以想成「編譯電路」）</strong></p>
+        <ul>
+            <li>對於每一個具體電路 $\mathcal{C}$：
+                <ul>
+                    <li>先把電路轉成 PLONK 的 constraint system，產生對應的 selector 多項式 $q_L, q_R, q_O, q_M, q_C$，以及 permutation 多項式 $S_{\sigma 1}, S_{\sigma 2}, S_{\sigma 3}$。</li>
+                    <li>確認這些多項式的 degree 都小於當初 setup 設的上限 $d$。</li>
+                    <li>用同一份 SRS 計算它們的 KZG 承諾，得到：
+                    $[q_L]_1, [q_R]_1, [q_O]_1, [q_M]_1, [q_C]_1, [S_{\sigma 1}]_1, [S_{\sigma 2}]_1, [S_{\sigma 3}]_1$。</li>
+                    <li>把這些承諾加上一些電路尺寸、根 $\omega$、coset 因子 $k_1, k_2$ 等共同參數，打包成「這個電路專用的 Verification Key (VK)」。</li>
+                </ul>
+            </li>
+        </ul>
+        <p>
+            這樣，換一個電路時，實際上發生的只有：
+            <ol>
+                <li>設計新的算術電路 $\mathcal{C}'$（gate 數不要超過當初 SRS 的上限）。</li>
+                <li>重新生成新的 selector/permutation 多項式。</li>
+                <li>用同一份 $\mathsf{srs}$ 算出新的承諾，得到新的 $\text{VK}_{\mathcal{C}'}$。</li>
+                <li>Prover 在產生證明時，使用「舊的 SRS ＋ 新電路的 VK」來跑 PLONK 的 5 個 round。</li>
+                <li>Verifier 在驗證時，只要選對「這個 statement 對應的 VK」，但 SRS 不用換。</li>
+            </ol>
+            因此，一個系統只要做一次通用的 MPC setup（生成 SRS），之後可以不斷「上新電路」，每個電路只需要多一份 VK，不用每次重來一次 setup 儀式。這就是「universal SRS」在實務上的意義。
+        </p>
+
         <div class="section-nav">
             <a href="#system-roles" class="btn">上一節</a>
             <a href="#math" class="btn">下一節</a>
@@ -519,24 +565,24 @@
 
         <h3>4.1 有限域、群與配對</h3>
         <p>
-            PlonK 運作在有限域 <span class="math">\(\mathbb{F}\)</span> 上。使用雙線性配對群 <span class="math">\(e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T\)</span>，其中 <span class="math">\(\mathbb{G}_1, \mathbb{G}_2, \mathbb{G}_T\)</span> 為階數為質數 <span class="math">\(p\)</span> 的群。配對函數 <span class="math">\(e\)</span> 具有雙線性性質，是驗證多項式乘法關係的基礎。
+            PLONK 運作在有限域 <span class="math">\(\mathbb{F}\)</span> 上。使用雙線性配對群 <span class="math">\(e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T\)</span>，其中 <span class="math">\(\mathbb{G}_1, \mathbb{G}_2, \mathbb{G}_T\)</span> 為階數為質數 <span class="math">\(p\)</span> 的群。配對函數 <span class="math">\(e\)</span> 具有雙線性性質，是驗證多項式乘法關係的基礎。
         </p>
 
         <h3>4.2 乘法子群與 Lagrange 基底</h3>
         <p>
-            為了高效進行快速傅立葉變換（FFT）與多項式運算，PlonK 選擇一個階數為 <span class="math">\(n\)</span> 的乘法子群 <span class="math">\(H = \{1, \omega, \dots, \omega^{n-1}\} \subset \mathbb{F}^*\)</span>，其中 <span class="math">\(\omega\)</span> 是本原 <span class="math">\(n\)</span> 次單位根。這允許我們使用 Lagrange 基底 <span class="math">\(\{L_i(X)\}_{i=1}^n\)</span> 來表示多項式，其中 <span class="math">\(L_i(\omega^{j}) = \delta_{ij}\)</span>。
+            為了高效進行快速傅立葉變換（FFT）與多項式運算，PLONK 選擇一個階數為 <span class="math">\(n\)</span> 的乘法子群 <span class="math">\(H = \{1, \omega, \dots, \omega^{n-1}\} \subset \mathbb{F}^*\)</span>，其中 <span class="math">\(\omega\)</span> 是本原 <span class="math">\(n\)</span> 次單位根。這允許我們使用 Lagrange 基底 <span class="math">\(\{L_i(X)\}_{i=1}^n\)</span> 來表示多項式，其中 <span class="math">\(L_i(\omega^{j}) = \delta_{ij}\)</span>。
             這種表示法使得在 <span class="math">\(H\)</span> 上定義的約束非常稀疏且易於計算。零多項式定義為 <span class="math">\(Z_H(X) = X^n - 1\)</span>，它在 <span class="math">\(H\)</span> 中所有點上皆為零。
         </p>
 
         <h3>4.3 多項式承諾 (KZG PCS)</h3>
         <p>
-            PlonK 使用 Kate-Zaverucha-Goldberg (KZG) 多項式承諾方案。前文已提及，這需要通用的 SRS。
+            PLONK 使用 Kate-Zaverucha-Goldberg (KZG) 多項式承諾方案。前文已提及，這需要通用的 SRS。
             <ul>
                 <li><strong>Commit</strong>: Prover 計算 <span class="math">\([f]_1 = f(x) \cdot G_1\)</span>。</li>
                 <li><strong>Open</strong>: Prover 證明 <span class="math">\(f(z) = y\)</span>，產生證明 <span class="math">\(\pi = \frac{f(X)-y}{X-z}\)</span> 的承諾。</li>
                 <li><strong>Verify</strong>: Verifier 透過配對檢查承諾的正確性。</li>
             </ul>
-            KZG 支援批次開啟（batched opening），這對減少 PlonK proof 大小至關重要。
+            KZG 支援批次開啟（batched opening），這對減少 PLONK proof 大小至關重要。
         </p>
 
         <h3>4.4 Polynomial protocol 與 Ranged protocol</h3>
@@ -555,13 +601,13 @@
 
         <h3>5.1 單一多項式的 Permutation Check</h3>
         <p>
-            PlonK 的核心創新在於其置換論證。基於 Bayer-Groth 的想法，若要證明兩個序列 <span class="math">\((a_1, \dots, a_n)\)</span> 與 <span class="math">\((b_1, \dots, b_n)\)</span> 是彼此的置換（即包含相同的元素集合），我們可以引入隨機數 <span class="math">\(\beta, \gamma\)</span>，並證明多項式乘積相等：
+            PLONK 的核心創新在於其置換論證。基於 Bayer-Groth 的想法，若要證明兩個序列 <span class="math">\((a_1, \dots, a_n)\)</span> 與 <span class="math">\((b_1, \dots, b_n)\)</span> 是彼此的置換（即包含相同的元素集合），我們可以引入隨機數 <span class="math">\(\beta, \gamma\)</span>，並證明多項式乘積相等：
             <span class="math">\[ \prod_{i=1}^n (a_i + \beta \cdot i + \gamma) = \prod_{i=1}^n (b_i + \beta \cdot \sigma(i) + \gamma) \]</span>
         </p>
 
         <h3>5.2 Grand Product 遞迴關係</h3>
         <p>
-            PlonK 定義了一個累加多項式 <span class="math">\(Z(X)\)</span> 來追蹤上述乘積的過程。我們要求 <span class="math">\(Z(X)\)</span> 在子群 <span class="math">\(H\)</span> 上滿足遞迴關係：
+            PLONK 定義了一個累加多項式 <span class="math">\(Z(X)\)</span> 來追蹤上述乘積的過程。我們要求 <span class="math">\(Z(X)\)</span> 在子群 <span class="math">\(H\)</span> 上滿足遞迴關係：
         </p>
         <ul>
             <li><strong>初始條件</strong>：<span class="math">\(Z(1) = 1\)</span></li>
@@ -574,7 +620,7 @@
 
         <h3>5.3 Extended Permutation 與 Copy Constraints</h3>
         <p>
-            為了同時處理電路的三組 wire <span class="math">\(a(X), b(X), c(X)\)</span>，PlonK 將它們「串接」起來。但因為都在同一個域 <span class="math">\(H\)</span> 上定義，我們不能簡單串接，而是使用廣義位置索引 <span class="math">\(k_1, k_2\)</span>（quadratic non-residues）來區分不同 wire 的位置。
+            為了同時處理電路的三組 wire <span class="math">\(a(X), b(X), c(X)\)</span>，PLONK 將它們「串接」起來。但因為都在同一個域 <span class="math">\(H\)</span> 上定義，我們不能簡單串接，而是使用廣義位置索引 <span class="math">\(k_1, k_2\)</span>（quadratic non-residues）來區分不同 wire 的位置。
             例如，左輸入的位置標記為 <span class="math">\(x\)</span>，右輸入標記為 <span class="math">\(k_1 x\)</span>，輸出標記為 <span class="math">\(k_2 x\)</span>。
             Copy constraints 透過置換 <span class="math">\(\sigma\)</span> 將這些位置連結起來。如果 <span class="math">\(Z(X)\)</span> 通過檢查，則保證了電路中所有的連線關係（例如 gate A 的輸出等於 gate B 的輸入）都是正確的。
         </p>
@@ -589,7 +635,7 @@
         <h2>6. 通用初始設定 (Universal Setup)</h2>
         
         <p>
-            PlonK 協定的第一步是生成通用的結構參考字串（SRS）。與早期的 zk-SNARK 不同，此 SRS 是「通用的（Universal）」，這意味著它可以用於任何不超過特定大小的電路，且只需生成一次。
+            PLONK 協定的第一步是生成通用的結構參考字串（SRS）。與早期的 zk-SNARK 不同，此 SRS 是「通用的（Universal）」，這意味著它可以用於任何不超過特定大小的電路，且只需生成一次。
         </p>
 
         <h3>6.1 MPC 儀式與 Toxic Waste</h3>
@@ -599,7 +645,7 @@
         
         <h3>6.2 Monomial Basis SRS</h3>
         <p>
-            PlonK 需要的 SRS 形式為單項式基底（Monomial Basis）。對於支援最大階數為 <span class="math">\(d\)</span> 的多項式，SRS 包含：
+            PLONK 需要的 SRS 形式為單項式基底（Monomial Basis）。對於支援最大階數為 <span class="math">\(d\)</span> 的多項式，SRS 包含：
             <ul>
                 <li><span class="math">\(\mathbb{G}_1\)</span> 上的冪次：<span class="math">\([1]_1, [\tau]_1, [\tau^2]_1, \dots, [\tau^d]_1\)</span></li>
                 <li><span class="math">\(\mathbb{G}_2\)</span> 上的冪次：<span class="math">\([1]_2, [\tau]_2\)</span> （僅需第一項用於 Pairing 驗證）</li>
@@ -736,16 +782,25 @@
         <p>
             Verifier 發送挑戰 <span class="math">\(\alpha\)</span>。Prover 必須證明所有約束成立。他將三種約束用 <span class="math">\(\alpha\)</span> 線性組合起來：
             <span class="math">\[ t(X) = \frac{1}{Z_H(X)} \left( \text{GateConstraints}(X) + \alpha \cdot \text{PermutationCheck}(X) + \alpha^2 \cdot \text{L1Check}(X) \right) \]</span>
-            由於 <span class="math">\(t(X)\)</span> 的次數可達 <span class="math">\(3n\)</span>，超過了 SRS 的支援範圍 <span class="math">\(n\)</span>，因此必須拆解成三部分 <span class="math">\(t_{lo}, t_{mid}, t_{hi}\)</span> 分別 commit。Prover 發送 <span class="math">\([t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1\)</span>。
+            由於 <span class="math">\(t(X)\)</span> 的次數大約是 $3n$（實際上是 $3n$ 再加上一個常數級的餘量），已經超出 SRS 能直接支援的 degree 上界 $n$，因此必須拆成三個 degree $< n$ 的多項式 $t_{lo}, t_{mid}, t_{hi}$ 來分別 commit。Prover 發送 <span class="math">\([t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1\)</span>。
         </p>
 
         <h3>8.5 Round 4：Evaluations</h3>
         <p>
-            Verifier 發送挑戰點 <span class="math">\(z\)</span>。Prover 不直接打開多項式，而是只傳送它們在 <span class="math">\(z\)</span> 點的評估值（純量）：
-            <span class="math">\[ \bar{a}, \bar{b}, \bar{c}, \bar{S}_{\sigma 1}, \bar{S}_{\sigma 2}, \bar{t}, \bar{z}(\omega z) \]</span>
+            Verifier 發送挑戰點 $z$。Prover 不直接打開多項式本身，而是只傳送它們在挑戰點的「評估值」（純量）。實際上只需要送出 6 個數值：
+            $$
+            \bar{a} = a(z),\quad
+            \bar{b} = b(z),\quad
+            \bar{c} = c(z),\quad
+            \bar{S}_{\sigma 1} = S_{\sigma 1}(z),\quad
+            \bar{S}_{\sigma 2} = S_{\sigma 2}(z),\quad
+            \bar{z}_\omega = z(\omega z)
+            $$
             注意：
-            1. <span class="math">\(S_{\sigma 3}\)</span> 不需要傳送評估值（Verifier 可自行推導，節省頻寬）。
-            2. Permutation polynomial <span class="math">\(z(X)\)</span> 需要在 shift 點 <span class="math">\(\omega z\)</span> 進行評估，以驗證遞迴關係。
+            <ul>
+                <li>$\bar{S}_{\sigma 3}$ 的評估值不需要由 Prover 額外傳送，Verifier 可以利用已知的置換結構，在本地推導出相容的值，從而節省頻寬。</li>
+                <li>Permutation polynomial $z(X)$ 只需要在 shift 點 $\omega z$ 開啟一次，用來驗證 grand product 的遞迴關係。</li>
+            </ul>
         </p>
 
         <h3>8.6 Round 5：Linearisation 與 Opening Proof</h3>
@@ -901,7 +956,7 @@
 
         <h3>10.1 Prover / Verifier 複雜度</h3>
         <p>
-            根據論文分析與實作數據，PlonK 的 Prover 複雜度主要由 <span class="math">\(9(n+a)\)</span> 次 <span class="math">\(\mathbb{G}_1\)</span> 指數運算主導，其中 <span class="math">\(n\)</span> 是乘法子群大小（近似電路閘數），<span class="math">\(a\)</span> 是 wire 數量。與 Sonic 相比，PlonK 移除了大量的昂貴計算，使得 Prover 速度顯著提升。Verifier 的複雜度固定為 2 次配對運算，這與 Groth16（3 次配對）相當甚至更優，屬於常數等級驗證。
+            根據論文分析與實作數據，PLONK 的 Prover 複雜度主要由 <span class="math">\(9(n+a)\)</span> 次 <span class="math">\(\mathbb{G}_1\)</span> 指數運算主導，其中 $n$ 是乘法閘數量，$a$ 是加法閘數量（在一般電路裡 $a$ 往往是 $n$ 的數倍）。與 Sonic 相比，PLONK 移除了大量的昂貴計算，使得 Prover 速度顯著提升。Verifier 的複雜度固定為 2 次配對運算，這與 Groth16（3 次配對）相當甚至更優，屬於常數等級驗證。
         </p>
 
         <h3>10.2 與 Groth16 / Sonic / Marlin 的比較</h3>
@@ -910,7 +965,7 @@
                 <th>特性</th>
                 <th>Groth16</th>
                 <th>Sonic (Helped)</th>
-                <th>PlonK</th>
+                <th>PLONK</th>
                 <th>Marlin</th>
             </tr>
             <tr>
@@ -936,12 +991,12 @@
             </tr>
         </table>
         <p>
-            PlonK 在通用 SRS 的前提下，達到了最接近 Groth16 的效能。雖然 Proof 大小略大於 Groth16，但在靈活性與 setup 安全性上的優勢使其成為現代 SNARK 應用的首選之一。
+            PLONK 在通用 SRS 的前提下，達到了最接近 Groth16 的效能。雖然 Proof 大小略大於 Groth16，但在靈活性與 setup 安全性上的優勢使其成為現代 SNARK 應用的首選之一。
         </p>
 
         <h3>10.3 實作與 Benchmark 結果</h3>
         <p>
-            在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PlonK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
+            在標準硬體上的基準測試顯示，對於百萬閘（<span class="math">\(2^{20}\)</span> constraints）級別的電路，PLONK 產生證明的時間可控制在 23 秒以內（參考論文圖 1 數據）。這使得它在實際應用（如 Rollup、隱私交易）中具備高度可行性。
         </p>
         <div class="section-nav">
             <a href="#verification" class="btn">上一節</a>
@@ -954,23 +1009,23 @@
 
         <h3>11.1 Compiler 觀點：從 IOP 到 SNARK</h3>
         <p>
-            PlonK 的安全性架構可以視為一個編譯過程（Compiler）。我們首先建構一個在資訊理論上安全的 <strong>Polynomial IOP (Interactive Oracle Proof)</strong>，確保只要 Verifier 能正確查詢多項式，Prover 就無法作弊。接著，我們使用 <strong>KZG Polynomial Commitment Scheme</strong> 作為密碼學後端，將這個互動協議「編譯」成一個簡潔的 SNARK。
+            PLONK 的安全性架構可以視為一個編譯過程（Compiler）。我們首先建構一個在資訊理論上安全的 <strong>Polynomial IOP (Interactive Oracle Proof)</strong>，確保只要 Verifier 能正確查詢多項式，Prover 就無法作弊。接著，我們使用 <strong>KZG Polynomial Commitment Scheme</strong> 作為密碼學後端，將這個互動協議「編譯」成一個簡潔的 SNARK。
             Lemma 4.7 指出：如果 Polynomial IOP 有 Knowledge Soundness 且 PCS 有 Binding 性質，則編譯出的 SNARK 具有 Knowledge Soundness。
         </p>
 
         <h3>11.2 零知識性與 Blinding 技巧</h3>
         <p>
-            為了達成零知識性（Zero-Knowledge），PlonK 在 Prover 產生的每一個關鍵多項式（wire 多項式 <span class="math">\(a, b, c\)</span>, 排列多項式 <span class="math">\(z\)</span>, 商多項式 <span class="math">\(t\)</span>）中都加入了 <span class="math">\(Z_H(X)\)</span> 的隨機倍數。這些隨機項在 <span class="math">\(H\)</span> 上的評估值為零，不影響約束檢查，但在 <span class="math">\(H\)</span> 之外的查詢點（如 Verifier 的挑戰點 <span class="math">\(z\)</span>）提供了完全的隨機掩蓋，確保 Verifier 無法從評估值中推導出關於 witness 的任何資訊。
+            為了達成零知識性（Zero-Knowledge），PLONK 在 Prover 產生的每一個關鍵多項式（wire 多項式 <span class="math">\(a, b, c\)</span>, 排列多項式 <span class="math">\(z\)</span>, 商多項式 <span class="math">\(t\)</span>）中都加入了 <span class="math">\(Z_H(X)\)</span> 的隨機倍數。這些隨機項在 <span class="math">\(H\)</span> 上的評估值為零，不影響約束檢查，但在 <span class="math">\(H\)</span> 之外的查詢點（如 Verifier 的挑戰點 <span class="math">\(z\)</span>）提供了完全的隨機掩蓋，確保 Verifier 無法從評估值中推導出關於 witness 的任何資訊。
         </p>
 
         <h3>11.3 通用 / 可更新 SRS 的安全性</h3>
         <p>
-            PlonK 使用的 Monomial SRS 儀式基於 Bowe-Gabizon-Miers 方案。該方案支援無限次數的參與者依序更新 SRS。只要其中任何一個更新者銷毀了其使用的隨機亂數（toxic waste），整個 SRS 就是安全的，這極大增強了系統在現實世界部署的信任度。
+            PLONK 使用的 Monomial SRS 儀式基於 Bowe-Gabizon-Miers 方案。該方案支援無限次數的參與者依序更新 SRS。只要其中任何一個更新者銷毀了其使用的隨機亂數（toxic waste），整個 SRS 就是安全的，這極大增強了系統在現實世界部署的信任度。
         </p>
 
         <h3>11.4 與其他系統的關係</h3>
         <p>
-            PlonK 與 Fractal 或 Marlin 等系統的主要區別在於算術化（Arithmetization）的選擇。Marlin 使用雙變數稀疏多項式（bi-variate sparse polynomials）來處理 R1CS，而 PlonK 使用基於加法閘與乘法閘的約束系統，並透過 Permutation Argument 處理線路連接。這使得 PlonK 在處理特定類型的「扇入（fan-in）為 2」的電路時更為高效。
+            PLONK 與 Fractal 或 Marlin 等系統的主要區別在於算術化（Arithmetization）的選擇。Marlin 使用雙變數稀疏多項式（bi-variate sparse polynomials）來處理 R1CS，而 PLONK 使用基於加法閘與乘法閘的約束系統，並透過 Permutation Argument 處理線路連接。這使得 PLONK 在處理特定類型的「扇入（fan-in）為 2」的電路時更為高效。
         </p>
         <div class="section-nav">
             <a href="#performance" class="btn">上一節</a>
@@ -983,12 +1038,12 @@
 
         <h3>12.1 工作總結</h3>
         <p>
-            PlonK 成功地在「通用 SRS」、「高效 Prover」與「簡潔 Verifier」三者之間取得了極佳的平衡。透過引入 Lagrange 基底的算術化與高效的 Permutation Argument，它克服了 Sonic 證明生成緩慢的缺陷，同時保留了通用 Setup 的巨大優勢。本報告從系統角色與技術流程的角度，詳細解析了 PlonK 如何利用多項式承諾與互動協議，構建出一個現代化、高效能的 zk-SNARK 系統。
+            PLONK 成功地在「通用 SRS」、「高效 Prover」與「簡潔 Verifier」三者之間取得了極佳的平衡。透過引入 Lagrange 基底的算術化與高效的 Permutation Argument，它克服了 Sonic 證明生成緩慢的缺陷，同時保留了通用 Setup 的巨大優勢。本報告從系統角色與技術流程的角度，詳細解析了 PLONK 如何利用多項式承諾與互動協議，構建出一個現代化、高效能的 zk-SNARK 系統。
         </p>
 
         <h3>12.2 對 zk-SNARK 生態系的意義</h3>
         <p>
-            PlonK 的出現標誌著通用 SNARK 進入實用化階段。它降低了開發者部署隱私應用的門檻（無需為每個應用重跑 Setup），並促進了如 zk-Rollup 等區塊鏈擴容技術的發展。其標準化的 Constraint System 與 Proof 結構，也為後續的工具鏈整合奠定了基礎。
+            PLONK 的出現標誌著通用 SNARK 進入實用化階段。它降低了開發者部署隱私應用的門檻（無需為每個應用重跑 Setup），並促進了如 zk-Rollup 等區塊鏈擴容技術的發展。其標準化的 Constraint System 與 Proof 結構，也為後續的工具鏈整合奠定了基礎。
         </p>
 
         <h3>12.3 未來可能的延伸方向</h3>
