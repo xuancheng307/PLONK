@@ -21,11 +21,10 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <!-- Mermaid JS (v9.4.3 Stable - Using CDN for compatibility) -->
+    <!-- Mermaid JS (v9.4.3 Stable) -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@9.4.3/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. 初始化設定：關閉自動載入，避免與頁面渲染搶資源
             mermaid.initialize({ 
                 startOnLoad: false,
                 theme: 'neutral',
@@ -34,24 +33,19 @@
                 flowchart: {
                     curve: 'basis',
                     htmlLabels: true,
-                    useMaxWidth: true
+                    useMaxWidth: false // 關鍵修正：設為 false 以防止圖表被強制縮小
                 }
             });
 
-            // 2. 手動觸發渲染，確保 DOM 已經完全準備好
-            // 這樣可以避免原始碼直接顯示在頁面上的問題
             const mermaidNodes = document.querySelectorAll('.mermaid');
             
-            // 使用 mermaid.init 進行手動渲染
             mermaid.init(undefined, mermaidNodes).then(() => {
-                // 渲染成功後，讓圖表顯示出來
                 mermaidNodes.forEach(node => {
                     node.style.visibility = 'visible';
                     node.style.opacity = '1';
                 });
             }).catch(err => {
                 console.error("Mermaid rendering failed:", err);
-                // 如果渲染失敗，至少讓原始碼顯示出來以便除錯
                 mermaidNodes.forEach(node => {
                     node.style.visibility = 'visible';
                     node.style.opacity = '1';
@@ -211,22 +205,28 @@
             font-weight: 600;
         }
 
-        /* Chart Container & Mermaid Styling */
+        /* Chart Container & Mermaid Styling - UPDATED */
         .chart-container {
             display: flex;
-            justify-content: center;
+            justify-content: center; /* 讓圖表預設居中 */
             margin: 2rem 0;
             width: 100%;
-            overflow-x: auto; /* 防止過寬時破壞版面 */
+            overflow-x: auto; /* 允許過寬時出現捲軸 */
+            padding-bottom: 10px; /* 預留捲軸空間 */
         }
 
         .mermaid {
-            /* 預設隱藏，等待渲染完成 */
             visibility: hidden; 
             opacity: 0;
             transition: opacity 0.3s ease-in;
-            display: flex;
-            justify-content: center;
+            display: block; /* 改為 block 避免 flex 壓縮內容 */
+            margin: 0 auto;
+        }
+
+        /* 強制 SVG 保持原始比例，不被容器寬度壓縮 */
+        .mermaid svg {
+            max-width: none !important; 
+            height: auto;
         }
         
         /* Author Info */
@@ -284,6 +284,10 @@
             }
             main {
                 padding: 1.5rem;
+            }
+            /* 手機板允許左對齊捲動，體驗較好 */
+            .chart-container {
+                justify-content: flex-start;
             }
         }
     </style>
