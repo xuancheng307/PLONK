@@ -164,6 +164,90 @@
             scroll-behavior: smooth;
         }
 
+        /* 報告標題頁樣式 */
+        .title-page {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(to bottom right, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 4rem 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .title-container {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .report-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .report-subtitle {
+            font-size: 1.2rem;
+            color: #5a6c7d;
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .title-divider {
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            margin: 2rem auto;
+            border-radius: 2px;
+        }
+
+        .report-meta {
+            margin: 2rem 0;
+        }
+
+        .report-meta p {
+            font-size: 1.1rem;
+            color: #495057;
+            margin: 0.5rem 0;
+        }
+
+        .report-author {
+            font-weight: 600;
+            font-size: 1.3rem !important;
+            color: #2c3e50 !important;
+        }
+
+        .report-date {
+            color: #6c757d !important;
+            font-size: 1rem !important;
+        }
+
+        .report-abstract-brief {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .report-abstract-brief p {
+            margin: 1rem 0;
+            font-size: 1.05rem;
+            color: #495057;
+            line-height: 1.8;
+        }
+
+        .report-abstract-brief strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
         section {
             max-width: 900px;
             margin: 0 auto 4rem auto;
@@ -1787,9 +1871,26 @@ mjx-c.mjx-c1D537.TEX-FR::before {
 
 <main>
 
+    <!-- 報告標題頁 -->
+    <div class="title-page">
+        <div class="title-container">
+            <h1 class="report-title">PLONK 協定技術報告</h1>
+            <h2 class="report-subtitle">Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge</h2>
+            <div class="title-divider"></div>
+            <div class="report-meta">
+                <p class="report-author">報告人：高璿程</p>
+                <p class="report-date">最後更新：2025 年 12 月</p>
+            </div>
+            <div class="report-abstract-brief">
+                <p><strong>研究主題：</strong>通用且可更新的零知識證明系統</p>
+                <p><strong>核心技術：</strong>基於 KZG 多項式承諾的 zk-SNARK 協定</p>
+                <p><strong>主要優勢：</strong>Universal Setup · Succinct Verification · Fast Prover</p>
+            </div>
+        </div>
+    </div>
+
     <section id="abstract">
         <h2>0. 摘要 (Abstract)</h2>
-        <div class="author-info">報告人：高璿程</div>
         <p>
             零知識簡潔非互動式知識論證（zk-SNARK）在區塊鏈隱私與擴展性應用中扮演關鍵角色。本報告分析的 PLONK 協定旨在解決現有方案的效能瓶頸，其核心要點如下：
         </p>
@@ -3879,322 +3980,221 @@ $$
         <br>2. <span class="math">\([W_{\zeta\omega}]_1\)</span>：證明 <span class="math">\(z(\zeta\omega) = \bar{z}_\omega\)</span>。
     </p>
 
-<!-- 8.7 補充：Batching 優化技術 -->
-<h4>8.7.1 Batching 的設計動機</h4>
+<!-- 8.7: Opening Proofs 計算公式 -->
+<h4>8.7 Opening Proofs 的計算公式</h4>
 
-<p>
-    PLONK 在 Round 4 和 Round 5 使用了<strong>兩層 Batching 技術</strong>，將驗證成本從多個 pairing 降至僅需 1 個 pairing。
-    這是實現 succinct verification 的關鍵優化。
-</p>
+<p>經過兩層 batching 後，最終 Prover 需要構造<strong>兩個開放證明</strong>：</p>
 
-<h5>第一層 Batching（Round 4）：合併同一點的多個多項式</h5>
-
-<div class="technique-box">
-    <p><strong>問題：</strong>需要證明 6 個多項式在點 $\zeta$ 的評估值正確</p>
-    <p><strong>解決方案：</strong>Verifier 發送隨機挑戰 $v$，構造線性組合</p>
+<div class="formula-box">
+    <p><strong>1. Opening proof at $\zeta$：</strong></p>
+    $$W_\zeta(X) = \frac{r(X) + v \cdot (F(X) - E)}{X - \zeta}$$
+    <ul>
+        <li>$r(X)$：線性化多項式（Round 5 構造，滿足 $r(\zeta) = 0$）</li>
+        <li>$F(X)$：batched polynomial（第一層 batching 的線性組合）</li>
+        <li>$E$：batched evaluation（對應 $F(\zeta)$ 的聲稱值）</li>
+        <li>$v$：Round 4 的 batching challenge</li>
+    </ul>
 </div>
 
-<p><strong>Prover 和 Verifier 計算：</strong></p>
-$$
-F(X) = a(X) + v \cdot b(X) + v^2 \cdot c(X) + v^3 \cdot S_{\sigma_1}(X) + v^4 \cdot S_{\sigma_2}(X) + v^5 \cdot z(X)
-$$
+<div class="formula-box">
+    <p><strong>2. Opening proof at $\zeta\omega$：</strong></p>
+    $$W_{\zeta\omega}(X) = \frac{z(X) - \bar{z}_\omega}{X - \zeta\omega}$$
+    <ul>
+        <li>$z(X)$：permutation accumulator</li>
+        <li>$\bar{z}_\omega = z(\zeta\omega)$：Round 4 發送的評估值</li>
+    </ul>
+</div>
 
-<p><strong>對應的評估值線性組合：</strong></p>
-$$
-E = \bar{a} + v \cdot \bar{b} + v^2 \cdot \bar{c} + v^3 \cdot \bar{S}_{\sigma_1} + v^4 \cdot \bar{S}_{\sigma_2} + v^5 \cdot \bar{z}
-$$
-
-<p><strong>效果：</strong></p>
+<p><strong>關鍵性質：</strong></p>
 <ul>
-    <li>原本需要 6 個 KZG opening proof</li>
-    <li>現在只需證明 $F(\zeta) = E$，即 <strong>1 個 KZG opening</strong></li>
-    <li>Soundness 由 Schwartz-Zippel Lemma 保證：若任一多項式評估錯誤，$F(\zeta) = E$ 以高機率不成立</li>
+    <li>若 $r(\zeta) = 0$ 且 $F(\zeta) = E$，則 $W_\zeta(X)$ 是多項式（無餘數）</li>
+    <li>若 $z(\zeta\omega) = \bar{z}_\omega$，則 $W_{\zeta\omega}(X)$ 是多項式（無餘數）</li>
+    <li>Verifier 通過檢查 pairing equation 來驗證這兩個商式的正確性</li>
 </ul>
 
-<h5>第二層 Batching（Round 5）：合併兩個評估點</h5>
+<style>
+    .formula-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 15px;
+        margin: 15px 0;
+    }
+    .formula-box p {
+        margin: 10px 0 5px 0;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    .formula-box ul {
+        margin: 10px 0 5px 20px;
+        font-size: 0.95em;
+    }
+    .formula-box li {
+        margin: 5px 0;
+    }
+</style>
 
-<div class="technique-box">
-    <p><strong>問題：</strong>PLONK 需要在兩個點檢查多項式評估：$\zeta$ 和 $\zeta\omega$</p>
-    <p><strong>解決方案：</strong>Verifier 發送隨機挑戰 $u$，合併兩個 opening proof</p>
-</div>
-
-<p><strong>定義 batched opening polynomial：</strong></p>
-$$
-W_{\text{batched}}(X) = W_\zeta(X) + u \cdot W_{\zeta\omega}(X)
-$$
-
-<p>最終只需檢查<strong>一個 pairing equation</strong>（詳見第 9 章驗證流程）。</p>
-
-<div class="summary-box">
-    <p><strong>兩層 Batching 的效果總結：</strong></p>
-    <table style="width: 100%; margin-top: 10px;">
-        <tr>
-            <td><strong>無 Batching</strong></td>
-            <td>$6 + 1 = 7$ 個 pairing</td>
-        </tr>
-        <tr>
-            <td><strong>第一層 Batching (Round 4)</strong></td>
-            <td>$1 + 1 = 2$ 個 pairing</td>
-        </tr>
-        <tr>
-            <td><strong>第二層 Batching (Round 5)</strong></td>
-            <td><strong style="color: #2e7d32;">僅需 1 個 pairing</strong></td>
-        </tr>
-    </table>
-
-    <p style="margin-top: 15px;">
-        這使得 PLONK 的驗證成本為 <strong>$O(1)$ group operations + 1 pairing</strong>，
-        與電路大小 $n$ 無關，實現了真正的 succinct verification。
-    </p>
-</div>
-
-<p class="insight">
-    <strong>連結到第 4 章：</strong>這兩層 batching 正是 KZG commitment scheme 的「線性同態性」(homomorphic property) 的直接應用。
-</p>
-
-<!-- 8.8: Prover 複雜度分析 -->
-<h3>8.8 Prover 複雜度分析</h3>
+<!-- 8.8: Prover-Verifier 完整交互流程圖 -->
+<h3>8.8 Prover-Verifier 完整交互流程</h3>
 
 <p>
-    本節總結 PLONK Prover 的計算成本，對應論文 Section 8 的複雜度分析。
-    以下分析基於 <strong>fast prover</strong> 設定，使用 FFT 和 MSM (Multi-Scalar Multiplication) 優化。
+    以下流程圖總結了 PLONK 協定中 Prover 與 Verifier 之間的完整交互過程，
+    展示了五輪（Round 1-5）的資料流動與密碼學操作。
 </p>
 
-<h4>8.8.1 FFT 操作次數</h4>
+<div class="mermaid">
+sequenceDiagram
+    participant P as Prover
+    participant FS as Fiat-Shamir<br/>(Transcript)
+    participant V as Verifier
 
-<p>PLONK Prover 的多項式運算主要在乘法子群 $H$ 上進行，可用 FFT 加速：</p>
+    Note over P,V: 預處理階段（共享資料）
+    rect rgb(240, 248, 255)
+        Note right of V: Verification Key (VK):<br/>[q_L], [q_R], [q_O], [q_M], [q_C]<br/>[S_σ1], [S_σ2], [S_σ3]
+        Note left of P: Universal SRS:<br/>[1]₁, [x]₁, ..., [x^(n+5)]₁<br/>[1]₂, [x]₂
+    end
 
-<table class="complexity-table">
-    <thead>
+    Note over P,V: === Round 1: Wire Commitments ===
+    rect rgb(255, 250, 240)
+        P->>P: 構造 wire polynomials:<br/>a(X), b(X), c(X)
+        P->>P: 計算承諾:<br/>[a]₁, [b]₁, [c]₁
+        P->>FS: [a]₁, [b]₁, [c]₁
+        FS->>P: 挑戰 β, γ
+    end
+
+    Note over P,V: === Round 2: Permutation Accumulator ===
+    rect rgb(240, 255, 240)
+        P->>P: 構造 z(X) 滿足:<br/>z(ω) = 1<br/>z(ωX) = z(X)·f'(X)/g'(X)
+        P->>P: 計算承諾 [z]₁
+        P->>FS: [z]₁
+        FS->>P: 挑戰 α
+    end
+
+    Note over P,V: === Round 3: Quotient Polynomial ===
+    rect rgb(255, 245, 245)
+        P->>P: 計算 t(X) = (Gate + αPerm + α²Boundary)/Z_H(X)
+        P->>P: 拆分 t(X) = t_lo + X^n·t_mid + X^(2n)·t_hi
+        P->>P: 計算承諾:<br/>[t_lo]₁, [t_mid]₁, [t_hi]₁
+        P->>FS: [t_lo]₁, [t_mid]₁, [t_hi]₁
+        FS->>P: 挑戰 ζ (evaluation point)
+    end
+
+    Note over P,V: === Round 4: Evaluations ===
+    rect rgb(250, 240, 255)
+        P->>P: 計算評估值:<br/>ā = a(ζ), b̄ = b(ζ), c̄ = c(ζ)<br/>S̄_σ1 = S_σ1(ζ), S̄_σ2 = S_σ2(ζ)<br/>z̄_ω = z(ζω)
+        P->>FS: ā, b̄, c̄, S̄_σ1, S̄_σ2, z̄_ω
+        FS->>P: 挑戰 v (batching challenge)
+    end
+
+    Note over P,V: === Round 5: Opening Proofs ===
+    rect rgb(255, 255, 240)
+        P->>P: 構造線性化多項式 r(X)
+        P->>P: Batched polynomial:<br/>F(X) = a(X) + v·b(X) + v²·c(X) + ...
+        P->>P: 計算 opening proofs:<br/>[W_ζ]₁ (證明 r(ζ)=0, F(ζ)=E)<br/>[W_ζω]₁ (證明 z(ζω)=z̄_ω)
+        P->>V: [W_ζ]₁, [W_ζω]₁
+        V->>FS: [W_ζ]₁, [W_ζω]₁
+        FS->>V: 挑戰 u (final batching)
+    end
+
+    Note over P,V: === Verification ===
+    rect rgb(240, 255, 255)
+        V->>V: 重建 transcript (β, γ, α, ζ, v, u)
+        V->>V: 計算 PI(ζ) (public input)
+        V->>V: 計算 r₀, E (線性化驗證值)
+        V->>V: 執行 batched pairing check:<br/>e([W_ζ]+u[W_ζω], [x]₂) ?= e([...], [1]₂)
+        V->>V: Accept / Reject
+    end
+</div>
+
+<div class="protocol-summary">
+    <h4>協定特性總結</h4>
+    <table class="protocol-table">
         <tr>
-            <th>Round</th>
-            <th>操作</th>
-            <th>FFT 次數</th>
-            <th>說明</th>
+            <th>階段</th>
+            <th>Prover 發送</th>
+            <th>資料大小</th>
+            <th>Verifier 回應</th>
         </tr>
-    </thead>
-    <tbody>
         <tr>
             <td>Round 1</td>
-            <td>Wire polynomials</td>
-            <td>3</td>
-            <td>將 witness $\mathbf{a}, \mathbf{b}, \mathbf{c}$ 插值為多項式（Lagrange → coefficient）</td>
+            <td>3 個 $\mathbb{G}_1$ 承諾</td>
+            <td>96 bytes</td>
+            <td>挑戰 $\beta, \gamma$</td>
         </tr>
         <tr>
             <td>Round 2</td>
-            <td>Permutation accumulator $z(X)$</td>
-            <td>$O(\log n)$</td>
-            <td>計算 grand product 遞迴關係</td>
+            <td>1 個 $\mathbb{G}_1$ 承諾</td>
+            <td>32 bytes</td>
+            <td>挑戰 $\alpha$</td>
         </tr>
         <tr>
             <td>Round 3</td>
-            <td>Quotient polynomial $t(X)$</td>
-            <td>$O(\log n)$</td>
-            <td>計算約束總和並除以 $Z_H(X)$</td>
+            <td>3 個 $\mathbb{G}_1$ 承諾</td>
+            <td>96 bytes</td>
+            <td>挑戰 $\zeta$</td>
+        </tr>
+        <tr>
+            <td>Round 4</td>
+            <td>6 個純量值</td>
+            <td>192 bytes</td>
+            <td>挑戰 $v$</td>
         </tr>
         <tr>
             <td>Round 5</td>
-            <td>Opening polynomials</td>
-            <td>2</td>
-            <td>計算 $W_\zeta(X)$ 和 $W_{\zeta\omega}(X)$</td>
-        </tr>
-    </tbody>
-</table>
-
-<p><strong>總 FFT 複雜度：</strong>$O(\log n)$ 次 FFT，每次成本 $O(n \log n)$ field operations。</p>
-
-<h4>8.8.2 多標量乘法（MSM）</h4>
-
-<p>
-    KZG commitment 需要計算 <strong>Multi-Scalar Multiplication (MSM)</strong>：
-    $$\text{Commit}(f) = \sum_{i=0}^{d} c_i \cdot [s^i]_1$$
-    其中 $c_i$ 是多項式係數，$[s^i]_1$ 來自 SRS。
-</p>
-
-<table class="complexity-table">
-    <thead>
-        <tr>
-            <th>Commitment</th>
-            <th>多項式度數</th>
-            <th>MSM 大小</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>$[a'], [b'], [c']$</td>
-            <td>$< n+3$</td>
-            <td>$3(n+3) \approx 3n$</td>
+            <td>2 個 $\mathbb{G}_1$ opening proofs</td>
+            <td>64 bytes</td>
+            <td>挑戰 $u$</td>
         </tr>
         <tr>
-            <td>$[z]$</td>
-            <td>$< n+3$</td>
-            <td>$n+3 \approx n$</td>
+            <td><strong>總計</strong></td>
+            <td><strong>9 個群元素 + 6 個純量</strong></td>
+            <td><strong>480 bytes</strong></td>
+            <td>Fiat-Shamir (非互動)</td>
         </tr>
-        <tr>
-            <td>$[t_{\text{lo}}], [t_{\text{mid}}], [t_{\text{hi}}]$</td>
-            <td>$< n+2$ each</td>
-            <td>$3(n+2) \approx 3n$</td>
-        </tr>
-        <tr>
-            <td>$[W_\zeta], [W_{\zeta\omega}]$</td>
-            <td>$< n+6$</td>
-            <td>$2(n+6) \approx 2n$</td>
-        </tr>
-    </tbody>
-</table>
-
-<p>
-    <strong>總 MSM 複雜度：</strong>約 $3n + n + 3n + 2n = 9n$ 個 $\mathbb{G}_1$ scalar multiplications。
-</p>
-<p>
-    使用 <strong>Pippenger 演算法</strong>，MSM 的成本為 $O(n / \log n)$ group operations。
-</p>
-
-<h4>8.8.3 總體複雜度</h4>
-
-<div class="summary-box">
-    <p><strong>對一個有 $n$ 個 gate 的電路，PLONK Prover 的複雜度為：</strong></p>
-    <ul>
-        <li><strong>Field operations：</strong>$O(n \log n)$ （主要來自 FFT）</li>
-        <li><strong>Group operations：</strong>$O(n / \log n)$ （使用 Pippenger MSM）</li>
-        <li><strong>實際主導項：</strong>通常是 MSM，因為橢圓曲線運算比有限域乘法慢 100-1000 倍</li>
-    </ul>
+    </table>
 </div>
 
-<h4>8.8.4 與其他 ZK 系統的比較</h4>
-
-<table class="comparison-table">
-    <thead>
-        <tr>
-            <th>系統</th>
-            <th>Prover 複雜度</th>
-            <th>Proof 大小</th>
-            <th>Verifier 複雜度</th>
-            <th>Setup</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="highlight-row">
-            <td><strong>PLONK</strong></td>
-            <td>$O(n \log n)$</td>
-            <td>9 個 $\mathbb{G}_1$ 元素</td>
-            <td>$O(1)$ + 1 pairing</td>
-            <td>Universal & Updatable</td>
-        </tr>
-        <tr>
-            <td>Groth16</td>
-            <td>$O(n \log n)$</td>
-            <td>3 個群元素</td>
-            <td>$O(1)$ + 3 pairings</td>
-            <td>Per-circuit</td>
-        </tr>
-        <tr>
-            <td>Bulletproofs</td>
-            <td>$O(n \log n)$</td>
-            <td>$O(\log n)$</td>
-            <td>$O(n)$</td>
-            <td>Transparent</td>
-        </tr>
-        <tr>
-            <td>STARKs</td>
-            <td>$O(n \log^2 n)$</td>
-            <td>$O(\log^2 n)$</td>
-            <td>$O(\log^2 n)$</td>
-            <td>Transparent</td>
-        </tr>
-    </tbody>
-</table>
-
-<div class="insight-box">
-    <p><strong>PLONK 的核心優勢：</strong></p>
-    <ul>
-        <li><strong>Universal Setup：</strong>同一份 SRS 可用於所有電路（$n \leq d-6$）</li>
-        <li><strong>Updatable SRS：</strong>可追加新的隨機性，無需完全重新 setup</li>
-        <li><strong>Succinct Verification：</strong>僅需 1 個 pairing，與電路大小無關</li>
-        <li><strong>靈活性：</strong>適合需要頻繁更新電路的場景（如通用智能合約平台）</li>
-    </ul>
-
-    <p><strong>權衡：</strong>Proof 大小略大於 Groth16（9 vs 3 個群元素），但通用性帶來的靈活性在許多應用中更有價值。</p>
+<div class="highlight-box">
+    <p><strong>Fiat-Shamir 變換：</strong></p>
+    <p>
+        實際實現中，Verifier 的挑戰不是即時生成，而是通過 <strong>Fiat-Shamir 變換</strong>從 transcript
+        （即先前所有消息的雜湊值）確定性地導出。這將互動式協定轉換為非互動式證明系統。
+    </p>
+    <p>
+        <strong>Transcript = Hash(VK || Public Input || [a]₁ || [b]₁ || [c]₁ || [z]₁ || ...)</strong>
+    </p>
 </div>
 
 <style>
-    .technique-box {
-        background-color: #e3f2fd;
-        border-left: 4px solid #1976d2;
-        padding: 12px 15px;
-        margin: 15px 0;
-    }
-    .technique-box p {
-        margin: 8px 0;
-    }
-    .complexity-table {
+    .protocol-table {
         width: 100%;
         border-collapse: collapse;
         margin: 20px 0;
+        font-size: 0.95em;
     }
-    .complexity-table th,
-    .complexity-table td {
+    .protocol-table th,
+    .protocol-table td {
         border: 1px solid #ddd;
         padding: 12px;
         text-align: left;
     }
-    .complexity-table th {
-        background-color: #2c3e50;
-        color: white;
+    .protocol-table th {
+        background-color: #e3f2fd;
+        color: #2c3e50;
         font-weight: 600;
     }
-    .complexity-table tr:nth-child(even) {
+    .protocol-table tr:nth-child(even) {
         background-color: #f9f9f9;
     }
-    .comparison-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
-    .comparison-table th,
-    .comparison-table td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: center;
-    }
-    .comparison-table th {
-        background-color: #34495e;
-        color: white;
+    .protocol-table tr:last-child {
+        background-color: #e8f5e9;
         font-weight: 600;
     }
-    .comparison-table .highlight-row {
-        background-color: #e8f5e9;
-        font-weight: 500;
+    .protocol-summary {
+        margin: 30px 0;
     }
-    .insight-box {
-        background-color: #fff3e0;
-        border-left: 4px solid #ff9800;
-        padding: 15px;
-        margin: 20px 0;
-    }
-    .insight {
-        background-color: #f3e5f5;
-        border-left: 4px solid #9c27b0;
-        padding: 12px 15px;
-        margin: 15px 0;
-        font-style: italic;
-    }
-    .summary-box {
-        background-color: #e8f5e9;
-        border-left: 4px solid #4caf50;
-        padding: 15px;
-        margin: 20px 0;
-    }
-    .summary-box ul {
-        margin: 10px 0;
-    }
-    .summary-box table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    .summary-box td {
-        padding: 8px;
-        border-bottom: 1px solid #c8e6c9;
+    .protocol-summary h4 {
+        color: #2c3e50;
+        margin-bottom: 15px;
     }
 </style>
 
