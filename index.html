@@ -389,22 +389,103 @@
             font-size: 14px !important;
         }
 
+        /* 漢堡選單按鈕 */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+
+        .menu-toggle:hover {
+            background-color: #34495e;
+        }
+
+        .menu-toggle svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        /* 側邊欄遮罩層 */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
         @media (max-width: 768px) {
             body {
-                flex-direction: column;
+                display: block;
                 overflow: auto;
-            }
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
                 height: auto;
             }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                background-color: #f7f9fa;
+                border-right: 1px solid var(--border-color);
+                transition: left 0.3s ease-in-out;
+                z-index: 1000;
+                overflow-y: auto;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+
             main {
                 padding: 1.5rem;
+                padding-top: 4rem;
+                width: 100%;
+                margin-left: 0;
             }
+
+            .title-page {
+                padding: 2rem 1rem;
+                min-height: 60vh;
+            }
+
+            .report-title {
+                font-size: 2rem;
+            }
+
+            .report-subtitle {
+                font-size: 1rem;
+            }
+
             .chart-container {
                 justify-content: flex-start;
+            }
+
+            table {
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -1848,6 +1929,18 @@ mjx-c.mjx-c1D537.TEX-FR::before {
 </style></head>
 <body>
 
+<!-- 漢堡選單按鈕 -->
+<button class="menu-toggle" aria-label="開啟選單">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+</button>
+
+<!-- 側邊欄遮罩層 -->
+<div class="sidebar-overlay"></div>
+
 <aside class="sidebar">
     <h1>PLONK 技術報告</h1>
     <nav>
@@ -2652,54 +2745,24 @@ mjx-c.mjx-c1D537.TEX-FR::before {
             <li>在驗證時，只需檢查 $t(X) \cdot Z_H(X) = \text{Total}(X)$ 在隨機點 $\zeta$ 處成立即可（詳見第 9 章）。</li>
         </ul>
 
-        <h4>5.4.2 Lagrange 基底的計算優勢</h4>
+        <h4>5.4.2 Lagrange 基底在 Permutation 中的作用</h4>
 
-        <div class="definition-box">
-            <p><strong>Lagrange 基底 $\{L_i(X)\}_{i=0}^{n-1}$：</strong></p>
-            <p>
-                滿足 $L_i(\omega^j) = \delta_{ij}$（Kronecker delta），即：
-                $$
-                L_i(\omega^j) = \begin{cases}
-                1 & \text{if } j = i \\
-                0 & \text{if } j \neq i
-                \end{cases}
-                $$
-            </p>
-        </div>
+        <p>
+            Lagrange 基底 $\{L_i(X)\}$（詳見第 4.2.2 節）在 permutation argument 中扮演關鍵角色：
+        </p>
 
-        <p><strong>關鍵優勢 1：簡化多項式定義</strong></p>
         <ul>
-            <li>任何在 $H$ 上定義的向量 $(v_0, v_1, \ldots, v_{n-1})$ 都可以直接表示為多項式：
-                $$
-                f(X) = \sum_{i=0}^{n-1} v_i \cdot L_i(X)
-                $$
-                這樣 $f(\omega^i) = v_i$ 自動成立。
+            <li><strong>簡化 Permutation 多項式定義：</strong>
+                permutation 多項式 $S_{\sigma_1}(X), S_{\sigma_2}(X), S_{\sigma_3}(X)$ 可以直接從 copy constraint 的映射表構造：
+                $$S_{\sigma_k}(X) = \sum_i \sigma^*(i) \cdot L_i(X)$$
+                無需複雜的插值運算，直接從向量轉為多項式。
             </li>
-            <li><strong>應用到 PLONK：</strong>
-                <ul>
-                    <li>Selector 多項式：$q_L(X) = \sum_i (q_L)_i \cdot L_i(X)$</li>
-                    <li>Wire 多項式：$a(X) = \sum_i a_i \cdot L_i(X)$（其中 $a_i$ 是第 $i$ 個 gate 的左輸入值）</li>
-                    <li>Permutation 多項式：$S_{\sigma_1}(X) = \sum_i \sigma^*(i) \cdot L_i(X)$</li>
-                </ul>
-                這避免了複雜的 Vandermonde 矩陣求逆運算。
+            <li><strong>Boundary condition 的精確控制：</strong>
+                $L_1(X)$ 只在 $\omega$ 處為 1，其他點為 0，因此 $L_1(X)(z(X) - 1) = 0$ 精確地強制 $z(\omega) = 1$，不影響其他點。
             </li>
-        </ul>
-
-        <p><strong>關鍵優勢 2：FFT 加速</strong></p>
-        <ul>
-            <li>在乘法子群 $H$ 上，<strong>快速傅立葉變換（FFT）</strong>可以在 $O(n \log n)$ 時間內完成：
-                <ul>
-                    <li><strong>Evaluation（係數 → 點值）：</strong>將多項式 $f(X)$ 在 $H$ 上的所有評估值 $(f(1), f(\omega), \ldots, f(\omega^{n-1}))$ 一次性計算出來。</li>
-                    <li><strong>Interpolation（點值 → 係數）：</strong>反向操作，從點值恢復多項式係數。</li>
-                </ul>
-            </li>
-            <li><strong>PLONK 的 Prover 複雜度瓶頸：</strong>
-                計算 $z(X), t(X)$ 等多項式時，需要大量的多項式乘法和評估。
-                使用 FFT，這些操作可以在 $O(n \log n)$ 時間內完成，而非暴力計算的 $O(n^2)$。
-            </li>
-            <li><strong>連結到實作：</strong>
-                這就是為什麼 PLONK 實作（如 arkworks、bellman）中大量使用 FFT domain 的原因。
-                若使用任意點集，則無法使用 FFT，Prover 的計算成本將變得不可接受。
+            <li><strong>FFT 加速 Grand Product 計算：</strong>
+                計算 permutation accumulator $z(X)$ 時，需要在 $H$ 上評估所有點的遞迴關係。
+                利用 FFT 在 $O(n \log n)$ 時間完成，而非 $O(n^2)$（詳見第 4.2.1 節 FFT 說明）。
             </li>
         </ul>
 
@@ -3364,48 +3427,17 @@ $$
 <h4>7.3.3 與 KZG 承諾方案的連接</h4>
 
 <p>
-    回顧第3章的 KZG 承諾方案,通用 SRS 的形式為:
-</p>
-$$
-\begin{aligned}
-\text{SRS} &= \left( [1]_1, [x]_1, [x^2]_1, \ldots, [x^d]_1; \quad [1]_2, [x]_2 \right) \\
-\end{aligned}
-$$
-
-<p>
-    其中 $x \in \mathbb{F}$ 是 trusted setup 中的秘密值(已被銷毀),$d$ 是 degree bound。
+    PLONK 使用 <strong>KZG 多項式承諾方案</strong>（詳見第 4.3 節）來承諾所有多項式。通用 SRS 的 degree bound $d$ 決定了可承諾的多項式最大度數：
 </p>
 
 <div class="kzg-connection-box">
-    <p><strong>使用流程:</strong></p>
-    <ol>
-        <li><strong>Setup 階段 (一次性,通用):</strong>
-            <ul>
-                <li>執行 trusted setup 生成 SRS(degree bound $d$)</li>
-                <li>發布 SRS 供所有電路使用</li>
-            </ul>
-        </li>
-        <li><strong>Preprocessing 階段 (每個電路一次):</strong>
-            <ul>
-                <li>對於閘數為 $n$ 的電路($n \leq \lfloor d/3 \rfloor - 2$),計算 selector 和 permutation 多項式</li>
-                <li>使用 SRS 計算 KZG 承諾,形成 VK</li>
-                <li>VK 中的 8 個承諾 $[q_L]_1, [q_R]_1, \ldots, [S_{\sigma_3}]_1$ 都是使用同一份 SRS 計算的</li>
-            </ul>
-        </li>
-        <li><strong>Proving 階段 (每個證明一次):</strong>
-            <ul>
-                <li>Prover 生成 witness 多項式 $a, b, c, z, t$</li>
-                <li>使用同一份 SRS 計算這些多項式的 KZG 承諾</li>
-                <li>所有多項式的度數必須 $< d$ 才能正確承諾</li>
-            </ul>
-        </li>
-        <li><strong>Verification 階段:</strong>
-            <ul>
-                <li>Verifier 使用 VK 中的承諾和 SRS 中的 $[x]_2$ 進行 pairing 檢查</li>
-                <li>詳見第9章</li>
-            </ul>
-        </li>
-    </ol>
+    <p><strong>關鍵連接：</strong></p>
+    <ul>
+        <li><strong>Setup 階段：</strong>生成 SRS $([1]_1, [x]_1, \ldots, [x^d]_1; [1]_2, [x]_2)$，供所有 $n \leq d-6$ 的電路使用</li>
+        <li><strong>Preprocessing：</strong>計算 selector 和 permutation 多項式（度數 $\leq n$），用 SRS 生成 VK</li>
+        <li><strong>Proving：</strong>所有 witness 和 quotient 多項式度數必須 $< d$（這就是為什麼需要 $d \geq n+6$）</li>
+        <li><strong>Verification：</strong>使用 KZG opening 驗證多項式評估值（詳見第 9 章）</li>
+    </ul>
 </div>
 
 <h4>7.3.4 實務考量:SRS 大小與電路靈活性</h4>
@@ -4736,6 +4768,35 @@ sequenceDiagram
 
 </main>
 
+<script>
+// 手機版側邊欄切換功能
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
 
+    // 開啟/關閉側邊欄
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    }
+
+    // 點擊漢堡選單按鈕
+    menuToggle.addEventListener('click', toggleSidebar);
+
+    // 點擊遮罩層關閉側邊欄
+    overlay.addEventListener('click', toggleSidebar);
+
+    // 點擊側邊欄連結後自動關閉 (手機版)
+    const sidebarLinks = sidebar.querySelectorAll('a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        });
+    });
+});
+</script>
 
 <div class="mermaidTooltip" style="opacity: 0;"></div></body></html>
