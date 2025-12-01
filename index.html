@@ -486,6 +486,37 @@
 
             table {
                 font-size: 0.85rem;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .mermaid {
+                max-width: 100%;
+                overflow-x: auto;
+            }
+
+            .chart-container svg,
+            .mermaid svg {
+                max-width: 100%;
+                height: auto;
+            }
+
+            pre {
+                overflow-x: auto;
+                max-width: 100%;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* 數學公式在手機上自動縮小 */
+            mjx-container {
+                max-width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
             }
         }
     </style>
