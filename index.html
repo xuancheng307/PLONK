@@ -2019,7 +2019,7 @@ mjx-c.mjx-c1D537.TEX-FR::before {
                 </tr>
                 <tr>
                     <td>$r(X)$</td>
-                    <td>$&lt; 3n+6$</td>
+                    <td>$&lt; n+6$</td>
                     <td>Verifier 計算</td>
                     <td>驗證時</td>
                     <td>Linearisation 多項式</td>
@@ -2029,14 +2029,14 @@ mjx-c.mjx-c1D537.TEX-FR::before {
                 <tr>
                     <td rowspan="4"><strong>Ephemeral<br>(臨時物件)</strong></td>
                     <td>$r'(X)$</td>
-                    <td>$&lt; 3n+6$</td>
+                    <td>$&lt; n+6$</td>
                     <td>Verifier</td>
                     <td>內部計算</td>
                     <td>去除常數項的 linearisation 多項式</td>
                 </tr>
                 <tr>
                     <td>$F(X)$</td>
-                    <td>$&lt; 3n+6$</td>
+                    <td>$&lt; n+6$</td>
                     <td>Verifier</td>
                     <td>內部計算</td>
                     <td>Batched polynomial (Round 4 的線性組合)</td>
@@ -2050,7 +2050,7 @@ mjx-c.mjx-c1D537.TEX-FR::before {
                 </tr>
                 <tr>
                     <td>$W_\zeta(X), W_{\zeta\omega}(X)$</td>
-                    <td>$&lt; 3n+6$</td>
+                    <td>$&lt; n+6$</td>
                     <td>Prover (Round 5)</td>
                     <td>Proof</td>
                     <td>Opening proof 多項式</td>
@@ -2119,8 +2119,8 @@ mjx-c.mjx-c1D537.TEX-FR::before {
         <p style="text-align: center;">
             $$
             \begin{aligned}
-            \text{Perm}(X) := &\; (a(X) + \beta X + \gamma)(b(X) + \beta k_1 X + \gamma)(c(X) + \beta k_2 X + \gamma) \cdot z(\omega X) \\
-            &- (a(X) + \beta S_{\sigma_1}(X) + \gamma)(b(X) + \beta S_{\sigma_2}(X) + \gamma)(c(X) + \beta S_{\sigma_3}(X) + \gamma) \cdot z(X)
+            \text{Perm}(X) := &\; (a(X) + \beta X + \gamma)(b(X) + \beta k_1 X + \gamma)(c(X) + \beta k_2 X + \gamma) \cdot z(X) \\
+            &- (a(X) + \beta S_{\sigma_1}(X) + \gamma)(b(X) + \beta S_{\sigma_2}(X) + \gamma)(c(X) + \beta S_{\sigma_3}(X) + \gamma) \cdot z(\omega X)
             \end{aligned}
             $$
         </p>
@@ -2139,14 +2139,14 @@ mjx-c.mjx-c1D537.TEX-FR::before {
         <h4>3.4.4 Boundary Condition: $L_1(X)(z(X) - 1)$</h4>
         <p>
             Boundary condition 確保 permutation accumulator $z(X)$ 的初始值正確。
-            $L_1(X)$ 是 Lagrange 基底多項式，滿足：
+            根據 PLONK 論文定義，累積器的起點設為生成元 $\omega$。$L_1(X)$ 是針對該點的 Lagrange 基底，滿足：
         </p>
         <ul>
-            <li>$L_1(\omega^0) = L_1(1) = 1$</li>
-            <li>$L_1(\omega^i) = 0$ for $i \neq 0$</li>
+            <li>$L_1(\omega) = 1$ （起點）</li>
+            <li>$L_1(\omega^i) = 0$ for $i \neq 1$ （其他點）</li>
         </ul>
         <p>
-            因此 $L_1(X)(z(X) - 1) = 0$ 在 $H$ 上成立，等價於強制 $z(1) = 1$（grand product 的起始條件）。
+            因此 $L_1(X)(z(X) - 1) = 0$ 在 $H$ 上成立，等價於強制 $z(\omega) = 1$（grand product 的起始條件）。
         </p>
 
         <h4>3.4.5 Quotient Polynomial: $t(X)$</h4>
@@ -2244,12 +2244,61 @@ mjx-c.mjx-c1D537.TEX-FR::before {
             PLONK 運作在有限域 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="41" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53D TEX-A"></mjx-c></mjx-mi></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">F</mi></mrow></math></mjx-assistive-mml></mjx-container></span> 上。使用雙線性配對群 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="42" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3A"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53E TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-cD7"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53E TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2192"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53E TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>e</mi><mo>:</mo><msub><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">G</mi></mrow><mn>1</mn></msub><mo>×</mo><msub><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">G</mi></mrow><mn>2</mn></msub><mo accent="false" stretchy="false">→</mo><msub><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">G</mi></mrow><mi>T</mi></msub></math></mjx-assistive-mml></mjx-container></span>，其中 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="43" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53E TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53E TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53E TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D447 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">G</mi></mrow><mn>1</mn></msub><mo>,</mo><msub><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">G</mi></mrow><mn>2</mn></msub><mo>,</mo><msub><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">G</mi></mrow><mi>T</mi></msub></math></mjx-assistive-mml></mjx-container></span> 為階數為質數 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="44" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></mjx-assistive-mml></mjx-container></span> 的群。配對函數 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="45" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D452 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>e</mi></math></mjx-assistive-mml></mjx-container></span> 具有雙線性性質，是驗證多項式乘法關係的基礎。
         </p>
 
-        <h3>4.2 乘法子群與 Lagrange 基底</h3>
+        <h3>4.2 乘法子群與 Lagrange 基底 (核心代數結構)</h3>
+
         <p>
-            為了高效進行快速傅立葉變換 (FFT)，PLONK 選擇一個階數為 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="46" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></mjx-assistive-mml></mjx-container></span> 的乘法子群 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="47" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c7B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D714 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2026"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msup space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D714 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c7D"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2282"></mjx-c></mjx-mo><mjx-msup space="4"><mjx-texatom texclass="ORD"><mjx-mi class="mjx-ds mjx-b"><mjx-c class="mjx-c1D53D TEX-A"></mjx-c></mjx-mi></mjx-texatom><mjx-script style="vertical-align: 0.363em;"><mjx-mo class="mjx-n" size="s"><mjx-c class="mjx-c2217"></mjx-c></mjx-mo></mjx-script></mjx-msup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi><mo>=</mo><mo fence="false" stretchy="false">{</mo><mn>1</mn><mo>,</mo><mi>ω</mi><mo>,</mo><mo>…</mo><mo>,</mo><msup><mi>ω</mi><mrow data-mjx-texclass="ORD"><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mo fence="false" stretchy="false">}</mo><mo>⊂</mo><msup><mrow data-mjx-texclass="ORD"><mi mathvariant="double-struck">F</mi></mrow><mo>∗</mo></msup></math></mjx-assistive-mml></mjx-container></span>。
-            這允許我們使用 <strong>Lagrange 基底</strong> <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="48" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c7B"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-msubsup><mjx-mo class="mjx-n"><mjx-c class="mjx-c7D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.296em; margin-left: 0px;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-spacer style="margin-top: 0.18em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msubsup></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo fence="false" stretchy="false">{</mo><msub><mi>L</mi><mi>i</mi></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><msubsup><mo fence="false" stretchy="false">}</mo><mrow data-mjx-texclass="ORD"><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup></math></mjx-assistive-mml></mjx-container></span> 來表示多項式，其中 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="49" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D714 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D457 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FF TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D457 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>L</mi><mi>i</mi></msub><mo stretchy="false">(</mo><msup><mi>ω</mi><mrow data-mjx-texclass="ORD"><mi>j</mi></mrow></msup><mo stretchy="false">)</mo><mo>=</mo><msub><mi>δ</mi><mrow data-mjx-texclass="ORD"><mi>i</mi><mi>j</mi></mrow></msub></math></mjx-assistive-mml></mjx-container></span>。
-            這種表示法使得在 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="50" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container></span> 上定義的約束非常稀疏且易於計算。零多項式定義為 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="51" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.04em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msup space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.051em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>Z</mi><mi>H</mi></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>=</mo><msup><mi>X</mi><mi>n</mi></msup><mo>−</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container></span>，它在 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="52" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>H</mi></math></mjx-assistive-mml></mjx-container></span> 中所有點上皆為零。
+            PLONK 不在任意的點上定義多項式，而是精心選擇了一個<strong>乘法子群 (Multiplicative Subgroup)</strong> 作為定義域。這種結構設計同時解決了 Prover 的生成速度與 Verifier 的驗證速度問題。
         </p>
+
+        <h4>4.2.1 乘法子群 $H$ 與 FFT 加速</h4>
+        <div class="definition-box">
+            <p><strong>定義：</strong></p>
+            <p>
+                選擇一個階數為 $n$ 的子群 $H = \{1, \omega, \omega^2, \ldots, \omega^{n-1}\} \subset \mathbb{F}^*$，其中 $\omega$ 是 $n$-th primitive root of unity（滿足 $\omega^n = 1$）。
+            </p>
+        </div>
+        <p><strong>設計動機：</strong></p>
+        <ul>
+            <li><strong>FFT 加速 ($O(n \log n)$)：</strong>
+                在一般點集上進行多項式乘法或插值需要 $O(n^2)$ 的時間。但因為 $H$ 中的元素具有對稱性（例如 $x$ 與 $-x$ 成對出現），我們可以使用 <strong>快速傅立葉變換 (FFT)</strong> 將複雜度降至 $O(n \log n)$。這是 Prover 能夠在數十秒內處理百萬閘電路的關鍵。
+            </li>
+            <li><strong>自然的「旋轉」操作 (Rotation)：</strong>
+                在 $H$ 上，要移動到「下一個位置」只需要乘以 $\omega$。
+                如果 $X$ 對應第 $i$ 個閘，則 $\omega X$ 對應第 $i+1$ 個閘。
+                這讓 Permutation Check 中的 $z(\omega X)$ 關係變得極其簡潔。
+            </li>
+        </ul>
+
+        <h4>4.2.2 Lagrange 基底 $\{L_i(X)\}$</h4>
+        <p>
+            我們使用 Lagrange 基底來將「向量形式 (Vector form)」轉換為「多項式形式 (Polynomial form)」。
+        </p>
+        <p>
+            定義 $\{L_i(X)\}_{i=1}^n$ 為一組多項式，滿足 Kronecker delta 性質：
+            $$L_i(\omega^j) = \delta_{ij} = \begin{cases} 1 & \text{if } i=j \\ 0 & \text{if } i \neq j \end{cases}$$
+        </p>
+        <p><strong>物理意義：</strong></p>
+        <ul>
+            <li>每個 $L_i(X)$ 就像是一個<strong>「開關」</strong>。它只在第 $i$ 個位置是「開 (1)」的，在其他所有位置都是「關 (0)」的。</li>
+            <li>這讓我們可以輕鬆構造通過特定點的多項式。例如，若要構造 $P(\omega^1) = 5, P(\omega^2) = 3$，只需寫成 $P(X) = 5 \cdot L_1(X) + 3 \cdot L_2(X)$。</li>
+        </ul>
+
+        <h4>4.2.3 消失多項式 $Z_H(X)$ 的稀疏性</h4>
+        <p>
+            為了驗證約束在 $H$ 上所有點都成立，我們需要檢查多項式是否能被<strong>消失多項式 (Vanishing Polynomial)</strong> 整除。
+        </p>
+        <p>
+            在乘法子群上，$Z_H(X)$ 有極其簡潔的形式：
+            $$Z_H(X) = \prod_{h \in H} (X - h) = X^n - 1$$
+        </p>
+        <div class="highlight-box">
+            <p><strong>Verifier 的優勢：</strong></p>
+            <p>
+                如果是在任意點集上，Verifier 計算 $Z_H(\zeta)$ 需要做 $n$ 次乘法。
+                但在這裡，Verifier 只需要計算 $\zeta^n - 1$，這可以用 <strong>快速冪 (Exponentiation by squaring)</strong> 在 $O(\log n)$ 時間內完成。
+                這保證了 PLONK 的驗證時間是<strong>常數級 (Succinct)</strong>，不隨電路大小線性增長。
+            </p>
+        </div>
 
         <h3>4.3 多項式承諾 (KZG PCS)</h3>
         <p>
@@ -2369,8 +2418,8 @@ mjx-c.mjx-c1D537.TEX-FR::before {
                 $$
             </p>
             <p>
-                由於 $L_1(X)$ 是 Lagrange 基底多項式，滿足 $L_1(1) = 1$ 且 $L_1(\omega^i) = 0$ for $i \neq 0$，
-                這個條件等價於強制 $z(1) = 1$（grand product 的起始條件）。
+                由於 $L_1(X)$ 是針對第一個索引 $\omega$ 的 Lagrange 基底（滿足 $L_1(\omega) = 1$），
+                這個條件等價於強制 $z(\omega) = 1$。
             </p>
         </div>
 
@@ -2625,7 +2674,7 @@ mjx-c.mjx-c1D537.TEX-FR::before {
         </p>
         
         <h3>6.2 Monomial Basis SRS</h3>
-        <p>PLONK 使用單項式基底 (Monomial Basis) 的 SRS。為了支援添加了 Blinding 因子後的最高次數多項式，SRS 的階數 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="86" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>d</mi></math></mjx-assistive-mml></mjx-container></span> 需滿足 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="87" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2265"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c35"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>d</mi><mo>≥</mo><mi>n</mi><mo>+</mo><mn>5</mn></math></mjx-assistive-mml></mjx-container></span>（其中 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="88" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></mjx-assistive-mml></mjx-container></span> 為電路閘數）。其 G₁、G₂ 元素包括：</p>
+        <p>PLONK 使用單項式基底 (Monomial Basis) 的 SRS。若電路使用大小為 $n$ 的 evaluation domain，則 SRS 的階數 $d$ 需滿足 <strong>$d \geq n+6$</strong>。這是因為 <strong>PLONK 將 quotient 多項式 $t(X)$ 拆分為三個度數 $\leq n+5$ 的多項式</strong>（$t_{lo}, t_{mid}, t_{hi}$），因此只需要能夠承諾度數 $\leq n+5$ 的多項式即可（其中 $n$ 為電路閘數）。其 G₁、G₂ 元素包括：</p>
         <ul>
           <li><strong>G<sub>1</sub> 元素：</strong> <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="89" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msup><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2026"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">[</mo><mn>1</mn><msub><mo stretchy="false">]</mo><mn>1</mn></msub><mo>,</mo><mo stretchy="false">[</mo><mi>x</mi><msub><mo stretchy="false">]</mo><mn>1</mn></msub><mo>,</mo><mo stretchy="false">[</mo><msup><mi>x</mi><mn>2</mn></msup><msub><mo stretchy="false">]</mo><mn>1</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><mo stretchy="false">[</mo><msup><mi>x</mi><mi>d</mi></msup><msub><mo stretchy="false">]</mo><mn>1</mn></msub></math></mjx-assistive-mml></mjx-container></span>，用於承諾多項式。</li>
           <li><strong>G<sub>2</sub> 元素：</strong> <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="90" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D465 TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">[</mo><mn>1</mn><msub><mo stretchy="false">]</mo><mn>2</mn></msub><mo>,</mo><mo stretchy="false">[</mo><mi>x</mi><msub><mo stretchy="false">]</mo><mn>2</mn></msub></math></mjx-assistive-mml></mjx-container></span>（用於 Pairing 驗證）。</li>
@@ -3316,7 +3365,7 @@ $$
 </div>
 
 <p class="summary-note">
-    <strong>本節總結:</strong> 第7章介紹的電路預處理階段,其產出的所有多項式(selector、permutation、witness、quotient)都必須滿足度數 $< d$ 的約束,才能使用通用 SRS 進行 KZG 承諾。這個度數約束 $d \geq 3n+6$ 確保了 PLONK 的通用性:同一份 SRS 可以支援所有 $n \leq \lfloor d/3 \rfloor - 2$ 的電路,這是 PLONK 相較於電路專用 SNARK (如 Groth16) 的關鍵優勢。
+    <strong>本節總結:</strong> 第7章介紹的電路預處理階段,其產出的所有多項式(selector、permutation、witness、quotient)都必須滿足度數 $< d$ 的約束,才能使用通用 SRS 進行 KZG 承諾。這個度數約束 <strong>$d \geq n+6$</strong> 確保了 PLONK 的通用性:同一份 SRS 可以支援所有 $n \leq d - 6$ 的電路,這是 PLONK 相較於電路專用 SNARK (如 Groth16) 的關鍵優勢。由於 PLONK 將度數 $3n$ 的 quotient 多項式 $t(X)$ 拆分為三個度數 $\leq n+5$ 的多項式,因此 SRS 大小僅需與電路規模 $n$ 成線性關係,而非三倍關係。
 </p>
 
 <style>
@@ -3450,12 +3499,12 @@ $$
                     </tr>
                     <tr>
                         <td>$r(X)$</td>
-                        <td>$&lt; 3n+6$</td>
+                        <td>$&lt; n+6$</td>
                         <td>Linearisation polynomial (Round 5，Verifier 也可計算)</td>
                     </tr>
                     <tr>
                         <td>$W_\zeta(X), W_{\zeta\omega}(X)$</td>
-                        <td>$&lt; 3n+6$</td>
+                        <td>$&lt; n+6$</td>
                         <td>Opening proof 多項式 (Round 5)</td>
                     </tr>
                     <tr>
@@ -3554,7 +3603,7 @@ $$
 
 <p><strong>說明:</strong></p>
 <ul>
-    <li><strong>度數遞增:</strong> Wire 多項式度數 $\approx n$,quotient $t(X)$ 度數達 $3n$,因此 SRS degree bound 需 $d \geq 3n+6$。</li>
+    <li><strong>度數遞增:</strong> Wire 多項式度數 $\approx n$,quotient $t(X)$ 度數達 $3n$。但由於 PLONK 將 $t(X)$ 拆分為三個度數 $\leq n+5$ 的多項式 ($t_{lo}, t_{mid}, t_{hi}$),因此 SRS degree bound 僅需 <strong>$d \geq n+6$</strong>。</li>
     <li><strong>隨機線性組合:</strong> Challenge $\alpha, \beta, \gamma$ 將多個約束折疊成單一檢查,防止 Prover 分散錯誤。</li>
     <li><strong>Round 4 不發送 $t(\zeta)$:</strong> Verifier 透過 linearisation 在 Round 5 隱式驗證 $t(X)$。</li>
     <li><strong>證明大小:</strong> $7 \times 32$ bytes (承諾) + $6 \times 32$ bytes (標量) + $2 \times 32$ bytes (opening) = <strong>480 bytes</strong>。</li>
@@ -3623,9 +3672,9 @@ $$
 <p>
     在 Round 1，wire 多項式的 degree 上界為 $n+2$。
     在 Round 2，permutation accumulator $z(X)$ 也會加上類似的 blinding（使用 $b_7, b_8, b_9$），degree 同樣 $< n+3$。
-    在 Round 3，quotient polynomial $t(X)$ 的 degree 最高可達 $3n+5$（見 8.5.1）。
-    因此，SRS 需要支援的最大 degree 為 $\max(n+2, n+2, 3n+5) = 3n+5$，
-    加上 opening proof 的 degree，總共需要 $d \geq 3n+6$。
+    在 Round 3，quotient polynomial $t(X)$ 的 degree 最高可達 $3n+5$（見 8.5.1），但 <strong>PLONK 將其拆分為三個度數 $\leq n+5$ 的多項式</strong>：$t_{lo}(X), t_{mid}(X), t_{hi}(X)$。
+    因此，SRS 需要支援的最大 degree 為 $\max(n+2, n+2, n+5) = n+5$，
+    加上保險的餘裕，總共需要 <strong>$d \geq n+6$</strong>。這是 PLONK 相較於其他系統的關鍵優勢：SRS 大小與電路規模 $n$ 成線性關係，而非三倍關係。
 </p>
 
     <h3>8.4 Round 2：Permutation Accumulator <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="112" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D467 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span></h3>
@@ -3650,7 +3699,8 @@ $$
         $$
     </p>
     <p>
-        等價於 $z(1) = 1$（因為 $L_1(1) = 1$，$L_1(\omega^i) = 0$ for $i \neq 0$）。
+        等價於 $z(\omega) = 1$。
+        <br>（註：PLONK 論文使用 1-based indexing，故第一個點為 $\omega^1$）
     </p>
 </div>
 
@@ -3686,16 +3736,22 @@ $$
     <li>$z(X)$ 同時扮演「Grand Product 累積器」與「把 copy constraints 導入單一多項式約束的橋樑」</li>
 </ul>
 
-    <h3>8.5 Round 3：商多項式 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="124" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>t</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> 與切割</h3>
+        <h3>8.5 Round 3：商多項式 <span class="math">\(t(X)\)</span> 與切割</h3>
     <p>
-        Verifier 給 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="125" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>α</mi></math></mjx-assistive-mml></mjx-container></span>，Prover 將所有約束合成：
+        Verifier 給 <span class="math">\(\alpha\)</span>。Prover 計算 <span class="math">\(t(X) = \frac{1}{Z_H}(\text{Gate} + \alpha\text{Perm} + \alpha^2\text{L1})\)</span>。
+        <br>
+        由於 <span class="math">\(\deg(t) \approx 3n\)</span>，將其切分為三段。
+        <br>
+        <span class="note">學術細節：由於包含 Blinding 因子，切分後的片段度數最高為 <span class="math">\(n+5\)</span>，因此需要大小為 <span class="math">\(n+6\)</span> 的 SRS。</span>
     </p>
-    <div class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="126" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.04em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-texatom texclass="ORD"><mjx-mo class="mjx-lop"><mjx-c class="mjx-c28 TEX-S2"></mjx-c></mjx-mo></mjx-texatom><mjx-mtext class="mjx-n"><mjx-c class="mjx-c47"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c50"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c><mjx-c class="mjx-c6D"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msup space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mtext class="mjx-n" space="3"><mjx-c class="mjx-c4C"></mjx-c><mjx-c class="mjx-c31"></mjx-c></mjx-mtext><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mo class="mjx-lop"><mjx-c class="mjx-c29 TEX-S2"></mjx-c></mjx-mo></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>t</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>Z</mi><mi>H</mi></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></mrow></mfrac><mrow data-mjx-texclass="ORD"><mo minsize="1.623em" maxsize="1.623em">(</mo></mrow><mtext>Gate</mtext><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>+</mo><mi>α</mi><mo>⋅</mo><mtext>Perm</mtext><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>+</mo><msup><mi>α</mi><mn>2</mn></msup><mo>⋅</mo><mtext>L1</mtext><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mo minsize="1.623em" maxsize="1.623em">)</mo></mrow></math></mjx-assistive-mml></mjx-container></div>
-    <p>
-        <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="127" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-n"><mjx-c class="mjx-c64"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c67"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2061"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2264"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c33"></mjx-c></mjx-mn><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>deg</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>t</mi><mo>≤</mo><mn>3</mn><mi>n</mi></math></mjx-assistive-mml></mjx-container></span>，切成 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="128" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow></msub></math></mjx-assistive-mml></mjx-container></span>，並用邊界混淆封裝：
-    </p>
-    <div class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="129" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3A"></mjx-c><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msubsup space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: 0px;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo><mjx-spacer style="margin-top: 0.2em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msubsup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.051em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 1em;"></mjx-mspace></mjx-mstyle><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3A"></mjx-c><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msubsup space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: 0px;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo><mjx-spacer style="margin-top: 0.2em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msubsup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.051em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 1em;"></mjx-mspace></mjx-mstyle><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3A"></mjx-c><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msubsup space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: 0px;"><mjx-mo class="mjx-var" size="s"><mjx-c class="mjx-c2032"></mjx-c></mjx-mo><mjx-spacer style="margin-top: 0.2em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msubsup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>:=</mo><msubsup><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow><mo data-mjx-alternate="1">′</mo></msubsup><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>+</mo><msub><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>10</mn></mrow></msub><msup><mi>X</mi><mi>n</mi></msup><mo>,</mo><mstyle scriptlevel="0"><mspace width="1em"></mspace></mstyle><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>:=</mo><msubsup><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow><mo data-mjx-alternate="1">′</mo></msubsup><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>10</mn></mrow></msub><mo>+</mo><msub><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>11</mn></mrow></msub><msup><mi>X</mi><mi>n</mi></msup><mo>,</mo><mstyle scriptlevel="0"><mspace width="1em"></mspace></mstyle><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>:=</mo><msubsup><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow><mo data-mjx-alternate="1">′</mo></msubsup><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mi>b</mi><mrow data-mjx-texclass="ORD"><mn>11</mn></mrow></msub></math></mjx-assistive-mml></mjx-container></div>
-    <p>此設計確保 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="130" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.051em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.363em; margin-left: 0.051em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow></msub><mo>+</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow></msub><msup><mi>X</mi><mi>n</mi></msup><mo>+</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow></msub><msup><mi>X</mi><mrow data-mjx-texclass="ORD"><mn>2</mn><mi>n</mi></mrow></msup><mo>=</mo><mi>t</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>，同時隱藏切割邊界資訊。發布 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="131" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c5B"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c5D"></mjx-c></mjx-mo><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">[</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow></msub><msub><mo stretchy="false">]</mo><mn>1</mn></msub><mo>,</mo><mo stretchy="false">[</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow></msub><msub><mo stretchy="false">]</mo><mn>1</mn></msub><mo>,</mo><mo stretchy="false">[</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow></msub><msub><mo stretchy="false">]</mo><mn>1</mn></msub></math></mjx-assistive-mml></mjx-container></span>。</p>
+    <div class="math">\[
+    \begin{aligned}
+    t_{lo}(X) &:= t'_{lo}(X) + b_{10}X^n \\
+    t_{mid}(X) &:= t'_{mid}(X) - b_{10} + b_{11}X^n \\
+    t_{hi}(X) &:= t'_{hi}(X) - b_{11}
+    \end{aligned}
+    \]</div>
+    <p>發布承諾 <span class="math">\([t_{lo}]_1,[t_{mid}]_1,[t_{hi}]_1\)</span>。</p>
 
 <!-- Round 3 補強內容 -->
 <h4>8.5.1 Quotient Polynomial 的精確公式與 Degree 分析</h4>
@@ -3778,14 +3834,14 @@ $$
         <li>KZG commitment 的 degree 上界受 SRS 長度限制。如果直接承諾 $t(X)$（degree $\sim 3n$），
             需要一個長度 $3n$ 的 SRS，這會增加 VK 和 proof 的大小。
         </li>
-        <li>PLONK 的技巧是將 $t(X)$ 拆分為三個 degree $< n+2$ 的多項式：
+        <li>PLONK 的技巧是將 $t(X)$ 拆分為三個度數 $\leq n+5$ 的多項式：
             $$
-            t(X) = t_{\text{lo}}(X) + X^{n+2} t_{\text{mid}}(X) + X^{2(n+2)} t_{\text{hi}}(X)
+            t(X) = t_{\text{lo}}(X) + X^{n} t_{\text{mid}}(X) + X^{2n} t_{\text{hi}}(X)
             $$
         </li>
         <li>在驗證時，Verifier 僅需在單點 $\zeta$ 評估 $t(X)$：
             $$
-            t(\zeta) = t_{\text{lo}}(\zeta) + \zeta^{n+2} t_{\text{mid}}(\zeta) + \zeta^{2(n+2)} t_{\text{hi}}(\zeta)
+            t(\zeta) = t_{\text{lo}}(\zeta) + \zeta^{n} t_{\text{mid}}(\zeta) + \zeta^{2n} t_{\text{hi}}(\zeta)
             $$
             這樣可以用三個小的承諾 $[t_{\text{lo}}], [t_{\text{mid}}], [t_{\text{hi}}]$ 代替一個大的承諾 $[t]$。
         </li>
@@ -3803,102 +3859,115 @@ $$
     </ul>
     <p>這些評估值用於線性化，Verifier 不需收到 <span class="math">t</span> 的評估。</p>
 
-    <h3>8.7 Round 5：線性化多項式 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="137" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>r</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> 與開放證明</h3>
+        <h3>8.7 Round 5：線性化多項式 <span class="math">\(r(X)\)</span> 與開放證明</h3>
     <p>
-        Verifier 給 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="138" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>v</mi></math></mjx-assistive-mml></mjx-container></span>。Prover 構造 <strong>線性化多項式</strong> <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="139" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>r</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>，將 Gate、Permutation、Quotient 的多項式與評估值線性組合，壓縮成單一點檢查，並產生開放證明：
+        Verifier 給 <span class="math">\(v\)</span>。Prover 構造 <strong>線性化多項式 <span class="math">\(r(X)\)</span></strong>。
+        <br>技巧：將 Verifier 無法直接計算的高次項，替換為「<strong>評估值 (純量) <span class="math">\(\times\)</span> 多項式</strong>」：
     </p>
-    <div class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="140" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mtable style="min-width: 31.587em;"><mjx-table><mjx-itable><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-bottom: 0.15em;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: left; padding-left: 0px; padding-bottom: 0.15em;"><mjx-mstyle><mjx-mspace style="width: 0.278em;"></mjx-mspace></mjx-mstyle><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 0.167em;"></mjx-mspace></mjx-mstyle><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 0.167em;"></mjx-mspace></mjx-mstyle><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D445 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 0.167em;"></mjx-mspace></mjx-mstyle><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D442 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mstyle><mjx-mspace style="width: 0.167em;"></mjx-mspace></mjx-mstyle><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D436 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-tstrut></mjx-tstrut></mjx-mtd></mjx-mtr><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd extra="true"></mjx-mtd></mjx-mtr><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: left; padding-left: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-mi class="mjx-n"></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c28 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D467 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c28 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.265em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.032em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43C TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.214em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.032em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43C TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D437 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.272em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c29 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-tstrut></mjx-tstrut></mjx-mtd></mjx-mtr><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: left; padding-left: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-mstyle><mjx-mspace style="width: 2em;"></mjx-mspace></mjx-mstyle><mjx-mstyle><mjx-mspace style="width: 2em;"></mjx-mspace></mjx-mstyle><mjx-mo class="mjx-n"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D467 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D714 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c28 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.265em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.414em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.15em; margin-left: -0.032em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70E TEX-I"></mjx-c></mjx-mi><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.214em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-msub><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.414em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.15em; margin-left: -0.032em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70E TEX-I"></mjx-c></mjx-mi><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.272em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c29 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c29 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-tstrut></mjx-tstrut></mjx-mtd></mjx-mtr><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd extra="true"></mjx-mtd></mjx-mtr><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: left; padding-left: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-mi class="mjx-n"></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msup space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FC TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msup><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D467 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-tstrut></mjx-tstrut></mjx-mtd></mjx-mtr><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-top: 0.15em; padding-bottom: 0.15em;"><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd extra="true"></mjx-mtd></mjx-mtr><mjx-mtr><mjx-mtd style="text-align: right; padding-right: 0px; padding-top: 0.15em;"><mjx-tstrut></mjx-tstrut></mjx-mtd><mjx-mtd style="text-align: left; padding-left: 0px; padding-top: 0.15em;"><mjx-mi class="mjx-n"></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c28 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.264em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c29 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.051em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msup><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c28 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.264em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c29 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c33"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-msup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: 0.413em; margin-left: 0.051em;"><mjx-texatom size="s" texclass="ORD"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msup><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c28 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.264em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-texatom texclass="ORD"><mjx-mo class="mjx-sop"><mjx-c class="mjx-c29 TEX-S1"></mjx-c></mjx-mo></mjx-texatom><mjx-tstrut></mjx-tstrut></mjx-mtd></mjx-mtr></mjx-itable></mjx-table></mjx-mtable></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mtable displaystyle="true" columnalign="right left" columnspacing="0em" rowspacing="3pt"><mtr><mtd><mi>r</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>=</mo></mtd><mtd><mstyle scriptlevel="0"><mspace width="0.278em"></mspace></mstyle><msub><mi>q</mi><mi>M</mi></msub><mo stretchy="false">(</mo><mi>ζ</mi><mo stretchy="false">)</mo><mstyle scriptlevel="0"><mspace width="0.167em"></mspace></mstyle><mi>a</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mi>b</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>+</mo><msub><mi>q</mi><mi>L</mi></msub><mo stretchy="false">(</mo><mi>ζ</mi><mo stretchy="false">)</mo><mstyle scriptlevel="0"><mspace width="0.167em"></mspace></mstyle><mi>a</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>+</mo><msub><mi>q</mi><mi>R</mi></msub><mo stretchy="false">(</mo><mi>ζ</mi><mo stretchy="false">)</mo><mstyle scriptlevel="0"><mspace width="0.167em"></mspace></mstyle><mi>b</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>+</mo><msub><mi>q</mi><mi>O</mi></msub><mo stretchy="false">(</mo><mi>ζ</mi><mo stretchy="false">)</mo><mstyle scriptlevel="0"><mspace width="0.167em"></mspace></mstyle><mi>c</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>+</mo><msub><mi>q</mi><mi>C</mi></msub><mo stretchy="false">(</mo><mi>ζ</mi><mo stretchy="false">)</mo></mtd></mtr><mtr><mtd></mtd></mtr><mtr><mtd></mtd><mtd><mi></mi><mo>+</mo><mi>α</mi><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">(</mo></mrow><mi>z</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">(</mo></mrow><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mover><mi>a</mi><mo stretchy="false">¯</mo></mover></mrow><mo>+</mo><mi>β</mi><msub><mi>S</mi><mrow data-mjx-texclass="ORD"><mi>I</mi><msub><mi>D</mi><mn>1</mn></msub></mrow></msub><mo>+</mo><mi>γ</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mover><mi>b</mi><mo stretchy="false">¯</mo></mover></mrow><mo>+</mo><mi>β</mi><msub><mi>S</mi><mrow data-mjx-texclass="ORD"><mi>I</mi><msub><mi>D</mi><mn>2</mn></msub></mrow></msub><mo>+</mo><mi>γ</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mover><mi>c</mi><mo stretchy="false">¯</mo></mover></mrow><mo>+</mo><mi>γ</mi><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow></mtd></mtr><mtr><mtd></mtd><mtd><mstyle scriptlevel="0"><mspace width="2em"></mspace></mstyle><mstyle scriptlevel="0"><mspace width="2em"></mspace></mstyle><mo>−</mo><mi>z</mi><mo stretchy="false">(</mo><mi>ζ</mi><mi>ω</mi><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">(</mo></mrow><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mover><mi>a</mi><mo stretchy="false">¯</mo></mover></mrow><mo>+</mo><mi>β</mi><msub><mrow data-mjx-texclass="ORD"><mover><mi>S</mi><mo stretchy="false">¯</mo></mover></mrow><mrow data-mjx-texclass="ORD"><mi>σ</mi><mn>1</mn></mrow></msub><mo>+</mo><mi>γ</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mover><mi>b</mi><mo stretchy="false">¯</mo></mover></mrow><mo>+</mo><mi>β</mi><msub><mrow data-mjx-texclass="ORD"><mover><mi>S</mi><mo stretchy="false">¯</mo></mover></mrow><mrow data-mjx-texclass="ORD"><mi>σ</mi><mn>2</mn></mrow></msub><mo>+</mo><mi>γ</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mrow data-mjx-texclass="ORD"><mover><mi>c</mi><mo stretchy="false">¯</mo></mover></mrow><mo>+</mo><mi>γ</mi><mo stretchy="false">)</mo><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow></mtd></mtr><mtr><mtd></mtd></mtr><mtr><mtd></mtd><mtd><mi></mi><mo>+</mo><msup><mi>α</mi><mn>2</mn></msup><mo stretchy="false">(</mo><mi>z</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><msub><mi>L</mi><mn>1</mn></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></mtd></mtr><mtr><mtd></mtd></mtr><mtr><mtd></mtd><mtd><mi></mi><mo>+</mo><msub><mi>v</mi><mn>1</mn></msub><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">(</mo></mrow><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mrow data-mjx-texclass="ORD"><mover><mi>t</mi><mo stretchy="false">¯</mo></mover></mrow><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow></msub><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow><mo>+</mo><msub><mi>v</mi><mn>2</mn></msub><msup><mi>X</mi><mi>n</mi></msup><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">(</mo></mrow><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mrow data-mjx-texclass="ORD"><mover><mi>t</mi><mo stretchy="false">¯</mo></mover></mrow><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow></msub><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow><mo>+</mo><msub><mi>v</mi><mn>3</mn></msub><msup><mi>X</mi><mrow data-mjx-texclass="ORD"><mn>2</mn><mi>n</mi></mrow></msup><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">(</mo></mrow><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo><mo>−</mo><msub><mrow data-mjx-texclass="ORD"><mover><mi>t</mi><mo stretchy="false">¯</mo></mover></mrow><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow></msub><mrow data-mjx-texclass="ORD"><mo minsize="1.2em" maxsize="1.2em">)</mo></mrow></mtd></mtr></mtable></math></mjx-assistive-mml></mjx-container></div>
+    <div class="math">\[
+    \begin{aligned}
+    r(X) =&\; \underbrace{\bar{a}\bar{b} \cdot q_M(X) + \bar{a} \cdot q_L(X) + \bar{b} \cdot q_R(X) + \bar{c} \cdot q_O(X) + q_C(X) + PI(\zeta)}_{\text{Gate 部分 (含 Public Input)}} \\
+    &+ \alpha \cdot \underbrace{(\bar{a} + \beta\zeta + \gamma)(\bar{b} + \beta k_1\zeta + \gamma)(\bar{c} + \beta k_2\zeta + \gamma) \cdot z(X)}_{\text{Permutation 遞迴左式 (係數化後，保留 } z(X))} \\
+    &- \alpha \cdot \underbrace{(\bar{a} + \beta \bar{S}_{\sigma 1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma 2} + \gamma)(\bar{c} + \beta S_{\sigma 3}(X) + \gamma) \cdot \bar{z}_\omega}_{\text{Permutation 遞迴右式 (係數化後，保留 } S_{\sigma 3}(X))} \\
+    &+ \alpha^2 \cdot \underbrace{(z(X) - 1)L_1(\zeta)}_{\text{初始條件}} \\
+    &- \underbrace{Z_H(\zeta) \cdot (t_{lo}(X) + \zeta^n t_{mid}(X) + \zeta^{2n} t_{hi}(X))}_{\text{商多項式抵銷項}}
+    \end{aligned}
+    \]</div>
     <p>
-        這裡利用在 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="141" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ζ</mi></math></mjx-assistive-mml></mjx-container></span> 的評估值（例如 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="142" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.265em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base style="padding-top: 0.001em;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.214em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow data-mjx-texclass="ORD"><mover><mi>a</mi><mo stretchy="false">¯</mo></mover></mrow><mo>,</mo><mrow data-mjx-texclass="ORD"><mover><mi>b</mi><mo stretchy="false">¯</mo></mover></mrow></math></mjx-assistive-mml></mjx-container></span>）作為係數，乘上 Verifier 手上的多項式（例如 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="143" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>q</mi><mi>M</mi></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>），是線性化的核心技巧，使所有檢查收斂到單一開放點。
+        最終產生兩個開放證明 (<strong>群元素 <span class="math">\(\mathbb{G}_1\)</span></strong>)：
+        <br>1. <span class="math">\([W_{\zeta}]_1\)</span>：證明 <span class="math">\(r(\zeta)=0\)</span> 及各多項式評估正確。
+        <br>2. <span class="math">\([W_{\zeta\omega}]_1\)</span>：證明 <span class="math">\(z(\zeta\omega) = \bar{z}_\omega\)</span>。
     </p>
-    <ul>
-        <li>Gate：<span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="144" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D43F TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D445 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D442 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D440 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.014em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D436 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>q</mi><mi>L</mi></msub><mo>,</mo><msub><mi>q</mi><mi>R</mi></msub><mo>,</mo><msub><mi>q</mi><mi>O</mi></msub><mo>,</mo><msub><mi>q</mi><mi>M</mi></msub><mo>,</mo><msub><mi>q</mi><mi>C</mi></msub></math></mjx-assistive-mml></mjx-container></span> 與 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="145" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.265em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base style="padding-top: 0.001em;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44E TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.214em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.272em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D450 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow data-mjx-texclass="ORD"><mover><mi>a</mi><mo stretchy="false">¯</mo></mover></mrow><mo>,</mo><mrow data-mjx-texclass="ORD"><mover><mi>b</mi><mo stretchy="false">¯</mo></mover></mrow><mo>,</mo><mrow data-mjx-texclass="ORD"><mover><mi>c</mi><mo stretchy="false">¯</mo></mover></mrow></math></mjx-assistive-mml></mjx-container></span>。</li>
-        <li>Permutation：<span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="146" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D467 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>、<span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="147" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D446 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.032em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70E TEX-I"></mjx-c></mjx-mi><mjx-mn class="mjx-n"><mjx-c class="mjx-c33"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>S</mi><mrow data-mjx-texclass="ORD"><mi>σ</mi><mn>3</mn></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>、<span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="148" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D6FD TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D6FE TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-texatom space="2" texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.288em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D467 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-texatom texclass="ORD"><mjx-mover><mjx-over style="padding-bottom: 0.105em; padding-left: 0.288em; margin-bottom: -0.544em;"><mjx-mo class="mjx-n" style="width: 0px; margin-left: -0.25em;"><mjx-c class="mjx-cAF"></mjx-c></mjx-mo></mjx-over><mjx-base><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D467 TEX-I"></mjx-c></mjx-mi></mjx-base></mjx-mover></mjx-texatom><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D714 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>β</mi><mo>,</mo><mi>γ</mi><mo>,</mo><mrow data-mjx-texclass="ORD"><mover><mi>z</mi><mo stretchy="false">¯</mo></mover></mrow><mo>,</mo><msub><mrow data-mjx-texclass="ORD"><mover><mi>z</mi><mo stretchy="false">¯</mo></mover></mrow><mi>ω</mi></msub></math></mjx-assistive-mml></mjx-container></span>。</li>
-        <li>Quotient：<span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="149" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D459 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45C TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D451 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D461 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D456 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>l</mi><mi>o</mi></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>m</mi><mi>i</mi><mi>d</mi></mrow></msub><mo>,</mo><msub><mi>t</mi><mrow data-mjx-texclass="ORD"><mi>h</mi><mi>i</mi></mrow></msub></math></mjx-assistive-mml></mjx-container></span> 的承諾（Verifier 以線性化方式吸收）。</li>
-    </ul>
-    <p>最終產生兩個開放證明：<span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="150" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.104em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>W</mi><mrow data-mjx-texclass="ORD"><mi>ζ</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> 與 <span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="151" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.104em;"><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D701 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D714 TEX-I"></mjx-c></mjx-mi></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>W</mi><mrow data-mjx-texclass="ORD"><mi>ζ</mi><mi>ω</mi></mrow></msub><mo stretchy="false">(</mo><mi>X</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>。</p>
 
-    <!-- Detailed Proving Flowchart -->
-        <div class="chart-container">
-        <div class="mermaid" data-processed="true" style="visibility: visible; opacity: 1;"><svg id="mermaid-1764500662545" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="max-width: 468.5px;" viewBox="-50 -10 468.5 941" role="graphics-document document" aria-roledescription="sequence"><style>#mermaid-1764500662545{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;fill:#000000;}#mermaid-1764500662545 .error-icon{fill:#552222;}#mermaid-1764500662545 .error-text{fill:#552222;stroke:#552222;}#mermaid-1764500662545 .edge-thickness-normal{stroke-width:2px;}#mermaid-1764500662545 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1764500662545 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1764500662545 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1764500662545 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1764500662545 .marker{fill:#666;stroke:#666;}#mermaid-1764500662545 .marker.cross{stroke:#666;}#mermaid-1764500662545 svg{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;}#mermaid-1764500662545 .actor{stroke:hsl(0, 0%, 83%);fill:#eee;}#mermaid-1764500662545 text.actor&gt;tspan{fill:#333;stroke:none;}#mermaid-1764500662545 .actor-line{stroke:#666;}#mermaid-1764500662545 .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333;}#mermaid-1764500662545 .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333;}#mermaid-1764500662545 #arrowhead path{fill:#333;stroke:#333;}#mermaid-1764500662545 .sequenceNumber{fill:white;}#mermaid-1764500662545 #sequencenumber{fill:#333;}#mermaid-1764500662545 #crosshead path{fill:#333;stroke:#333;}#mermaid-1764500662545 .messageText{fill:#333;stroke:none;}#mermaid-1764500662545 .labelBox{stroke:hsl(0, 0%, 83%);fill:#eee;}#mermaid-1764500662545 .labelText,#mermaid-1764500662545 .labelText&gt;tspan{fill:#333;stroke:none;}#mermaid-1764500662545 .loopText,#mermaid-1764500662545 .loopText&gt;tspan{fill:#333;stroke:none;}#mermaid-1764500662545 .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(0, 0%, 83%);fill:hsl(0, 0%, 83%);}#mermaid-1764500662545 .note{stroke:#999;fill:#666;}#mermaid-1764500662545 .noteText,#mermaid-1764500662545 .noteText&gt;tspan{fill:#fff;stroke:none;}#mermaid-1764500662545 .activation0{fill:#f4f4f4;stroke:#666;}#mermaid-1764500662545 .activation1{fill:#f4f4f4;stroke:#666;}#mermaid-1764500662545 .activation2{fill:#f4f4f4;stroke:#666;}#mermaid-1764500662545 .actorPopupMenu{position:absolute;}#mermaid-1764500662545 .actorPopupMenuPanel{position:absolute;fill:#eee;box-shadow:0px 8px 16px 0px rgba(0,0,0,0.2);filter:drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));}#mermaid-1764500662545 .actor-man line{stroke:hsl(0, 0%, 83%);fill:#eee;}#mermaid-1764500662545 .actor-man circle,#mermaid-1764500662545 line{stroke:hsl(0, 0%, 83%);fill:#eee;stroke-width:2px;}#mermaid-1764500662545 :root{--mermaid-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}</style><g></g><defs><symbol id="computer" width="24" height="24"><path transform="scale(.5)" d="M2 2v13h20v-13h-20zm18 11h-16v-9h16v9zm-10.228 6l.466-1h3.524l.467 1h-4.457zm14.228 3h-24l2-6h2.104l-1.33 4h18.45l-1.297-4h2.073l2 6zm-5-10h-14v-7h14v7z"></path></symbol></defs><defs><symbol id="database" fill-rule="evenodd" clip-rule="evenodd"><path transform="scale(.5)" d="M12.258.001l.256.004.255.005.253.008.251.01.249.012.247.015.246.016.242.019.241.02.239.023.236.024.233.027.231.028.229.031.225.032.223.034.22.036.217.038.214.04.211.041.208.043.205.045.201.046.198.048.194.05.191.051.187.053.183.054.18.056.175.057.172.059.168.06.163.061.16.063.155.064.15.066.074.033.073.033.071.034.07.034.069.035.068.035.067.035.066.035.064.036.064.036.062.036.06.036.06.037.058.037.058.037.055.038.055.038.053.038.052.038.051.039.05.039.048.039.047.039.045.04.044.04.043.04.041.04.04.041.039.041.037.041.036.041.034.041.033.042.032.042.03.042.029.042.027.042.026.043.024.043.023.043.021.043.02.043.018.044.017.043.015.044.013.044.012.044.011.045.009.044.007.045.006.045.004.045.002.045.001.045v17l-.001.045-.002.045-.004.045-.006.045-.007.045-.009.044-.011.045-.012.044-.013.044-.015.044-.017.043-.018.044-.02.043-.021.043-.023.043-.024.043-.026.043-.027.042-.029.042-.03.042-.032.042-.033.042-.034.041-.036.041-.037.041-.039.041-.04.041-.041.04-.043.04-.044.04-.045.04-.047.039-.048.039-.05.039-.051.039-.052.038-.053.038-.055.038-.055.038-.058.037-.058.037-.06.037-.06.036-.062.036-.064.036-.064.036-.066.035-.067.035-.068.035-.069.035-.07.034-.071.034-.073.033-.074.033-.15.066-.155.064-.16.063-.163.061-.168.06-.172.059-.175.057-.18.056-.183.054-.187.053-.191.051-.194.05-.198.048-.201.046-.205.045-.208.043-.211.041-.214.04-.217.038-.22.036-.223.034-.225.032-.229.031-.231.028-.233.027-.236.024-.239.023-.241.02-.242.019-.246.016-.247.015-.249.012-.251.01-.253.008-.255.005-.256.004-.258.001-.258-.001-.256-.004-.255-.005-.253-.008-.251-.01-.249-.012-.247-.015-.245-.016-.243-.019-.241-.02-.238-.023-.236-.024-.234-.027-.231-.028-.228-.031-.226-.032-.223-.034-.22-.036-.217-.038-.214-.04-.211-.041-.208-.043-.204-.045-.201-.046-.198-.048-.195-.05-.19-.051-.187-.053-.184-.054-.179-.056-.176-.057-.172-.059-.167-.06-.164-.061-.159-.063-.155-.064-.151-.066-.074-.033-.072-.033-.072-.034-.07-.034-.069-.035-.068-.035-.067-.035-.066-.035-.064-.036-.063-.036-.062-.036-.061-.036-.06-.037-.058-.037-.057-.037-.056-.038-.055-.038-.053-.038-.052-.038-.051-.039-.049-.039-.049-.039-.046-.039-.046-.04-.044-.04-.043-.04-.041-.04-.04-.041-.039-.041-.037-.041-.036-.041-.034-.041-.033-.042-.032-.042-.03-.042-.029-.042-.027-.042-.026-.043-.024-.043-.023-.043-.021-.043-.02-.043-.018-.044-.017-.043-.015-.044-.013-.044-.012-.044-.011-.045-.009-.044-.007-.045-.006-.045-.004-.045-.002-.045-.001-.045v-17l.001-.045.002-.045.004-.045.006-.045.007-.045.009-.044.011-.045.012-.044.013-.044.015-.044.017-.043.018-.044.02-.043.021-.043.023-.043.024-.043.026-.043.027-.042.029-.042.03-.042.032-.042.033-.042.034-.041.036-.041.037-.041.039-.041.04-.041.041-.04.043-.04.044-.04.046-.04.046-.039.049-.039.049-.039.051-.039.052-.038.053-.038.055-.038.056-.038.057-.037.058-.037.06-.037.061-.036.062-.036.063-.036.064-.036.066-.035.067-.035.068-.035.069-.035.07-.034.072-.034.072-.033.074-.033.151-.066.155-.064.159-.063.164-.061.167-.06.172-.059.176-.057.179-.056.184-.054.187-.053.19-.051.195-.05.198-.048.201-.046.204-.045.208-.043.211-.041.214-.04.217-.038.22-.036.223-.034.226-.032.228-.031.231-.028.234-.027.236-.024.238-.023.241-.02.243-.019.245-.016.247-.015.249-.012.251-.01.253-.008.255-.005.256-.004.258-.001.258.001zm-9.258 20.499v.01l.001.021.003.021.004.022.005.021.006.022.007.022.009.023.01.022.011.023.012.023.013.023.015.023.016.024.017.023.018.024.019.024.021.024.022.025.023.024.024.025.052.049.056.05.061.051.066.051.07.051.075.051.079.052.084.052.088.052.092.052.097.052.102.051.105.052.11.052.114.051.119.051.123.051.127.05.131.05.135.05.139.048.144.049.147.047.152.047.155.047.16.045.163.045.167.043.171.043.176.041.178.041.183.039.187.039.19.037.194.035.197.035.202.033.204.031.209.03.212.029.216.027.219.025.222.024.226.021.23.02.233.018.236.016.24.015.243.012.246.01.249.008.253.005.256.004.259.001.26-.001.257-.004.254-.005.25-.008.247-.011.244-.012.241-.014.237-.016.233-.018.231-.021.226-.021.224-.024.22-.026.216-.027.212-.028.21-.031.205-.031.202-.034.198-.034.194-.036.191-.037.187-.039.183-.04.179-.04.175-.042.172-.043.168-.044.163-.045.16-.046.155-.046.152-.047.148-.048.143-.049.139-.049.136-.05.131-.05.126-.05.123-.051.118-.052.114-.051.11-.052.106-.052.101-.052.096-.052.092-.052.088-.053.083-.051.079-.052.074-.052.07-.051.065-.051.06-.051.056-.05.051-.05.023-.024.023-.025.021-.024.02-.024.019-.024.018-.024.017-.024.015-.023.014-.024.013-.023.012-.023.01-.023.01-.022.008-.022.006-.022.006-.022.004-.022.004-.021.001-.021.001-.021v-4.127l-.077.055-.08.053-.083.054-.085.053-.087.052-.09.052-.093.051-.095.05-.097.05-.1.049-.102.049-.105.048-.106.047-.109.047-.111.046-.114.045-.115.045-.118.044-.12.043-.122.042-.124.042-.126.041-.128.04-.13.04-.132.038-.134.038-.135.037-.138.037-.139.035-.142.035-.143.034-.144.033-.147.032-.148.031-.15.03-.151.03-.153.029-.154.027-.156.027-.158.026-.159.025-.161.024-.162.023-.163.022-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.011-.178.01-.179.008-.179.008-.181.006-.182.005-.182.004-.184.003-.184.002h-.37l-.184-.002-.184-.003-.182-.004-.182-.005-.181-.006-.179-.008-.179-.008-.178-.01-.176-.011-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.022-.162-.023-.161-.024-.159-.025-.157-.026-.156-.027-.155-.027-.153-.029-.151-.03-.15-.03-.148-.031-.146-.032-.145-.033-.143-.034-.141-.035-.14-.035-.137-.037-.136-.037-.134-.038-.132-.038-.13-.04-.128-.04-.126-.041-.124-.042-.122-.042-.12-.044-.117-.043-.116-.045-.113-.045-.112-.046-.109-.047-.106-.047-.105-.048-.102-.049-.1-.049-.097-.05-.095-.05-.093-.052-.09-.051-.087-.052-.085-.053-.083-.054-.08-.054-.077-.054v4.127zm0-5.654v.011l.001.021.003.021.004.021.005.022.006.022.007.022.009.022.01.022.011.023.012.023.013.023.015.024.016.023.017.024.018.024.019.024.021.024.022.024.023.025.024.024.052.05.056.05.061.05.066.051.07.051.075.052.079.051.084.052.088.052.092.052.097.052.102.052.105.052.11.051.114.051.119.052.123.05.127.051.131.05.135.049.139.049.144.048.147.048.152.047.155.046.16.045.163.045.167.044.171.042.176.042.178.04.183.04.187.038.19.037.194.036.197.034.202.033.204.032.209.03.212.028.216.027.219.025.222.024.226.022.23.02.233.018.236.016.24.014.243.012.246.01.249.008.253.006.256.003.259.001.26-.001.257-.003.254-.006.25-.008.247-.01.244-.012.241-.015.237-.016.233-.018.231-.02.226-.022.224-.024.22-.025.216-.027.212-.029.21-.03.205-.032.202-.033.198-.035.194-.036.191-.037.187-.039.183-.039.179-.041.175-.042.172-.043.168-.044.163-.045.16-.045.155-.047.152-.047.148-.048.143-.048.139-.05.136-.049.131-.05.126-.051.123-.051.118-.051.114-.052.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.051.07-.052.065-.051.06-.05.056-.051.051-.049.023-.025.023-.024.021-.025.02-.024.019-.024.018-.024.017-.024.015-.023.014-.023.013-.024.012-.022.01-.023.01-.023.008-.022.006-.022.006-.022.004-.021.004-.022.001-.021.001-.021v-4.139l-.077.054-.08.054-.083.054-.085.052-.087.053-.09.051-.093.051-.095.051-.097.05-.1.049-.102.049-.105.048-.106.047-.109.047-.111.046-.114.045-.115.044-.118.044-.12.044-.122.042-.124.042-.126.041-.128.04-.13.039-.132.039-.134.038-.135.037-.138.036-.139.036-.142.035-.143.033-.144.033-.147.033-.148.031-.15.03-.151.03-.153.028-.154.028-.156.027-.158.026-.159.025-.161.024-.162.023-.163.022-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.011-.178.009-.179.009-.179.007-.181.007-.182.005-.182.004-.184.003-.184.002h-.37l-.184-.002-.184-.003-.182-.004-.182-.005-.181-.007-.179-.007-.179-.009-.178-.009-.176-.011-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.022-.162-.023-.161-.024-.159-.025-.157-.026-.156-.027-.155-.028-.153-.028-.151-.03-.15-.03-.148-.031-.146-.033-.145-.033-.143-.033-.141-.035-.14-.036-.137-.036-.136-.037-.134-.038-.132-.039-.13-.039-.128-.04-.126-.041-.124-.042-.122-.043-.12-.043-.117-.044-.116-.044-.113-.046-.112-.046-.109-.046-.106-.047-.105-.048-.102-.049-.1-.049-.097-.05-.095-.051-.093-.051-.09-.051-.087-.053-.085-.052-.083-.054-.08-.054-.077-.054v4.139zm0-5.666v.011l.001.02.003.022.004.021.005.022.006.021.007.022.009.023.01.022.011.023.012.023.013.023.015.023.016.024.017.024.018.023.019.024.021.025.022.024.023.024.024.025.052.05.056.05.061.05.066.051.07.051.075.052.079.051.084.052.088.052.092.052.097.052.102.052.105.051.11.052.114.051.119.051.123.051.127.05.131.05.135.05.139.049.144.048.147.048.152.047.155.046.16.045.163.045.167.043.171.043.176.042.178.04.183.04.187.038.19.037.194.036.197.034.202.033.204.032.209.03.212.028.216.027.219.025.222.024.226.021.23.02.233.018.236.017.24.014.243.012.246.01.249.008.253.006.256.003.259.001.26-.001.257-.003.254-.006.25-.008.247-.01.244-.013.241-.014.237-.016.233-.018.231-.02.226-.022.224-.024.22-.025.216-.027.212-.029.21-.03.205-.032.202-.033.198-.035.194-.036.191-.037.187-.039.183-.039.179-.041.175-.042.172-.043.168-.044.163-.045.16-.045.155-.047.152-.047.148-.048.143-.049.139-.049.136-.049.131-.051.126-.05.123-.051.118-.052.114-.051.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.052.07-.051.065-.051.06-.051.056-.05.051-.049.023-.025.023-.025.021-.024.02-.024.019-.024.018-.024.017-.024.015-.023.014-.024.013-.023.012-.023.01-.022.01-.023.008-.022.006-.022.006-.022.004-.022.004-.021.001-.021.001-.021v-4.153l-.077.054-.08.054-.083.053-.085.053-.087.053-.09.051-.093.051-.095.051-.097.05-.1.049-.102.048-.105.048-.106.048-.109.046-.111.046-.114.046-.115.044-.118.044-.12.043-.122.043-.124.042-.126.041-.128.04-.13.039-.132.039-.134.038-.135.037-.138.036-.139.036-.142.034-.143.034-.144.033-.147.032-.148.032-.15.03-.151.03-.153.028-.154.028-.156.027-.158.026-.159.024-.161.024-.162.023-.163.023-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.01-.178.01-.179.009-.179.007-.181.006-.182.006-.182.004-.184.003-.184.001-.185.001-.185-.001-.184-.001-.184-.003-.182-.004-.182-.006-.181-.006-.179-.007-.179-.009-.178-.01-.176-.01-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.023-.162-.023-.161-.024-.159-.024-.157-.026-.156-.027-.155-.028-.153-.028-.151-.03-.15-.03-.148-.032-.146-.032-.145-.033-.143-.034-.141-.034-.14-.036-.137-.036-.136-.037-.134-.038-.132-.039-.13-.039-.128-.041-.126-.041-.124-.041-.122-.043-.12-.043-.117-.044-.116-.044-.113-.046-.112-.046-.109-.046-.106-.048-.105-.048-.102-.048-.1-.05-.097-.049-.095-.051-.093-.051-.09-.052-.087-.052-.085-.053-.083-.053-.08-.054-.077-.054v4.153zm8.74-8.179l-.257.004-.254.005-.25.008-.247.011-.244.012-.241.014-.237.016-.233.018-.231.021-.226.022-.224.023-.22.026-.216.027-.212.028-.21.031-.205.032-.202.033-.198.034-.194.036-.191.038-.187.038-.183.04-.179.041-.175.042-.172.043-.168.043-.163.045-.16.046-.155.046-.152.048-.148.048-.143.048-.139.049-.136.05-.131.05-.126.051-.123.051-.118.051-.114.052-.11.052-.106.052-.101.052-.096.052-.092.052-.088.052-.083.052-.079.052-.074.051-.07.052-.065.051-.06.05-.056.05-.051.05-.023.025-.023.024-.021.024-.02.025-.019.024-.018.024-.017.023-.015.024-.014.023-.013.023-.012.023-.01.023-.01.022-.008.022-.006.023-.006.021-.004.022-.004.021-.001.021-.001.021.001.021.001.021.004.021.004.022.006.021.006.023.008.022.01.022.01.023.012.023.013.023.014.023.015.024.017.023.018.024.019.024.02.025.021.024.023.024.023.025.051.05.056.05.06.05.065.051.07.052.074.051.079.052.083.052.088.052.092.052.096.052.101.052.106.052.11.052.114.052.118.051.123.051.126.051.131.05.136.05.139.049.143.048.148.048.152.048.155.046.16.046.163.045.168.043.172.043.175.042.179.041.183.04.187.038.191.038.194.036.198.034.202.033.205.032.21.031.212.028.216.027.22.026.224.023.226.022.231.021.233.018.237.016.241.014.244.012.247.011.25.008.254.005.257.004.26.001.26-.001.257-.004.254-.005.25-.008.247-.011.244-.012.241-.014.237-.016.233-.018.231-.021.226-.022.224-.023.22-.026.216-.027.212-.028.21-.031.205-.032.202-.033.198-.034.194-.036.191-.038.187-.038.183-.04.179-.041.175-.042.172-.043.168-.043.163-.045.16-.046.155-.046.152-.048.148-.048.143-.048.139-.049.136-.05.131-.05.126-.051.123-.051.118-.051.114-.052.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.051.07-.052.065-.051.06-.05.056-.05.051-.05.023-.025.023-.024.021-.024.02-.025.019-.024.018-.024.017-.023.015-.024.014-.023.013-.023.012-.023.01-.023.01-.022.008-.022.006-.023.006-.021.004-.022.004-.021.001-.021.001-.021-.001-.021-.001-.021-.004-.021-.004-.022-.006-.021-.006-.023-.008-.022-.01-.022-.01-.023-.012-.023-.013-.023-.014-.023-.015-.024-.017-.023-.018-.024-.019-.024-.02-.025-.021-.024-.023-.024-.023-.025-.051-.05-.056-.05-.06-.05-.065-.051-.07-.052-.074-.051-.079-.052-.083-.052-.088-.052-.092-.052-.096-.052-.101-.052-.106-.052-.11-.052-.114-.052-.118-.051-.123-.051-.126-.051-.131-.05-.136-.05-.139-.049-.143-.048-.148-.048-.152-.048-.155-.046-.16-.046-.163-.045-.168-.043-.172-.043-.175-.042-.179-.041-.183-.04-.187-.038-.191-.038-.194-.036-.198-.034-.202-.033-.205-.032-.21-.031-.212-.028-.216-.027-.22-.026-.224-.023-.226-.022-.231-.021-.233-.018-.237-.016-.241-.014-.244-.012-.247-.011-.25-.008-.254-.005-.257-.004-.26-.001-.26.001z"></path></symbol></defs><defs><symbol id="clock" width="24" height="24"><path transform="scale(.5)" d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.848 12.459c.202.038.202.333.001.372-1.907.361-6.045 1.111-6.547 1.111-.719 0-1.301-.582-1.301-1.301 0-.512.77-5.447 1.125-7.445.034-.192.312-.181.343.014l.985 6.238 5.394 1.011z"></path></symbol></defs><g><line id="actor0" x1="75" y1="5" x2="75" y2="875" class="200" stroke-width="0.5px" stroke="#999"></line><g id="root-0"><rect x="0" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif;"><tspan x="75" dy="0">Prover</tspan></text></g></g><g><line id="actor1" x1="293.5" y1="5" x2="293.5" y2="875" class="200" stroke-width="0.5px" stroke="#999"></line><g id="root-1"><rect x="218.5" y="0" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="293.5" y="32.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif;"><tspan x="293.5" dy="0">Verifier</tspan></text></g></g><defs><marker id="arrowhead" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs><defs><marker id="crosshead" markerWidth="15" markerHeight="8" orient="auto" refX="4" refY="5"><path fill="none" stroke="#000000" stroke-width="1pt" d="M 1,2 L 6,7 M 6,2 L 1,7" style="stroke-dasharray: 0, 0;"></path></marker></defs><defs><marker id="filled-head" refX="18" refY="7" markerWidth="20" markerHeight="28" orient="auto"><path d="M 18,7 L9,13 L14,7 L9,1 Z"></path></marker></defs><defs><marker id="sequencenumber" refX="15" refY="15" markerWidth="60" markerHeight="40" orient="auto"><circle cx="15" cy="15" r="6"></circle></marker></defs><g><rect x="50" y="75" fill="#EDF2AE" stroke="#666" width="268.5" height="58" rx="0" ry="0" class="note"></rect><text x="184" y="80" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">Round 1 — commit wires</tspan></text><text x="184" y="99" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">a,b,c with blinding b1..b6</tspan></text></g><g><rect x="50" y="247" fill="#EDF2AE" stroke="#666" width="268.5" height="39" rx="0" ry="0" class="note"></rect><text x="184" y="252" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">Round 2 — construct z with (b7,b8,b9)·Z_H</tspan></text></g><g><rect x="50" y="400" fill="#EDF2AE" stroke="#666" width="268.5" height="58" rx="0" ry="0" class="note"></rect><text x="184" y="405" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">Round 3 — build t, split t_lo/mid/hi</tspan></text><text x="184" y="424" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">boundary blinding b10,b11</tspan></text></g><g><rect x="50" y="572" fill="#EDF2AE" stroke="#666" width="268.5" height="58" rx="0" ry="0" class="note"></rect><text x="184" y="577" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">Round 4 — evaluate at ζ, ζω</tspan></text><text x="184" y="596" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">return wire/permutation/z values (no t)</tspan></text></g><g><rect x="50" y="744" fill="#EDF2AE" stroke="#666" width="268.5" height="39" rx="0" ry="0" class="note"></rect><text x="184" y="749" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="noteText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;"><tspan x="184">Round 5 — linearize r(X), open commitments</tspan></text></g><text x="184" y="148" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">[a],[b],[c]</text><line x1="75" y1="185" x2="293.5" y2="185" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="200" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">挑戰 β,γ (Transcript)</text><line x1="293.5" y1="237" x2="75" y2="237" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="301" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">[z]</text><line x1="75" y1="338" x2="293.5" y2="338" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="353" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">挑戰 α (Transcript)</text><line x1="293.5" y1="390" x2="75" y2="390" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="473" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">[t_lo],[t_mid],[t_hi]</text><line x1="75" y1="510" x2="293.5" y2="510" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="525" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">挑戰 ζ (Transcript)</text><line x1="293.5" y1="562" x2="75" y2="562" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="645" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">ā,b̄,c̄, S̄σ1, S̄σ2, z̄, z̄ω</text><line x1="75" y1="682" x2="293.5" y2="682" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="697" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">挑戰 v (Transcript)</text><line x1="293.5" y1="734" x2="75" y2="734" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><text x="184" y="798" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" class="messageText" dy="1em" style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; font-size: 16px; font-weight: 400;">W_ζ, W_ζω</text><line x1="75" y1="835" x2="293.5" y2="835" class="messageLine0" stroke-width="2" stroke="none" marker-end="url(#arrowhead)" style="fill: none;"></line><g><rect x="0" y="855" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="75" y="887.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif;"><tspan x="75" dy="0">Prover</tspan></text></g><g><rect x="218.5" y="855" fill="#eaeaea" stroke="#666" width="150" height="65" rx="3" ry="3" class="actor"></rect><text x="293.5" y="887.5" dominant-baseline="central" alignment-baseline="central" class="actor" style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif;"><tspan x="293.5" dy="0">Verifier</tspan></text></g></svg></div>
-    </div>
-</section>
+<!-- 8.7 補充：Batching 優化技術 -->
+<h4>8.7.1 Batching 的設計動機</h4>
 
-<section id="verification">
-    <!-- Round 4-5 補強內容 -->
-<h4>8.6.1 Batching 的設計動機</h4>
 <p>
-    在 Round 4 和 Round 5，PLONK 使用了兩層 <strong>batching</strong> 技術來優化驗證效率：
+    PLONK 在 Round 4 和 Round 5 使用了<strong>兩層 Batching 技術</strong>，將驗證成本從多個 pairing 降至僅需 1 個 pairing。
+    這是實現 succinct verification 的關鍵優化。
 </p>
 
-<h5>第一層 Batching（Round 4）：合併「同一點的多個多項式」</h5>
-<p>
-    Verifier 發送挑戰 $v$，Prover 和 Verifier 計算：
-    $$
-    F(X) := a(X) + v b(X) + v^2 c(X) + v^3 S_{\sigma_1}(X) + v^4 S_{\sigma_2}(X) + v^5 z(X)
-    $$
-</p>
-<p>
-    以及對應的評估值線性組合：
-    $$
-    E := \bar{a} + v \bar{b} + v^2 \bar{c} + v^3 \overline{S_{\sigma_1}} + v^4 \overline{S_{\sigma_2}} + v^5 \bar{z}
-    $$
-</p>
-<p><strong>目的：</strong></p>
+<h5>第一層 Batching（Round 4）：合併同一點的多個多項式</h5>
+
+<div class="technique-box">
+    <p><strong>問題：</strong>需要證明 6 個多項式在點 $\zeta$ 的評估值正確</p>
+    <p><strong>解決方案：</strong>Verifier 發送隨機挑戰 $v$，構造線性組合</p>
+</div>
+
+<p><strong>Prover 和 Verifier 計算：</strong></p>
+$$
+F(X) = a(X) + v \cdot b(X) + v^2 \cdot c(X) + v^3 \cdot S_{\sigma_1}(X) + v^4 \cdot S_{\sigma_2}(X) + v^5 \cdot z(X)
+$$
+
+<p><strong>對應的評估值線性組合：</strong></p>
+$$
+E = \bar{a} + v \cdot \bar{b} + v^2 \cdot \bar{c} + v^3 \cdot \bar{S}_{\sigma_1} + v^4 \cdot \bar{S}_{\sigma_2} + v^5 \cdot \bar{z}
+$$
+
+<p><strong>效果：</strong></p>
 <ul>
-    <li>原本需要證明 6 個多項式在點 $\zeta$ 的評估值正確，即 6 個 KZG opening</li>
-    <li>透過隨機線性組合，只需證明 $F(\zeta) = E$，即 1 個 KZG opening</li>
+    <li>原本需要 6 個 KZG opening proof</li>
+    <li>現在只需證明 $F(\zeta) = E$，即 <strong>1 個 KZG opening</strong></li>
     <li>Soundness 由 Schwartz-Zippel Lemma 保證：若任一多項式評估錯誤，$F(\zeta) = E$ 以高機率不成立</li>
 </ul>
 
-<h5>第二層 Batching（Round 5）：合併「兩個評估點」</h5>
-<p>
-    PLONK 需要在兩個點檢查多項式評估：$\zeta$ 和 $\zeta\omega$（後者用於檢查 $z(\omega X)$）。
-    Verifier 發送挑戰 $u$，將兩個 opening 合併：
-</p>
-<p>
-    定義 batched polynomial：
-    $$
-    W_{\text{batched}}(X) := W_\zeta(X) + u \cdot W_{\zeta\omega}(X)
-    $$
-</p>
-<p>
-    最終驗證時，只需檢查<strong>一個 pairing equation</strong>（見第 9 章）：
-    $$
-    e([W_{\text{batched}}], [X]_2) \stackrel{?}{=} e([W_{\text{batched}} \cdot (\zeta + u \zeta\omega) - F - u z] + \zeta [t], [1]_2)
-    $$
-</p>
+<h5>第二層 Batching（Round 5）：合併兩個評估點</h5>
 
-<p><strong>總結：兩層 Batching 的威力</strong></p>
-<div class="highlight-box">
-    <ul>
-        <li><strong>無 Batching</strong>：需要 $6 + 1 = 7$ 個 pairing（6 個多項式在 $\zeta$，1 個在 $\zeta\omega$）</li>
-        <li><strong>Round 4 Batching</strong>：減少到 $1 + 1 = 2$ 個 pairing</li>
-        <li><strong>Round 5 Batching</strong>：最終只需 <strong>1 個 pairing</strong></li>
-    </ul>
-    <p>
-        這使得 PLONK 的驗證成本極低（$O(1)$ group operations + 1 pairing），
-        與電路大小 $n$ 無關，實現了真正的 <strong>succinct verification</strong>。
-    </p>
-    <p>
-        連結到<strong>第 4 章 KZG batched opening</strong>：這兩層 batching 正是 KZG commitment scheme
-        的「線性同態性」（homomorphic property）的直接應用。
+<div class="technique-box">
+    <p><strong>問題：</strong>PLONK 需要在兩個點檢查多項式評估：$\zeta$ 和 $\zeta\omega$</p>
+    <p><strong>解決方案：</strong>Verifier 發送隨機挑戰 $u$，合併兩個 opening proof</p>
+</div>
+
+<p><strong>定義 batched opening polynomial：</strong></p>
+$$
+W_{\text{batched}}(X) = W_\zeta(X) + u \cdot W_{\zeta\omega}(X)
+$$
+
+<p>最終只需檢查<strong>一個 pairing equation</strong>（詳見第 9 章驗證流程）。</p>
+
+<div class="summary-box">
+    <p><strong>兩層 Batching 的效果總結：</strong></p>
+    <table style="width: 100%; margin-top: 10px;">
+        <tr>
+            <td><strong>無 Batching</strong></td>
+            <td>$6 + 1 = 7$ 個 pairing</td>
+        </tr>
+        <tr>
+            <td><strong>第一層 Batching (Round 4)</strong></td>
+            <td>$1 + 1 = 2$ 個 pairing</td>
+        </tr>
+        <tr>
+            <td><strong>第二層 Batching (Round 5)</strong></td>
+            <td><strong style="color: #2e7d32;">僅需 1 個 pairing</strong></td>
+        </tr>
+    </table>
+
+    <p style="margin-top: 15px;">
+        這使得 PLONK 的驗證成本為 <strong>$O(1)$ group operations + 1 pairing</strong>，
+        與電路大小 $n$ 無關，實現了真正的 succinct verification。
     </p>
 </div>
 
-<!-- 8.8: Prover 複雜度概要 -->
-<h3>8.8 Prover 複雜度概要</h3>
+<p class="insight">
+    <strong>連結到第 4 章：</strong>這兩層 batching 正是 KZG commitment scheme 的「線性同態性」(homomorphic property) 的直接應用。
+</p>
+
+<!-- 8.8: Prover 複雜度分析 -->
+<h3>8.8 Prover 複雜度分析</h3>
+
 <p>
-    本節總結 PLONK Prover 的主要計算成本，對應原論文 Section 8 的複雜度分析。
-    以下分析基於 <strong>fast prover</strong> 設定，假設使用 FFT 和 MSM 優化。
+    本節總結 PLONK Prover 的計算成本，對應論文 Section 8 的複雜度分析。
+    以下分析基於 <strong>fast prover</strong> 設定，使用 FFT 和 MSM (Multi-Scalar Multiplication) 優化。
 </p>
 
 <h4>8.8.1 FFT 操作次數</h4>
-<p>PLONK Prover 的主要多項式運算都在乘法子群 $H$ 上進行，可利用 FFT 加速：</p>
+
+<p>PLONK Prover 的多項式運算主要在乘法子群 $H$ 上進行，可用 FFT 加速：</p>
 
 <table class="complexity-table">
     <thead>
         <tr>
+            <th>Round</th>
             <th>操作</th>
             <th>FFT 次數</th>
             <th>說明</th>
@@ -3906,41 +3975,47 @@ $$
     </thead>
     <tbody>
         <tr>
-            <td>Witness → Wire polynomials</td>
-            <td>3 次</td>
-            <td>將 $\mathbf{a}, \mathbf{b}, \mathbf{c}$ 插值為 $a(X), b(X), c(X)$（Lagrange → coefficient）</td>
+            <td>Round 1</td>
+            <td>Wire polynomials</td>
+            <td>3</td>
+            <td>將 witness $\mathbf{a}, \mathbf{b}, \mathbf{c}$ 插值為多項式（Lagrange → coefficient）</td>
         </tr>
         <tr>
-            <td>構造 $z(X)$</td>
-            <td>$O(\log n)$ 次</td>
-            <td>計算 Grand Product 的遞迴關係（需多次 evaluation/interpolation）</td>
+            <td>Round 2</td>
+            <td>Permutation accumulator $z(X)$</td>
+            <td>$O(\log n)$</td>
+            <td>計算 grand product 遞迴關係</td>
         </tr>
         <tr>
-            <td>構造 $t(X)$</td>
-            <td>$O(\log n)$ 次</td>
-            <td>計算 Gate + Perm + Boundary 的和，除以 $Z_H(X)$</td>
+            <td>Round 3</td>
+            <td>Quotient polynomial $t(X)$</td>
+            <td>$O(\log n)$</td>
+            <td>計算約束總和並除以 $Z_H(X)$</td>
         </tr>
         <tr>
+            <td>Round 5</td>
             <td>Opening polynomials</td>
-            <td>2 次</td>
-            <td>計算 $W_\zeta(X), W_{\zeta\omega}(X)$</td>
+            <td>2</td>
+            <td>計算 $W_\zeta(X)$ 和 $W_{\zeta\omega}(X)$</td>
         </tr>
     </tbody>
 </table>
 
-<p><strong>總 FFT 複雜度：</strong> $O(\log n)$ 次 FFT，每次 FFT 的成本為 $O(n \log n)$ field operations。</p>
+<p><strong>總 FFT 複雜度：</strong>$O(\log n)$ 次 FFT，每次成本 $O(n \log n)$ field operations。</p>
 
-<h4>8.8.2 Elliptic Curve 群運算（MSM）</h4>
+<h4>8.8.2 多標量乘法（MSM）</h4>
+
 <p>
-    KZG commitment 需要進行 <strong>Multi-Scalar Multiplication (MSM)</strong>，
-    即計算 $\sum_{i=0}^{d} c_i [s^i]_1$，其中 $c_i$ 是多項式係數。
+    KZG commitment 需要計算 <strong>Multi-Scalar Multiplication (MSM)</strong>：
+    $$\text{Commit}(f) = \sum_{i=0}^{d} c_i \cdot [s^i]_1$$
+    其中 $c_i$ 是多項式係數，$[s^i]_1$ 來自 SRS。
 </p>
 
 <table class="complexity-table">
     <thead>
         <tr>
             <th>Commitment</th>
-            <th>Degree</th>
+            <th>多項式度數</th>
             <th>MSM 大小</th>
         </tr>
     </thead>
@@ -3953,7 +4028,7 @@ $$
         <tr>
             <td>$[z]$</td>
             <td>$< n+3$</td>
-            <td>$n+3$</td>
+            <td>$n+3 \approx n$</td>
         </tr>
         <tr>
             <td>$[t_{\text{lo}}], [t_{\text{mid}}], [t_{\text{hi}}]$</td>
@@ -3962,132 +4037,170 @@ $$
         </tr>
         <tr>
             <td>$[W_\zeta], [W_{\zeta\omega}]$</td>
-            <td>$< 3n+6$</td>
-            <td>$2(3n+6) \approx 6n$</td>
+            <td>$< n+6$</td>
+            <td>$2(n+6) \approx 2n$</td>
         </tr>
     </tbody>
 </table>
 
-<p><strong>總 MSM 複雜度：</strong> 約 $7n + 3n + 6n = 16n$ 個 $\mathbb{G}_1$ scalar multiplications。</p>
-<p>使用 Pippenger 演算法，MSM 的成本為 $O(n / \log n)$ group operations。</p>
+<p>
+    <strong>總 MSM 複雜度：</strong>約 $3n + n + 3n + 2n = 9n$ 個 $\mathbb{G}_1$ scalar multiplications。
+</p>
+<p>
+    使用 <strong>Pippenger 演算法</strong>，MSM 的成本為 $O(n / \log n)$ group operations。
+</p>
 
 <h4>8.8.3 總體複雜度</h4>
+
 <div class="summary-box">
     <p><strong>對一個有 $n$ 個 gate 的電路，PLONK Prover 的複雜度為：</strong></p>
     <ul>
-        <li><strong>Field operations：</strong> $O(n \log n)$（主要來自 FFT）</li>
-        <li><strong>Group operations：</strong> $O(n / \log n)$（使用 Pippenger MSM）</li>
-        <li><strong>實際主導項：</strong>通常是 MSM，因為橢圓曲線運算比 field multiplication 慢約 100-1000 倍</li>
+        <li><strong>Field operations：</strong>$O(n \log n)$ （主要來自 FFT）</li>
+        <li><strong>Group operations：</strong>$O(n / \log n)$ （使用 Pippenger MSM）</li>
+        <li><strong>實際主導項：</strong>通常是 MSM，因為橢圓曲線運算比有限域乘法慢 100-1000 倍</li>
     </ul>
 </div>
 
-<h4>8.8.4 與其他系統的比較</h4>
-<table class="complexity-table">
+<h4>8.8.4 與其他 ZK 系統的比較</h4>
+
+<table class="comparison-table">
     <thead>
         <tr>
             <th>系統</th>
             <th>Prover 複雜度</th>
             <th>Proof 大小</th>
             <th>Verifier 複雜度</th>
+            <th>Setup</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
+        <tr class="highlight-row">
             <td><strong>PLONK</strong></td>
             <td>$O(n \log n)$</td>
-            <td>$O(1)$ (固定 9 個 $\mathbb{G}_1$ 元素)</td>
+            <td>9 個 $\mathbb{G}_1$ 元素</td>
             <td>$O(1)$ + 1 pairing</td>
+            <td>Universal & Updatable</td>
         </tr>
         <tr>
             <td>Groth16</td>
             <td>$O(n \log n)$</td>
-            <td>$O(1)$ (3 個 $\mathbb{G}_1/\mathbb{G}_2$ 元素)</td>
+            <td>3 個群元素</td>
             <td>$O(1)$ + 3 pairings</td>
+            <td>Per-circuit</td>
         </tr>
         <tr>
             <td>Bulletproofs</td>
             <td>$O(n \log n)$</td>
             <td>$O(\log n)$</td>
             <td>$O(n)$</td>
+            <td>Transparent</td>
         </tr>
         <tr>
             <td>STARKs</td>
             <td>$O(n \log^2 n)$</td>
             <td>$O(\log^2 n)$</td>
             <td>$O(\log^2 n)$</td>
+            <td>Transparent</td>
         </tr>
     </tbody>
 </table>
 
-<p class="note">
-    <strong>實務考量：</strong>
-    PLONK 的優勢在於<strong>通用性（universal setup）</strong>和<strong>可更新 SRS</strong>，
-    且 Prover 複雜度與 Groth16 相當，但 proof 稍大（9 個元素 vs 3 個元素）。
-    在需要頻繁更新電路的場景（如通用智能合約平台），PLONK 的靈活性優於 Groth16 的 per-circuit trusted setup。
-</p>
+<div class="insight-box">
+    <p><strong>PLONK 的核心優勢：</strong></p>
+    <ul>
+        <li><strong>Universal Setup：</strong>同一份 SRS 可用於所有電路（$n \leq d-6$）</li>
+        <li><strong>Updatable SRS：</strong>可追加新的隨機性，無需完全重新 setup</li>
+        <li><strong>Succinct Verification：</strong>僅需 1 個 pairing，與電路大小無關</li>
+        <li><strong>靈活性：</strong>適合需要頻繁更新電路的場景（如通用智能合約平台）</li>
+    </ul>
+
+    <p><strong>權衡：</strong>Proof 大小略大於 Groth16（9 vs 3 個群元素），但通用性帶來的靈活性在許多應用中更有價值。</p>
+</div>
 
 <style>
-    .resource-table-container {
-        overflow-x: auto;
-        margin: 20px 0;
-    }
-    .resource-table {
-        width: 100%;
-        border-collapse: collapse;
+    .technique-box {
+        background-color: #e3f2fd;
+        border-left: 4px solid #1976d2;
+        padding: 12px 15px;
         margin: 15px 0;
-        font-size: 0.95em;
     }
-    .resource-table th, .resource-table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-    }
-    .resource-table th {
-        background-color: #3498db;
-        color: white;
-        font-weight: 600;
-    }
-    .resource-table tr:nth-child(even) {
-        background-color: #f9f9f9;
+    .technique-box p {
+        margin: 8px 0;
     }
     .complexity-table {
         width: 100%;
         border-collapse: collapse;
-        margin: 15px 0;
+        margin: 20px 0;
     }
-    .complexity-table th, .complexity-table td {
+    .complexity-table th,
+    .complexity-table td {
         border: 1px solid #ddd;
         padding: 12px;
         text-align: left;
     }
     .complexity-table th {
         background-color: #2c3e50;
-        color: black;
+        color: white;
+        font-weight: 600;
     }
     .complexity-table tr:nth-child(even) {
-        background-color: #ecf0f1;
+        background-color: #f9f9f9;
+    }
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    .comparison-table th,
+    .comparison-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+    .comparison-table th {
+        background-color: #34495e;
+        color: white;
+        font-weight: 600;
+    }
+    .comparison-table .highlight-row {
+        background-color: #e8f5e9;
+        font-weight: 500;
     }
     .insight-box {
         background-color: #fff3e0;
         border-left: 4px solid #ff9800;
         padding: 15px;
-        margin: 15px 0;
-    }
-    .main-formula-box {
-        background-color: #e3f2fd;
-        border: 2px solid #2196F3;
-        padding: 20px;
         margin: 20px 0;
-        border-radius: 5px;
+    }
+    .insight {
+        background-color: #f3e5f5;
+        border-left: 4px solid #9c27b0;
+        padding: 12px 15px;
+        margin: 15px 0;
+        font-style: italic;
     }
     .summary-box {
         background-color: #e8f5e9;
         border-left: 4px solid #4caf50;
         padding: 15px;
-        margin: 15px 0;
-        font-weight: 500;
+        margin: 20px 0;
+    }
+    .summary-box ul {
+        margin: 10px 0;
+    }
+    .summary-box table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .summary-box td {
+        padding: 8px;
+        border-bottom: 1px solid #c8e6c9;
     }
 </style>
+
+</section>
+
+    <section id="verification">
 
     <h2>9. Verifier 流程 (Verification)</h2>
 
@@ -4132,10 +4245,11 @@ $$
     $$PI(\zeta) = \sum_{i=1}^{\ell} x_i \cdot L_i(\zeta)$$
     <p>由於 $\ell \ll n$，可以用 $O(\ell)$ 的拉格朗日插值直接計算，無需 FFT。</p>
 
-    <p><strong>Step 3: 計算關鍵多項式在 $\zeta$ 的評估</strong></p>
+    <p><strong>Step 3: 計算關鍵多項式在 $\zeta$ 的評估 (常數時間優化)</strong></p>
+    <p>Verifier 不需展開多項式，直接利用數學性質計算：</p>
     <ul>
-        <li>零多項式：$Z_H(\zeta) = \zeta^n - 1$</li>
-        <li>第一個 Lagrange 基底：$L_1(\zeta) = \frac{\omega^{-1} \cdot Z_H(\zeta)}{n(\zeta - \omega)}$</li>
+        <li>消失多項式：$Z_H(\zeta) = \zeta^n - 1$</li>
+        <li>Lagrange 基底 $L_1$：$L_1(\zeta) = \frac{\omega(\zeta^n - 1)}{n(\zeta - \omega)}$</li>
     </ul>
 
     <p><strong>Step 4: 計算線性化多項式常數項 $r_0$</strong></p>
@@ -4149,43 +4263,52 @@ $$
     <p class="note">
         <strong>說明：</strong>
         $r_0$ 僅包含線性化後「不含任何多項式變數」的常數部分。
-        Permutation argument 的左式（包含 $z(X)$ 的項）保留在 $[D]_1$ 中，不進入 $r_0$。
-        此處只包含 Permutation 右式的常數係數部分（與 $\bar{z}_\omega$ 相關）。
-        後續 pairing check 會驗證所有評估值的正確性。
+        <br>• Permutation argument 的左式（包含 $z(X)$ 的項）保留在 ${[D]}_1$ 中，不進入 $r_0$。
+        <br>• Permutation 右式在 $r(X)$ 中保留 $S_{\sigma_3}(X)$ 為多項式，因此其展開式為：
+        $$(\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)[(\bar{c} + \gamma) + \beta S_{\sigma_3}(X)]\bar{z}_\omega$$
+        <br>• 僅取常數項進入 $r_0$，多項式項 $\beta S_{\sigma_3}(X)$ 保留在 ${[D]}_1$ 中。
+        <br>• 這就是為什麼第三個括號是 $(\bar{c} + \gamma)$ 而非 $(\bar{c} + \beta \bar{S}_{\sigma_3} + \gamma)$。
     </p>
 
-    <p><strong>Step 5: 建構 Batched Polynomial Commitment $[F]_1$</strong></p>
-    <p>使用挑戰 $v$ 將所有需要在 $\zeta$ 開放的多項式線性組合：</p>
-    $$
+        <p><strong>Step 5: 建構線性化多項式承諾 ${[D]}_1$</strong></p>
+    <p>
+        Verifier 利用手上的 VK 承諾與收到的評估值，透過 Multi-Scalar Multiplication (MSM) 重組出 $r(X)$ 的多項式部分。
+        <br>注意：這裡必須包含商多項式 $t(X)$ 的抵銷項，以確保 $r(\zeta)=0$ 的約束力。
+    </p>
+    <div class="math">\[
     \begin{aligned}
-    [F]_1 &= [t_{lo}]_1 + \zeta^{n+2}[t_{mid}]_1 + \zeta^{2(n+2)}[t_{hi}]_1 \\
-    &\quad + v[r']_1 \\
-    &\quad + v^2[a]_1 + v^3[b]_1 + v^4[c]_1 + v^5[S_{\sigma_1}]_1 + v^6[S_{\sigma_2}]_1
+    {[D]}_1 &= \bar{a}\bar{b}[q_M]_1 + \bar{a}[q_L]_1 + \bar{b}[q_R]_1 + \bar{c}[q_O]_1 + [q_C]_1 \\
+    &\quad + \left( \alpha (\bar{a} + \beta\zeta + \gamma)(\bar{b} + \beta k_1\zeta + \gamma)(\bar{c} + \beta k_2\zeta + \gamma) \right) \cdot [z]_1 \\
+    &\quad - \left( \alpha \beta \bar{z}_\omega (\bar{a} + \beta \bar{S}_{\sigma 1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma 2} + \gamma) \right) \cdot [S_{\sigma 3}]_1 \\
+    &\quad - Z_H(\zeta) \cdot \left( [t_{lo}]_1 + \zeta^n [t_{mid}]_1 + \zeta^{2n} [t_{hi}]_1 \right)
     \end{aligned}
-    $$
-    <p>其中 $[r']_1$ 是線性化多項式扣除常數項的部分（含 $z$ 相關項），可以從 VK 和 proof 承諾線性組合得出。</p>
+    \]</div>
 
-    <p><strong>Step 6: 建構 Batched Evaluation $E$</strong></p>
-    <p>對應於 $[F]_1$ 的期望評估值：</p>
-    $$
+    <p><strong>Step 6: 建構 Batched Commitment ${[F]}_1$ 與 Evaluation $E$</strong></p>
+    <p>
+        使用挑戰 $v$ 將「線性化檢查 (${[D]}_1$)」與「多項式值檢查 ($[a]_1, [b]_1 \dots$)」合併：
+    </p>
+    <div class="math">\[
     \begin{aligned}
-    E &= t(\zeta) + v \cdot r_0 \\
-    &\quad + v^2 \bar{a} + v^3 \bar{b} + v^4 \bar{c} + v^5 \bar{S}_{\sigma_1} + v^6 \bar{S}_{\sigma_2}
+    {[F]}_1 &= {[D]}_1 + v[a]_1 + v^2[b]_1 + v^3[c]_1 + v^4[S_{\sigma_1}]_1 + v^5[S_{\sigma_2}]_1 \\
+    E &= -r_0 + v\bar{a} + v^2\bar{b} + v^3\bar{c} + v^4\bar{S}_{\sigma_1} + v^5\bar{S}_{\sigma_2}
     \end{aligned}
-    $$
-    <p>其中 $t(\zeta) = t_{lo}(\zeta) + \zeta^{n+2} t_{mid}(\zeta) + \zeta^{2(n+2)} t_{hi}(\zeta)$ 從 Proof 評估值重建。</p>
+    \]</div>
+    <p class="note">
+        <strong>關鍵邏輯：</strong> 我們預期 $r(\zeta) = 0$。因為 $r(X)$ 被拆解為「承諾部分 ${[D]}_1$」與「常數部分 $r_0$」，
+        所以若 Prover 誠實，應滿足 $D(\zeta) + r_0 = 0 \Rightarrow D(\zeta) = -r_0$。
+        這就是為什麼 $E$ 的第一項是 $-r_0$。
+    </p>
 
-    <p><strong>Step 7: 建構第二個開放點 $\zeta\omega$ 的 Commitment</strong></p>
-    <p>唯一需要在 $\zeta\omega$ 開放的多項式是 $z(X)$：</p>
-    $$[G]_1 = [z]_1, \quad \text{期望評估值} = \bar{z}_\omega$$
+    <p><strong>Step 7: 建構 $\zeta\omega$ 點的承諾與評估</strong></p>
+    <p>唯一需要在 $\zeta\omega$ 檢查的是 $z(X)$：</p>
+    <div class="math">\[{[G]}_1 = [z]_1, \quad \text{Eval} = \bar{z}_\omega\]</div>
 
     <p><strong>Step 8: 最終 Batched Pairing Check</strong></p>
-    <p>檢查以下 pairing 等式：</p>
-    $$
-    e\big([W_\zeta]_1 + u \cdot [W_{\zeta\omega}]_1, \; [x]_2\big)
-    \stackrel{?}{=}
-    e\big(\zeta [W_\zeta]_1 + u \zeta\omega [W_{\zeta\omega}]_1 + [F]_1 - E \cdot [1]_1 + u([G]_1 - \bar{z}_\omega [1]_1), \; [1]_2\big)
-    $$
+    <p>驗證所有多項式是否通過 KZG 開放檢查：</p>
+    <div class="math">\[
+    e([W_\zeta]_1 + u \cdot [W_{\zeta\omega}]_1, [x]_2) \stackrel{?}{=} e(\zeta [W_\zeta]_1 + u \zeta\omega [W_{\zeta\omega}]_1 + {[F]}_1 - E [1]_1 + u({[G]}_1 - \bar{z}_\omega [1]_1), [1]_2)
+    \]</div>
     <p><strong>輸出：</strong>若 pairing 檢查通過，則 <strong>接受</strong> proof；否則 <strong>拒絕</strong>。</p>
 </div>
 
@@ -4303,7 +4426,7 @@ $$
             </tr>
             <tr>
                 <td><strong>$\mathbb{G}_1$ 群運算</strong><br>（MSM / 線性組合）</td>
-                <td>約 $\ell + 15$ 次標量乘法<br>（構造 $[F]_1$ 時需要對 VK 承諾線性組合）</td>
+                <td>約 $\ell + 15$ 次標量乘法<br>（構造 ${[F]}_1$ 時需要對 VK 承諾線性組合）</td>
                 <td>中等（每次約 0.1-1ms，取決於曲線）</td>
             </tr>
             <tr>
