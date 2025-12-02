@@ -1,0 +1,27 @@
+# Rust
+/backend/target/
+**/*.rs.bk
+
+# Claude Code
+.claude/
+
+# Note: web/data/*.json 是 demo 需要的數據，已提交
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+temp/
+tmp/

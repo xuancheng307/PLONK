@@ -1,0 +1,140 @@
+{
+  "steps": [
+    {
+      "step_num": 1,
+      "title": "Step 1: 重建 Fiat-Shamir Transcript",
+      "description": "從證明中的承諾值推導隨機挑戰",
+      "equations": [
+        "\\beta, \\gamma \\leftarrow H([a]_1, [b]_1, [c]_1)",
+        "\\alpha \\leftarrow H(\\beta, \\gamma, [z]_1)",
+        "\\zeta \\leftarrow H(\\alpha, [t_{lo}]_1, [t_{mid}]_1, [t_{hi}]_1)",
+        "v, u \\leftarrow H(\\zeta, \\bar{a}, \\bar{b}, \\bar{c}, \\ldots)"
+      ],
+      "intermediate_values": [
+        [
+          "β",
+          "挑戰值 (用於置換)"
+        ],
+        [
+          "γ",
+          "挑戰值 (用於置換)"
+        ],
+        [
+          "α",
+          "挑戰值 (組合約束)"
+        ],
+        [
+          "ζ",
+          "評估點"
+        ],
+        [
+          "v",
+          "批量化隨機數"
+        ],
+        [
+          "u",
+          "批量化隨機數"
+        ]
+      ]
+    },
+    {
+      "step_num": 2,
+      "title": "Step 2: 評估 PI(ζ)",
+      "description": "從公開輸入重建 PI(X) 並在 ζ 評估",
+      "equations": [
+        "PI(X) = \\sum_{i=1}^{\\ell} x_i \\cdot L_i(X)",
+        "PI(\\zeta) = \\sum_{i=1}^{\\ell} x_i \\cdot L_i(\\zeta)"
+      ],
+      "intermediate_values": [
+        [
+          "x₁",
+          "3 (公開輸入 x)"
+        ],
+        [
+          "x₂",
+          "12 (公開輸入 y)"
+        ],
+        [
+          "PI(ζ)",
+          "計算出的值"
+        ]
+      ]
+    },
+    {
+      "step_num": 3,
+      "title": "Step 3: 計算 Z_H(ζ)",
+      "description": "計算消失多項式在 ζ 的值",
+      "equations": [
+        "Z_H(X) = X^n - 1",
+        "Z_H(\\zeta) = \\zeta^n - 1"
+      ],
+      "intermediate_values": [
+        [
+          "n",
+          "domain 大小"
+        ],
+        [
+          "Z_H(ζ)",
+          "計算出的值"
+        ]
+      ]
+    },
+    {
+      "step_num": 4,
+      "title": "Step 4: 計算 L₁(ζ)",
+      "description": "計算第一個 Lagrange 基在 ζ 的值",
+      "equations": [
+        "L_1(X) = \\frac{\\omega (X^n - 1)}{n(X - \\omega)}",
+        "L_1(\\zeta) = \\frac{\\omega (\\zeta^n - 1)}{n(\\zeta - \\omega)}"
+      ],
+      "intermediate_values": [
+        [
+          "ω",
+          "n次單位根生成元"
+        ],
+        [
+          "L₁(ζ)",
+          "計算出的值"
+        ]
+      ]
+    },
+    {
+      "step_num": 5,
+      "title": "Step 5: 計算線性化多項式",
+      "description": "將 gate 約束和置換約束組合成單一多項式",
+      "equations": [
+        "r_0 = PI(\\zeta) - L_1(\\zeta)\\alpha^2 - (\\bar{a} + \\beta\\bar{s}_{\\sigma_1} + \\gamma)(\\bar{b} + \\beta\\bar{s}_{\\sigma_2} + \\gamma)(\\bar{c} + \\gamma)\\bar{z}_\\omega \\alpha"
+      ],
+      "intermediate_values": [
+        [
+          "r₀",
+          "常數項"
+        ]
+      ]
+    },
+    {
+      "step_num": 6,
+      "title": "Step 6: 批量多項式開啟驗證",
+      "description": "使用 pairing 批量驗證所有評估",
+      "equations": [
+        "[F]_1 = [D]_1 + v[a]_1 + v^2[b]_1 + v^3[c]_1 + v^4[s_{\\sigma_1}]_1 + v^5[s_{\\sigma_2}]_1",
+        "[E]_1 = (-r_0 + v\\bar{a} + v^2\\bar{b} + v^3\\bar{c} + v^4\\bar{s}_{\\sigma_1} + v^5\\bar{s}_{\\sigma_2} + u\\bar{z}_\\omega) \\cdot [1]_1"
+      ],
+      "intermediate_values": [
+        [
+          "[F]₁",
+          "批量承諾"
+        ],
+        [
+          "[E]₁",
+          "批量評估"
+        ]
+      ]
+    }
+  ],
+  "pairing_checks": [
+    "e([W_\\zeta]_1 + u[W_{\\zeta\\omega}]_1, [x]_2) \\stackrel{?}{=} e(\\zeta[W_\\zeta]_1 + u\\zeta\\omega[W_{\\zeta\\omega}]_1 + [F]_1 - [E]_1, [1]_2)"
+  ],
+  "verification_result": true,
+  "total_time_ms": 4
+}

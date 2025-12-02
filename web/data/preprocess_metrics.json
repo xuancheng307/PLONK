@@ -1,0 +1,14 @@
+{
+  "num_gates": 2,
+  "n_domain": 4,
+  "num_public": 2,
+  "preprocess_time_ms": 10,
+  "q_l_commit_hex": "0x...",
+  "q_r_commit_hex": "0x...",
+  "q_m_commit_hex": "0x...",
+  "q_o_commit_hex": "0x...",
+  "q_c_commit_hex": "0x...",
+  "s1_commit_hex": "0x...",
+  "s2_commit_hex": "0x...",
+  "s3_commit_hex": "0x..."
+}

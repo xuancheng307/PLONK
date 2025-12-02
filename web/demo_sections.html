@@ -1,0 +1,249 @@
+<!-- ============================================== -->
+<!-- PLONK DEMO 展示區塊 -->
+<!-- 請將此檔案的內容插入到 index.html 的適當位置 -->
+<!-- 建議插入在對應章節的末尾 -->
+<!-- ============================================== -->
+
+<!-- 在 </body> 之前加入 demo.js -->
+<script src="demo.js"></script>
+
+<!-- 在對應章節之後加入 CSS 樣式 -->
+<style>
+    /* Demo 區塊樣式 */
+    .demo-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .demo-box h4 {
+        color: white;
+        margin-top: 0;
+        font-size: 1.5rem;
+        border-bottom: 2px solid rgba(255,255,255,0.3);
+        padding-bottom: 0.5rem;
+    }
+
+    .demo-box h5 {
+        color: #f0f0f0;
+        margin-top: 1.5rem;
+    }
+
+    .demo-note {
+        background: rgba(255,255,255,0.1);
+        padding: 1rem;
+        border-left: 4px solid #ffd700;
+        border-radius: 4px;
+        margin-top: 1rem;
+    }
+
+    .error {
+        background: #ff6b6b;
+        color: white;
+        padding: 1rem;
+        border-radius: 4px;
+    }
+
+    /* 表格樣式 */
+    .metrics-table, .witness-table, .gate-table, .selector-table {
+        width: 100%;
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    .metrics-table th, .witness-table th, .gate-table th, .selector-table th {
+        background: #2c3e50;
+        color: white;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .metrics-table td, .witness-table td, .gate-table td, .selector-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .metrics-table tr:last-child td,
+    .witness-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Gate 卡片 */
+    .gate-card {
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+
+    .gate-card h5 {
+        color: #667eea;
+        margin-top: 0;
+    }
+
+    /* Round 卡片 */
+    .round-card {
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #667eea;
+    }
+
+    .round-card h5 {
+        color: #667eea;
+        margin-top: 0;
+    }
+
+    .metrics-row {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .metrics-row span {
+        background: #f0f0f0;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+    }
+
+    /* Step 卡片 */
+    .step-card {
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid #27ae60;
+    }
+
+    .step-card h5 {
+        color: #27ae60;
+        margin-top: 0;
+    }
+
+    .equations {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 0.5rem 0;
+    }
+
+    /* Summary 框 */
+    .summary-box {
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+
+    .summary-box.success {
+        border-left: 4px solid #27ae60;
+    }
+
+    .summary-box.failure {
+        border-left: 4px solid #e74c3c;
+    }
+
+    /* Pairing check */
+    .pairing-check {
+        background: rgba(255,255,255,0.1);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    .pairing-check h5 {
+        color: #ffd700;
+    }
+
+    /* Details/Summary */
+    details {
+        margin: 0.5rem 0;
+    }
+
+    summary {
+        cursor: pointer;
+        font-weight: bold;
+        padding: 0.5rem;
+        background: rgba(0,0,0,0.05);
+        border-radius: 4px;
+    }
+
+    summary:hover {
+        background: rgba(0,0,0,0.1);
+    }
+</style>
+
+<!-- ============================================== -->
+<!-- 第 6 章 DEMO：Universal Setup -->
+<!-- ============================================== -->
+<section id="ch6-demo">
+    <h3>🎯 Demo: Universal Setup</h3>
+    <div id="setup-demo">
+        <p>⏳ 載入中...</p>
+    </div>
+</section>
+
+<!-- ============================================== -->
+<!-- 第 7 章 DEMO：電路與 Constraint System -->
+<!-- ============================================== -->
+<section id="ch7-demo">
+    <h3>🎯 Demo: 電路 w² + x = y</h3>
+    <div id="circuit-demo">
+        <p>⏳ 載入中...</p>
+    </div>
+</section>
+
+<!-- ============================================== -->
+<!-- 第 8 章 DEMO：Prover 5 Rounds -->
+<!-- ============================================== -->
+<section id="ch8-demo">
+    <h3>🎯 Demo: Prover 證明生成</h3>
+    <div id="prover-demo">
+        <p>⏳ 載入中...</p>
+    </div>
+</section>
+
+<!-- ============================================== -->
+<!-- 第 9 章 DEMO：Verifier 驗證 -->
+<!-- ============================================== -->
+<section id="ch9-demo">
+    <h3>🎯 Demo: Verifier 驗證流程</h3>
+    <div id="verifier-demo">
+        <p>⏳ 載入中...</p>
+    </div>
+</section>
+
+<!-- ============================================== -->
+<!-- 使用說明 -->
+<!-- ============================================== -->
+<!--
+插入方式：
+
+1. 將上方的 <style> 區塊複製到 index.html 的 <head> 區域（或現有的 <style> 區塊中）
+
+2. 將 #ch6-demo 區塊插入到「第 6 章」末尾
+   將 #ch7-demo 區塊插入到「第 7 章」末尾
+   將 #ch8-demo 區塊插入到「第 8 章」末尾
+   將 #ch9-demo 區塊插入到「第 9 章」末尾
+
+3. 在 </body> 之前加入：
+   <script src="demo.js"></script>
+
+4. 執行 backend 程式生成 JSON 數據：
+   cd backend
+   cargo run --release
+
+5. 開啟 index.html 查看 demo 效果！
+-->

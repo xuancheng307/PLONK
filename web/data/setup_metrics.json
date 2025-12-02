@@ -1,0 +1,8 @@
+{
+  "n": 16,
+  "d": 16,
+  "num_g1": 17,
+  "num_g2": 2,
+  "approx_size_bytes": 1008,
+  "setup_time_ms": 8
+}

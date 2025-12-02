@@ -1,0 +1,127 @@
+{
+  "rounds": [
+    {
+      "round_num": 1,
+      "name": "Round 1: Wire Polynomials",
+      "description": "構造並承諾 wire 多項式 a(X), b(X), c(X)",
+      "commitments": [
+        "[a]₁",
+        "[b]₁",
+        "[c]₁"
+      ],
+      "challenges": [],
+      "evaluations": [],
+      "num_ffts": 3,
+      "num_msms": 3,
+      "elapsed_ms": 0
+    },
+    {
+      "round_num": 2,
+      "name": "Round 2: Permutation Argument",
+      "description": "計算累積多項式 z(X) 並承諾 [z]₁",
+      "commitments": [
+        "[z]₁"
+      ],
+      "challenges": [
+        [
+          "β",
+          "隨機挑戰值 β"
+        ],
+        [
+          "γ",
+          "隨機挑戰值 γ"
+        ]
+      ],
+      "evaluations": [],
+      "num_ffts": 2,
+      "num_msms": 1,
+      "elapsed_ms": 0
+    },
+    {
+      "round_num": 3,
+      "name": "Round 3: Quotient Polynomial",
+      "description": "計算商多項式 t(X) = t_lo + X^n·t_mid + X^(2n)·t_hi",
+      "commitments": [
+        "[t_lo]₁",
+        "[t_mid]₁",
+        "[t_hi]₁"
+      ],
+      "challenges": [
+        [
+          "α",
+          "隨機挑戰值 α (用於組合約束)"
+        ]
+      ],
+      "evaluations": [],
+      "num_ffts": 8,
+      "num_msms": 3,
+      "elapsed_ms": 0
+    },
+    {
+      "round_num": 4,
+      "name": "Round 4: Opening Evaluations",
+      "description": "在隨機點 ζ 評估多項式",
+      "commitments": [],
+      "challenges": [
+        [
+          "ζ",
+          "隨機評估點 ζ"
+        ]
+      ],
+      "evaluations": [
+        [
+          "a(ζ)",
+          "a 在 ζ 的值"
+        ],
+        [
+          "b(ζ)",
+          "b 在 ζ 的值"
+        ],
+        [
+          "c(ζ)",
+          "c 在 ζ 的值"
+        ],
+        [
+          "s_σ1(ζ)",
+          "permutation 在 ζ 的值"
+        ],
+        [
+          "s_σ2(ζ)",
+          "permutation 在 ζ 的值"
+        ],
+        [
+          "z(ωζ)",
+          "z 在 ωζ 的值"
+        ]
+      ],
+      "num_ffts": 0,
+      "num_msms": 0,
+      "elapsed_ms": 0
+    },
+    {
+      "round_num": 5,
+      "name": "Round 5: Opening Proofs",
+      "description": "計算批量開啟證明 W_ζ(X) 和 W_ζω(X)",
+      "commitments": [
+        "[W_ζ]₁",
+        "[W_ζω]₁"
+      ],
+      "challenges": [
+        [
+          "v",
+          "批量化隨機數 v"
+        ],
+        [
+          "u",
+          "批量化隨機數 u"
+        ]
+      ],
+      "evaluations": [],
+      "num_ffts": 5,
+      "num_msms": 2,
+      "elapsed_ms": 0
+    }
+  ],
+  "proof_bytes": 1656,
+  "total_time_ms": 8
+}

@@ -1,0 +1,37 @@
+{
+  "description": "證明存在秘密 w，使得 w² + x = y",
+  "witness": {
+    "w": "3",
+    "x": "3",
+    "y": "12",
+    "t": "9"
+  },
+  "gates": [
+    {
+      "gate_id": 0,
+      "gate_type": "multiplication",
+      "constraint": "w \\cdot w = t",
+      "a": "w = 3",
+      "b": "w = 3",
+      "c": "t = 9",
+      "q_l": "0",
+      "q_r": "0",
+      "q_o": "-1",
+      "q_m": "1",
+      "q_c": "0"
+    },
+    {
+      "gate_id": 1,
+      "gate_type": "addition",
+      "constraint": "t + x = y",
+      "a": "t = 9",
+      "b": "x = 3",
+      "c": "y = 12",
+      "q_l": "1",
+      "q_r": "1",
+      "q_o": "-1",
+      "q_m": "0",
+      "q_c": "0"
+    }
+  ]
+}
