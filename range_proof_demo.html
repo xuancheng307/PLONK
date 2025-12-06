@@ -1186,18 +1186,32 @@
                 </div>
 
                 <h3>3.2 分割商多項式</h3>
-                <p>由於 deg(t) ≈ 3n，超過 SRS 支援的最大 degree n，我們將其分割：</p>
+                <p>由於 deg(t) ≤ 3n+5（含 blinding），超過 SRS 支援的最大 degree n，我們將其分割成 3 片：</p>
                 <div class="formula">
-                    t(X) = t<sub>lo</sub>(X) + X<sup>n</sup>·t<sub>mid</sub>(X) + X<sup>2n</sup>·t<sub>hi</sub>(X) + X<sup>3n</sup>·t<sub>4</sub>(X)
+                    t(X) = t<sub>lo</sub>(X) + X<sup>n</sup>·t<sub>mid</sub>(X) + X<sup>2n</sup>·t<sub>hi</sub>(X)
                 </div>
                 <div class="info-box">
                     <strong>為什麼要分割？</strong>
                     <p style="margin-top: 8px;">
                         KZG 承諾需要 SRS 的 [τ<sup>i</sup>]<sub>1</sub>，但可信設置通常只提供到 τ<sup>n</sup>。
-                        將 t(X) 分割成 degree < n 的部分，每部分都可以獨立承諾。
+                        將 t(X) 分割成 degree ≤ n 的部分（t<sub>hi</sub> 可達 n+5），每部分都可以獨立承諾。
                     </p>
                     <p style="margin-top: 5px;">
-                        驗證時只需在 ζ 點重組：t(ζ) = t<sub>lo</sub>(ζ) + ζ<sup>n</sup>·t<sub>mid</sub>(ζ) + ...
+                        驗證時只需在 ζ 點重組：t(ζ) = t<sub>lo</sub>(ζ) + ζ<sup>n</sup>·t<sub>mid</sub>(ζ) + ζ<sup>2n</sup>·t<sub>hi</sub>(ζ)
+                    </p>
+                </div>
+                <div class="info-box warning">
+                    <strong>Quotient Blinding (b<sub>10</sub>, b<sub>11</sub>)：</strong>
+                    <p style="margin-top: 8px;">
+                        為了零知識性，我們在分割時添加 blinding 項，使三個承諾「看起來隨機」：
+                    </p>
+                    <div class="formula" style="font-size: 0.9em; margin: 10px 0;">
+                        t<sub>lo</sub> → t<sub>lo</sub> + b<sub>10</sub>·X<sup>n</sup><br>
+                        t<sub>mid</sub> → t<sub>mid</sub> - b<sub>10</sub> + b<sub>11</sub>·X<sup>n</sup><br>
+                        t<sub>hi</sub> → t<sub>hi</sub> - b<sub>11</sub>
+                    </div>
+                    <p>
+                        重組時 blinding 項會互相抵消：+b<sub>10</sub>·X<sup>n</sup> - b<sub>10</sub>·X<sup>n</sup> + b<sub>11</sub>·X<sup>2n</sup> - b<sub>11</sub>·X<sup>2n</sup> = 0
                     </p>
                 </div>
 
@@ -1213,10 +1227,6 @@
                     <div class="value-box commitment">
                         <div class="label">[t<sub>hi</sub>(X)]₁</div>
                         <div class="value" id="tHiComm">等待生成...</div>
-                    </div>
-                    <div class="value-box commitment">
-                        <div class="label">[t<sub>4</sub>(X)]₁</div>
-                        <div class="value" id="t4Comm">等待生成...</div>
                     </div>
                 </div>
 
@@ -2111,7 +2121,6 @@
             document.getElementById('tLoComm').textContent = formatHex(proofData.round3.t_lo.compressed);
             document.getElementById('tMidComm').textContent = formatHex(proofData.round3.t_mid.compressed);
             document.getElementById('tHiComm').textContent = formatHex(proofData.round3.t_hi.compressed);
-            document.getElementById('t4Comm').textContent = formatHex(proofData.round3.t_4.compressed);
 
             if (traceData.prover && traceData.prover.round3) {
                 document.getElementById('zetaChallenge').textContent = formatHex(traceData.prover.round3.zeta);
