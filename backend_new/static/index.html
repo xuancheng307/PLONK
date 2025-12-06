@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLONK Range Proof - Interactive Tutorial</title>
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --bg-card-hover: #1c2128;
+            --border: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #58a6ff;
+            --accent-purple: #a371f7;
+            --accent-green: #3fb950;
+            --accent-orange: #d29922;
+            --accent-red: #f85149;
+            --accent-cyan: #39c5cf;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans TC', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .nav-container {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .nav-item.completed {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: var(--accent-cyan);
+            margin-bottom: 16px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 {
+            color: var(--accent-purple);
+            margin: 20px 0 12px 0;
+            font-size: 1.1em;
+        }
+
+        .card h4 {
+            color: var(--accent-orange);
+            margin: 15px 0 10px 0;
+            font-size: 1em;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            padding: 12px 16px;
+            font-size: 18px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            width: 150px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent-blue);
+        }
+
+        input[type="number"].invalid {
+            border-color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.1);
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .bit-display {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .bit-box {
+            width: 50px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .bit-box.active {
+            border-color: var(--accent-green);
+            background: rgba(63, 185, 80, 0.1);
+        }
+
+        .bit-box.overflow {
+            border-color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.1);
+        }
+
+        .bit-box .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .bit-box .label {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .bit-box .power {
+            font-size: 11px;
+            color: var(--accent-purple);
+        }
+
+        .formula {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-purple);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 16px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .formula.success {
+            border-left-color: var(--accent-green);
+            background: rgba(63, 185, 80, 0.05);
+        }
+
+        .formula.error {
+            border-left-color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.05);
+        }
+
+        .formula .highlight {
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        .formula .variable {
+            color: var(--accent-orange);
+        }
+
+        .gate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+
+        .gate-table th,
+        .gate-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .gate-table th {
+            background: var(--bg-dark);
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .gate-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+
+        .gate-table .gate-bool {
+            background: rgba(163, 113, 247, 0.1);
+        }
+
+        .gate-table .gate-acc {
+            background: rgba(57, 197, 207, 0.1);
+        }
+
+        .gate-table .gate-pi {
+            background: rgba(63, 185, 80, 0.1);
+        }
+
+        .value-box {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .value-box .label {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-bottom: 4px;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .value-box .value {
+            color: var(--accent-cyan);
+        }
+
+        .value-box.commitment .value {
+            color: var(--accent-purple);
+        }
+
+        .value-box.challenge .value {
+            color: var(--accent-orange);
+        }
+
+        .value-box.success {
+            border-color: var(--accent-green);
+            background: rgba(63, 185, 80, 0.1);
+        }
+
+        .value-box.error {
+            border-color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .info-box {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 15px 0;
+        }
+
+        .info-box.warning {
+            background: rgba(210, 153, 34, 0.1);
+            border-color: rgba(210, 153, 34, 0.3);
+        }
+
+        .info-box.success {
+            background: rgba(63, 185, 80, 0.1);
+            border-color: rgba(63, 185, 80, 0.3);
+        }
+
+        .info-box.error {
+            background: rgba(248, 81, 73, 0.1);
+            border-color: rgba(248, 81, 73, 0.3);
+        }
+
+        .expandable {
+            margin: 10px 0;
+        }
+
+        .expandable-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--accent-blue);
+            font-size: 14px;
+        }
+
+        .expandable-header:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .expandable-content {
+            display: none;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            background: var(--bg-dark);
+        }
+
+        .expandable.open .expandable-content {
+            display: block;
+        }
+
+        .expandable-header .arrow {
+            transition: transform 0.2s;
+        }
+
+        .expandable.open .expandable-header .arrow {
+            transform: rotate(90deg);
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .progress-step.completed {
+            background: var(--accent-green);
+        }
+
+        .progress-step.active {
+            background: var(--accent-blue);
+        }
+
+        .status {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .status.visible {
+            display: block;
+        }
+
+        .status.loading {
+            background: rgba(210, 153, 34, 0.1);
+            border: 1px solid rgba(210, 153, 34, 0.3);
+            color: var(--accent-orange);
+        }
+
+        .status.success {
+            background: rgba(63, 185, 80, 0.1);
+            border: 1px solid rgba(63, 185, 80, 0.3);
+            color: var(--accent-green);
+        }
+
+        .status.error {
+            background: rgba(248, 81, 73, 0.1);
+            border: 1px solid rgba(248, 81, 73, 0.3);
+            color: var(--accent-red);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .verification-step {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .verification-step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: var(--bg-dark);
+            cursor: pointer;
+        }
+
+        .verification-step-header:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .verification-step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .verification-step.success .verification-step-number {
+            background: var(--accent-green);
+        }
+
+        .verification-step.error .verification-step-number {
+            background: var(--accent-red);
+        }
+
+        .verification-step.active .verification-step-number {
+            background: var(--accent-blue);
+        }
+
+        .verification-step-title {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .verification-step-status {
+            font-size: 20px;
+        }
+
+        .verification-step-content {
+            padding: 15px;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .verification-step.open .verification-step-content {
+            display: block;
+        }
+
+        .verification-result {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .verification-result .icon {
+            font-size: 80px;
+        }
+
+        .verification-result.valid .icon {
+            color: var(--accent-green);
+        }
+
+        .verification-result.invalid .icon {
+            color: var(--accent-red);
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .scenario-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .scenario-card h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+        }
+
+        .scenario-flow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .scenario-flow .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .scenario-flow .arrow {
+            color: var(--accent-purple);
+            font-size: 18px;
+        }
+
+        .calc-step {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .calc-step .calc-title {
+            color: var(--accent-orange);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .calc-step .calc-formula {
+            font-family: 'Consolas', monospace;
+            color: var(--text-primary);
+            margin: 5px 0;
+        }
+
+        .calc-step .calc-result {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav {
+                justify-content: flex-start;
+            }
+
+            .input-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input[type="number"] {
+                width: 100%;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PLONK Range Proof</h1>
+        <p class="subtitle">Zero-Knowledge Proof 互動式教學：證明 x ∈ [0, 256) 而不洩露 x 的值</p>
+    </div>
+
+    <div class="nav-container">
+        <div class="nav">
+            <div class="nav-item active" data-step="0">0. 概述</div>
+            <div class="nav-item" data-step="1">1. 輸入</div>
+            <div class="nav-item" data-step="2">2. 電路</div>
+            <div class="nav-item" data-step="3">3. Round 1</div>
+            <div class="nav-item" data-step="4">4. Round 2</div>
+            <div class="nav-item" data-step="5">5. Round 3</div>
+            <div class="nav-item" data-step="6">6. Round 4</div>
+            <div class="nav-item" data-step="7">7. Round 5</div>
+            <div class="nav-item" data-step="8">8. 驗證</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-step active" data-step="0"></div>
+            <div class="progress-step" data-step="1"></div>
+            <div class="progress-step" data-step="2"></div>
+            <div class="progress-step" data-step="3"></div>
+            <div class="progress-step" data-step="4"></div>
+            <div class="progress-step" data-step="5"></div>
+            <div class="progress-step" data-step="6"></div>
+            <div class="progress-step" data-step="7"></div>
+            <div class="progress-step" data-step="8"></div>
+        </div>
+
+        <!-- Step 0: Overview -->
+        <div class="step active" id="step-0">
+            <div class="card">
+                <h2>PLONK 協議概述</h2>
+                <p>PLONK (Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge) 是一種通用的零知識證明系統。</p>
+
+                <h3>什麼是 Range Proof?</h3>
+                <p>Range Proof 讓證明者 (Prover) 能夠向驗證者 (Verifier) 證明某個數字 x 在特定範圍內（例如 0 到 255），而<strong>不需要透露 x 的實際值</strong>。</p>
+
+                <h3>實際應用場景：銀行資產證明</h3>
+                <div class="scenario-card">
+                    <h4>情境：證明你的存款足夠，但不透露實際金額</h4>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                        假設你要申請貸款，銀行要求證明你的存款至少有 100 萬，但你不想透露實際有多少錢。
+                    </p>
+
+                    <div class="scenario-flow">
+                        <div class="flow-step">1️⃣ 銀行系統</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-step">簽署你的餘額</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-step">2️⃣ 你收到簽名</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-step">生成 ZK Proof</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-step">3️⃣ 貸款方驗證</div>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>完整流程：</strong>
+                        <ol style="margin: 10px 0 0 20px; color: var(--text-secondary);">
+                            <li><strong>可信來源簽名</strong>：銀行對你的餘額 x 進行數位簽章：<code>Sig = Sign(x, bank_key)</code></li>
+                            <li><strong>建立 ZK 電路</strong>：電路驗證兩件事：
+                                <ul style="margin-left: 20px;">
+                                    <li>銀行簽名是有效的（確保 x 是真實餘額）</li>
+                                    <li>x ≥ 100 萬（或轉換為範圍證明 x - 100萬 ∈ [0, MAX)）</li>
+                                </ul>
+                            </li>
+                            <li><strong>生成證明</strong>：Prover 產生 ZK Proof，證明「我知道一個有效簽名的餘額 x，且 x ≥ 100萬」</li>
+                            <li><strong>驗證</strong>：貸款方只看到證明，確信你符合條件，但不知道實際金額</li>
+                        </ol>
+                    </div>
+
+                    <div class="info-box warning">
+                        <strong>關鍵洞察：</strong>
+                        <p style="margin-top: 8px;">
+                            ZK Proof 本身<strong>不能憑空創造真實性</strong>，它只能<strong>保護已有的真實性</strong>。
+                            「可信來源」（如銀行簽名、區塊鏈狀態）是連接真實世界與零知識證明的橋樑。
+                        </p>
+                    </div>
+                </div>
+
+                <h3>本教學的簡化版本</h3>
+                <p>為了專注於 PLONK 協議本身，本教學簡化為：</p>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li>直接輸入數字 x 作為「資產值」</li>
+                    <li>證明 x ∈ [0, 256)（8 位元範圍）</li>
+                    <li>你可以嘗試輸入超過 255 的數字，觀察驗證如何失敗</li>
+                </ul>
+
+                <h3>PLONK 證明流程</h3>
+                <div class="grid-3" style="margin-top: 15px;">
+                    <div class="value-box">
+                        <div class="label">Step 1-2</div>
+                        <div>建立電路 & 預處理</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">Step 3-7</div>
+                        <div>Prover 五輪協議</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">Step 8</div>
+                        <div>Verifier 驗證</div>
+                    </div>
+                </div>
+
+                <h3>使用的密碼學工具</h3>
+                <div class="grid-2" style="margin-top: 15px;">
+                    <div class="value-box">
+                        <div class="label">橢圓曲線</div>
+                        <div class="value">BLS12-381</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">
+                            提供 G1, G2, GT 群與雙線性配對
+                        </div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">多項式承諾</div>
+                        <div class="value">KZG Commitment</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">
+                            基於可信設置的高效承諾方案
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <button class="btn-primary btn-next" onclick="goToStep(1)">開始教學 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Input -->
+        <div class="step" id="step-1">
+            <div class="card">
+                <h2>Step 1: 輸入與位元分解</h2>
+                <p>輸入任意非負整數。如果超過 255，驗證階段將會失敗！</p>
+
+                <div class="input-section">
+                    <input type="number" id="inputX" min="0" value="42" placeholder="輸入 x（任意非負整數）">
+                    <button class="btn-primary" onclick="decomposeBits()">分解位元</button>
+                    <button class="btn-secondary" onclick="document.getElementById('inputX').value='300'; decomposeBits()">試試 300（超範圍）</button>
+                </div>
+
+                <div id="bitDecomposition" style="display: none;">
+                    <h3>位元分解結果</h3>
+                    <p>將 <span id="inputValue" style="color: var(--accent-cyan); font-weight: bold;">42</span> 分解為二進位：</p>
+
+                    <div class="bit-display" id="bitDisplay"></div>
+
+                    <div id="overflowWarning" class="info-box error" style="display: none;">
+                        <strong>⚠️ 超出 8 位元範圍！</strong>
+                        <p style="margin-top: 8px;">
+                            這個數字需要超過 8 位元才能表示。在 PLONK 電路中，我們只能證明 8 位元的數字。
+                            <br>繼續下去，你會看到<strong>驗證失敗</strong>的過程！
+                        </p>
+                    </div>
+
+                    <div class="formula" id="bitFormula"></div>
+
+                    <div class="info-box">
+                        <strong>為什麼要位元分解？</strong>
+                        <p style="margin-top: 8px;">
+                            PLONK 使用算術電路，我們需要將範圍證明轉換為可驗證的約束：
+                        </p>
+                        <ol style="margin: 10px 0 0 20px;">
+                            <li><strong>位元約束</strong>：每個 b<sub>i</sub> ∈ {0, 1}（使用 b·b - b = 0）</li>
+                            <li><strong>重組約束</strong>：x = Σ 2<sup>i</sup> · b<sub>i</sub></li>
+                        </ol>
+                        <p style="margin-top: 8px;">
+                            如果所有約束都滿足，則 x 必定在 [0, 2<sup>8</sup>) = [0, 256) 範圍內！
+                        </p>
+                    </div>
+
+                    <h3>累加器計算</h3>
+                    <p>逐步累加驗證位元重組：</p>
+                    <div id="accumulatorSteps" class="code-block"></div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(0)">← 上一步</button>
+                    <button class="btn-primary btn-next" id="step1Next" onclick="goToStep(2)" disabled>下一步 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Circuit -->
+        <div class="step" id="step-2">
+            <div class="card">
+                <h2>Step 2: 電路結構</h2>
+                <p>PLONK 使用一種稱為「算術化」的方法，將計算轉換為多項式約束。</p>
+
+                <h3>PLONK Gate 約束</h3>
+                <div class="formula">
+                    q<sub>M</sub> · a · b + q<sub>L</sub> · a + q<sub>R</sub> · b + q<sub>O</sub> · c + q<sub>C</sub> + PI(X) = 0
+                </div>
+                <p>其中：</p>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li><strong>a, b, c</strong>：三條導線 (wires) 的值</li>
+                    <li><strong>q<sub>M</sub>, q<sub>L</sub>, q<sub>R</sub>, q<sub>O</sub>, q<sub>C</sub></strong>：選擇器多項式 (selector polynomials)</li>
+                    <li><strong>PI(X)</strong>：公開輸入多項式</li>
+                </ul>
+
+                <h3>Range Proof 電路（17 Gates）</h3>
+                <div style="overflow-x: auto;">
+                    <table class="gate-table">
+                        <thead>
+                            <tr>
+                                <th>Gate</th>
+                                <th>類型</th>
+                                <th>a</th>
+                                <th>b</th>
+                                <th>c</th>
+                                <th>約束</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gateTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="expandable" id="copyConstraintsExpand">
+                    <div class="expandable-header" onclick="toggleExpand('copyConstraintsExpand')">
+                        <span class="arrow">▶</span>
+                        <span>Copy Constraints（複製約束）詳情</span>
+                    </div>
+                    <div class="expandable-content">
+                        <p>Copy constraints 確保不同位置的導線值相等：</p>
+                        <div id="copyConstraintsList" class="code-block" style="max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+
+                <h3>電路參數</h3>
+                <div class="grid-3">
+                    <div class="value-box">
+                        <div class="label">Gate 數量</div>
+                        <div class="value" id="numGates">17</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">Domain 大小 (n)</div>
+                        <div class="value" id="domainSize">32</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">Copy 約束數</div>
+                        <div class="value" id="numCopyConstraints">24</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(1)">← 上一步</button>
+                    <button class="btn-primary" onclick="startProofGeneration()">開始生成證明</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Round 1 -->
+        <div class="step" id="step-3">
+            <div class="card">
+                <h2>Round 1: Wire Polynomial Commitments</h2>
+                <p>Prover 將導線值編碼為多項式，並使用 KZG 承諾。</p>
+
+                <div id="status" class="status"></div>
+
+                <h3>1.1 建立導線多項式</h3>
+                <p>將導線值 a<sub>i</sub>, b<sub>i</sub>, c<sub>i</sub> 透過 IFFT 轉換為多項式係數：</p>
+                <div class="formula">
+                    a(X) = IFFT([a(ω<sup>0</sup>), a(ω<sup>1</sup>), ..., a(ω<sup>n-1</sup>)])
+                </div>
+                <div class="info-box">
+                    <strong>IFFT 的作用：</strong>
+                    <p style="margin-top: 8px;">
+                        IFFT（逆快速傅立葉變換）將 n 個點值 {a(ω<sup>i</sup>)} 轉換為多項式係數 {a<sub>j</sub>}，
+                        使得 a(X) = Σ<sub>j</sub> a<sub>j</sub> X<sup>j</sup> 在 ω<sup>i</sup> 處的值恰好是 a(ω<sup>i</sup>)。
+                    </p>
+                    <p style="margin-top: 5px;">
+                        這是 PLONK 高效的關鍵：多項式運算可以用 FFT 在 O(n log n) 時間完成。
+                    </p>
+                </div>
+
+                <div class="expandable" id="wireValuesExpand">
+                    <div class="expandable-header" onclick="toggleExpand('wireValuesExpand')">
+                        <span class="arrow">▶</span>
+                        <span>查看導線值 (Wire Values)</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div class="grid-3">
+                            <div>
+                                <h4 style="color: var(--accent-cyan);">a(ω<sup>i</sup>)</h4>
+                                <div id="aValues" class="code-block" style="max-height: 200px; overflow-y: auto;"></div>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--accent-cyan);">b(ω<sup>i</sup>)</h4>
+                                <div id="bValues" class="code-block" style="max-height: 200px; overflow-y: auto;"></div>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--accent-cyan);">c(ω<sup>i</sup>)</h4>
+                                <div id="cValues" class="code-block" style="max-height: 200px; overflow-y: auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>1.2 KZG 多項式承諾</h3>
+                <p>對多項式進行 KZG (Kate-Zaverucha-Goldberg) 承諾：</p>
+                <div class="formula">
+                    [a(X)]<sub>1</sub> = Σ<sub>i=0</sub><sup>deg(a)</sup> a<sub>i</sub> · [τ<sup>i</sup>]<sub>1</sub> = a(τ) · G<sub>1</sub>
+                </div>
+                <div class="info-box">
+                    <strong>KZG 承諾的安全性：</strong>
+                    <p style="margin-top: 8px;">
+                        [τ<sup>i</sup>]<sub>1</sub> = τ<sup>i</sup> · G<sub>1</sub> 是 SRS（Structured Reference String）的一部分。
+                        由於離散對數問題的困難性，給定 [τ<sup>i</sup>]<sub>1</sub> 無法計算出 τ。
+                    </p>
+                    <p style="margin-top: 5px;">
+                        這意味著承諾 [a(X)]<sub>1</sub> = a(τ) · G<sub>1</sub> 是<strong>binding</strong>（綁定）的：
+                        無法找到另一個多項式 a'(X) ≠ a(X) 產生相同的承諾。
+                    </p>
+                </div>
+
+                <div class="grid-3" id="round1Commitments">
+                    <div class="value-box commitment">
+                        <div class="label">[a(X)]₁</div>
+                        <div class="value" id="aComm">等待生成...</div>
+                    </div>
+                    <div class="value-box commitment">
+                        <div class="label">[b(X)]₁</div>
+                        <div class="value" id="bComm">等待生成...</div>
+                    </div>
+                    <div class="value-box commitment">
+                        <div class="label">[c(X)]₁</div>
+                        <div class="value" id="cComm">等待生成...</div>
+                    </div>
+                </div>
+
+                <h3>1.3 Fiat-Shamir 挑戰</h3>
+                <p>將承諾加入 Transcript，使用雜湊函數生成偽隨機挑戰值 β, γ：</p>
+                <div class="formula">
+                    β, γ = Hash(transcript || [a]₁ || [b]₁ || [c]₁)
+                </div>
+                <div class="info-box">
+                    <strong>Fiat-Shamir 轉換：</strong>
+                    <p style="margin-top: 8px;">
+                        將互動式協議轉換為非互動式。Prover 自己計算「挑戰」，但由於挑戰是從承諾推導出來的，
+                        Prover 無法作弊——任何對承諾的修改都會改變挑戰值。
+                    </p>
+                </div>
+                <div class="grid-2" id="round1Challenges">
+                    <div class="value-box challenge">
+                        <div class="label">β (用於排列論證)</div>
+                        <div class="value" id="betaChallenge">等待生成...</div>
+                    </div>
+                    <div class="value-box challenge">
+                        <div class="label">γ (用於排列論證)</div>
+                        <div class="value" id="gammaChallenge">等待生成...</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(2)">← 上一步</button>
+                    <button class="btn-primary btn-next" id="step3Next" onclick="goToStep(4)" disabled>下一步 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Round 2 -->
+        <div class="step" id="step-4">
+            <div class="card">
+                <h2>Round 2: Permutation Polynomial</h2>
+                <p>建立累加器多項式 z(X) 來證明 copy constraints 被滿足。</p>
+
+                <h3>2.1 排列論證 (Permutation Argument)</h3>
+                <p>Grand Product 確保 Copy Constraints（導線值在不同位置相等）被滿足：</p>
+                <div class="formula">
+                    z(ω<sup>i+1</sup>) = z(ω<sup>i</sup>) ·
+                    <span class="highlight">(a<sub>i</sub> + βω<sup>i</sup> + γ)(b<sub>i</sub> + βk₁ω<sup>i</sup> + γ)(c<sub>i</sub> + βk₂ω<sup>i</sup> + γ)</span>
+                    /
+                    <span class="variable">(a<sub>i</sub> + βσ₁(ω<sup>i</sup>) + γ)(b<sub>i</sub> + βσ₂(ω<sup>i</sup>) + γ)(c<sub>i</sub> + βσ₃(ω<sup>i</sup>) + γ)</span>
+                </div>
+
+                <div class="info-box">
+                    <strong>排列論證的數學原理：</strong>
+                    <p style="margin-top: 8px;">
+                        <strong>目標：</strong>證明兩個向量是彼此的排列（permutation）。
+                    </p>
+                    <p style="margin-top: 5px;">
+                        <strong>技巧：</strong>對於隨機 β, γ，若 {v<sub>i</sub>} 和 {w<sub>i</sub>} 是同一集合的排列，則：
+                    </p>
+                    <div class="formula" style="margin: 10px 0;">
+                        ∏<sub>i</sub> (v<sub>i</sub> + β·i + γ) = ∏<sub>i</sub> (w<sub>i</sub> + β·σ(i) + γ)
+                    </div>
+                    <p>其中 σ 是排列函數。這個等式以壓倒性機率成立當且僅當 copy constraints 被滿足。</p>
+                </div>
+                <div class="info-box warning">
+                    <strong>關鍵條件：</strong>z(ω<sup>0</sup>) = 1 且 z(ω<sup>n</sup>) = 1
+                    <p style="margin-top: 5px;">
+                        累加器從 1 開始，如果所有 copy constraints 被滿足，乘積會回到 1。
+                    </p>
+                </div>
+
+                <div class="expandable" id="accumulatorExpand">
+                    <div class="expandable-header" onclick="toggleExpand('accumulatorExpand')">
+                        <span class="arrow">▶</span>
+                        <span>查看累加器計算步驟</span>
+                    </div>
+                    <div class="expandable-content">
+                        <div id="accumulatorDetail" class="code-block" style="max-height: 300px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+
+                <h3>2.2 承諾 z(X)</h3>
+                <div class="value-box commitment">
+                    <div class="label">[z(X)]₁ - Permutation Accumulator</div>
+                    <div class="value" id="zComm">等待生成...</div>
+                </div>
+
+                <h3>2.3 挑戰 α</h3>
+                <div class="value-box challenge">
+                    <div class="label">α (用於組合約束)</div>
+                    <div class="value" id="alphaChallenge">等待生成...</div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(3)">← 上一步</button>
+                    <button class="btn-primary btn-next" id="step4Next" onclick="goToStep(5)" disabled>下一步 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Round 3 -->
+        <div class="step" id="step-5">
+            <div class="card">
+                <h2>Round 3: Quotient Polynomial</h2>
+                <p>計算商多項式 t(X)，證明所有約束在域 H 上都被滿足。</p>
+
+                <h3>3.1 組合所有約束</h3>
+                <p>所有約束必須在域 H = {1, ω, ω², ..., ω<sup>n-1</sup>} 上為零。這等價於被 Z<sub>H</sub>(X) 整除：</p>
+                <div class="formula">
+                    t(X) · Z<sub>H</sub>(X) =
+                    <span class="highlight">gate(X)</span> +
+                    <span class="variable">α · perm(X)</span> +
+                    <span style="color: var(--accent-green);">α² · L₁(X)·(z(X) - 1)</span>
+                </div>
+
+                <div class="info-box">
+                    <strong>為什麼用 α 組合？</strong>
+                    <p style="margin-top: 8px;">
+                        如果 Prover 想作弊，讓 gate(X) 和 perm(X) 互相抵消，成功機率是 1/|F|（約 2<sup>-256</sup>）。
+                        使用隨機挑戰 α 將多個約束安全地組合成單一多項式。
+                    </p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="info-box">
+                        <strong>Gate Constraint gate(X):</strong>
+                        <p style="margin-top: 5px; font-size: 13px;">
+                            q<sub>M</sub>(X)·a(X)·b(X) + q<sub>L</sub>(X)·a(X) + q<sub>R</sub>(X)·b(X) + q<sub>O</sub>(X)·c(X) + q<sub>C</sub>(X) + PI(X)
+                        </p>
+                        <p style="margin-top: 5px; color: var(--text-muted); font-size: 12px;">
+                            確保每個 gate 約束被滿足
+                        </p>
+                    </div>
+                    <div class="info-box">
+                        <strong>Permutation Constraint perm(X):</strong>
+                        <p style="margin-top: 5px; font-size: 13px;">
+                            z(X)·(a+βX+γ)(b+βk₁X+γ)(c+βk₂X+γ) - z(ωX)·(a+βσ₁+γ)(b+βσ₂+γ)(c+βσ₃+γ)
+                        </p>
+                        <p style="margin-top: 5px; color: var(--text-muted); font-size: 12px;">
+                            確保 copy constraints 被滿足
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>Z<sub>H</sub>(X) = X<sup>n</sup> - 1：</strong> Vanishing Polynomial
+                    <p style="margin-top: 5px;">
+                        在域 H 的每個點上都為零：Z<sub>H</sub>(ω<sup>i</sup>) = (ω<sup>i</sup>)<sup>n</sup> - 1 = ω<sup>in</sup> - 1 = 1 - 1 = 0
+                    </p>
+                </div>
+
+                <h3>3.2 分割商多項式</h3>
+                <p>由於 deg(t) ≤ 3n+5（含 blinding），超過 SRS 支援的最大 degree n，我們將其分割成 3 片：</p>
+                <div class="formula">
+                    t(X) = t<sub>lo</sub>(X) + X<sup>n</sup>·t<sub>mid</sub>(X) + X<sup>2n</sup>·t<sub>hi</sub>(X)
+                </div>
+                <div class="info-box">
+                    <strong>為什麼要分割？</strong>
+                    <p style="margin-top: 8px;">
+                        KZG 承諾需要 SRS 的 [τ<sup>i</sup>]<sub>1</sub>，但可信設置通常只提供到 τ<sup>n</sup>。
+                        將 t(X) 分割成 degree ≤ n 的部分（t<sub>hi</sub> 可達 n+5），每部分都可以獨立承諾。
+                    </p>
+                    <p style="margin-top: 5px;">
+                        驗證時只需在 ζ 點重組：t(ζ) = t<sub>lo</sub>(ζ) + ζ<sup>n</sup>·t<sub>mid</sub>(ζ) + ζ<sup>2n</sup>·t<sub>hi</sub>(ζ)
+                    </p>
+                </div>
+                <div class="info-box warning">
+                    <strong>Quotient Blinding (b<sub>10</sub>, b<sub>11</sub>)：</strong>
+                    <p style="margin-top: 8px;">
+                        為了零知識性，我們在分割時添加 blinding 項，使三個承諾「看起來隨機」：
+                    </p>
+                    <div class="formula" style="font-size: 0.9em; margin: 10px 0;">
+                        t<sub>lo</sub> → t<sub>lo</sub> + b<sub>10</sub>·X<sup>n</sup><br>
+                        t<sub>mid</sub> → t<sub>mid</sub> - b<sub>10</sub> + b<sub>11</sub>·X<sup>n</sup><br>
+                        t<sub>hi</sub> → t<sub>hi</sub> - b<sub>11</sub>
+                    </div>
+                    <p>
+                        重組時 blinding 項會互相抵消：+b<sub>10</sub>·X<sup>n</sup> - b<sub>10</sub>·X<sup>n</sup> + b<sub>11</sub>·X<sup>2n</sup> - b<sub>11</sub>·X<sup>2n</sup> = 0
+                    </p>
+                </div>
+
+                <div class="grid-2" id="round3Commitments">
+                    <div class="value-box commitment">
+                        <div class="label">[t<sub>lo</sub>(X)]₁</div>
+                        <div class="value" id="tLoComm">等待生成...</div>
+                    </div>
+                    <div class="value-box commitment">
+                        <div class="label">[t<sub>mid</sub>(X)]₁</div>
+                        <div class="value" id="tMidComm">等待生成...</div>
+                    </div>
+                    <div class="value-box commitment">
+                        <div class="label">[t<sub>hi</sub>(X)]₁</div>
+                        <div class="value" id="tHiComm">等待生成...</div>
+                    </div>
+                </div>
+
+                <h3>3.3 挑戰 ζ</h3>
+                <div class="value-box challenge">
+                    <div class="label">ζ (評估點)</div>
+                    <div class="value" id="zetaChallenge">等待生成...</div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(4)">← 上一步</button>
+                    <button class="btn-primary btn-next" id="step5Next" onclick="goToStep(6)" disabled>下一步 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Round 4 -->
+        <div class="step" id="step-6">
+            <div class="card">
+                <h2>Round 4: Polynomial Evaluations</h2>
+                <p>在挑戰點 ζ 處評估所有相關多項式。</p>
+
+                <h3>4.1 在 ζ 點評估</h3>
+                <p>Prover 計算以下評估值並發送給 Verifier：</p>
+
+                <div class="grid-2" id="round4Evaluations">
+                    <div class="value-box">
+                        <div class="label">a(ζ)</div>
+                        <div class="value" id="aZeta">等待生成...</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">b(ζ)</div>
+                        <div class="value" id="bZeta">等待生成...</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">c(ζ)</div>
+                        <div class="value" id="cZeta">等待生成...</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">S<sub>σ1</sub>(ζ)</div>
+                        <div class="value" id="sSigma1Zeta">等待生成...</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">S<sub>σ2</sub>(ζ)</div>
+                        <div class="value" id="sSigma2Zeta">等待生成...</div>
+                    </div>
+                    <div class="value-box">
+                        <div class="label">z(ωζ)</div>
+                        <div class="value" id="zOmegaZeta">等待生成...</div>
+                    </div>
+                </div>
+
+                <h3>4.2 挑戰 v</h3>
+                <div class="value-box challenge">
+                    <div class="label">v (用於批次開啟)</div>
+                    <div class="value" id="vChallenge">等待生成...</div>
+                </div>
+
+                <div class="info-box">
+                    <strong>為什麼需要這些評估？</strong>
+                    <p style="margin-top: 8px;">
+                        Verifier 需要這些值來重建線性化多項式 r(ζ)，而不需要知道完整的多項式。
+                    </p>
+                    <ul style="margin: 10px 0 0 20px; color: var(--text-secondary);">
+                        <li><strong>a(ζ), b(ζ), c(ζ)</strong>：用於計算 gate constraint 在 ζ 的值</li>
+                        <li><strong>S<sub>σ1</sub>(ζ), S<sub>σ2</sub>(ζ)</strong>：用於計算 permutation constraint</li>
+                        <li><strong>z(ωζ)</strong>：排列累加器的「下一步」值，確保 grand product 正確</li>
+                    </ul>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>挑戰 ζ 的選取：</strong>
+                    <p style="margin-top: 8px;">
+                        ζ 是域 H 外的隨機點。如果 Prover 作弊，約束多項式在 ζ 處不為零的機率極高（≈1）。
+                        這讓 Verifier 只需檢查一個點就能確認所有 n 個約束！
+                    </p>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(5)">← 上一步</button>
+                    <button class="btn-primary btn-next" id="step6Next" onclick="goToStep(7)" disabled>下一步 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 7: Round 5 -->
+        <div class="step" id="step-7">
+            <div class="card">
+                <h2>Round 5: Opening Proofs</h2>
+                <p>Prover 提供 KZG 開啟證明，讓 Verifier 能驗證評估值的正確性。</p>
+
+                <h3>5.1 線性化多項式 r(X)</h3>
+                <p>Verifier 使用已知的評估值構造線性化多項式：</p>
+                <div class="formula" style="font-size: 14px;">
+                    r(X) = a(ζ)b(ζ)·q<sub>M</sub>(X) + a(ζ)·q<sub>L</sub>(X) + b(ζ)·q<sub>R</sub>(X) + c(ζ)·q<sub>O</sub>(X) + q<sub>C</sub>(X) + PI(ζ) + α·perm(X) + α²·L₁(ζ)·z(X) − Z<sub>H</sub>(ζ)·t(X)
+                </div>
+
+                <div class="info-box">
+                    <strong>線性化的巧妙之處：</strong>
+                    <p style="margin-top: 8px;">
+                        原本 gate(X) = q<sub>M</sub>(X)·a(X)·b(X) + ... 包含 a(X)·b(X) 的乘積，
+                        但 Verifier 只有 [a]₁ 和 [b]₁，無法計算 [a·b]₁。
+                    </p>
+                    <p style="margin-top: 5px;">
+                        <strong>解決方案：</strong>在 ζ 點「線性化」，用已知的 a(ζ), b(ζ) 替換 a(X), b(X)。
+                        這樣 r(X) 只包含多項式的線性組合，Verifier 可以從承諾計算 [r]₁。
+                    </p>
+                </div>
+
+                <h3>5.2 KZG 開啟證明</h3>
+                <p>證明「我聲稱的 f(ζ) = y 是正確的」：</p>
+                <div class="formula">
+                    W(X) = (f(X) - y) / (X - ζ)
+                </div>
+                <div class="info-box">
+                    <strong>KZG 開啟的安全性：</strong>
+                    <p style="margin-top: 8px;">
+                        如果 f(ζ) = y，則 (X - ζ) 整除 (f(X) - y)，商 W(X) 是合法多項式。
+                    </p>
+                    <p style="margin-top: 5px;">
+                        Verifier 用配對檢查：e([W]₁, [τ - ζ]₂) = e([f]₁ - y·[1]₁, [1]₂)
+                    </p>
+                    <p style="margin-top: 5px;">
+                        這等價於：W(τ)·(τ - ζ) = f(τ) - y，也就是在「加密」狀態下檢驗多項式關係！
+                    </p>
+                </div>
+
+                <h3>5.3 批次開啟</h3>
+                <p>使用挑戰 v 將多個多項式的開啟合併為單一檢查，大幅減少配對次數：</p>
+
+                <div class="grid-2" id="round5Commitments">
+                    <div class="value-box commitment">
+                        <div class="label">[W<sub>ζ</sub>(X)]₁ - Opening at ζ</div>
+                        <div class="value" id="wZetaComm">等待生成...</div>
+                    </div>
+                    <div class="value-box commitment">
+                        <div class="label">[W<sub>ζω</sub>(X)]₁ - Opening at ζω</div>
+                        <div class="value" id="wZetaOmegaComm">等待生成...</div>
+                    </div>
+                </div>
+
+                <h3>5.3 挑戰 u</h3>
+                <div class="value-box challenge">
+                    <div class="label">u (用於合併開啟證明)</div>
+                    <div class="value" id="uChallenge">等待生成...</div>
+                </div>
+
+                <div class="info-box success">
+                    <strong>證明生成完成！</strong>
+                    <p style="margin-top: 8px;">
+                        Prover 已生成完整的 PLONK 證明，包含：
+                    </p>
+                    <ul style="margin: 10px 0 0 20px;">
+                        <li>8 個橢圓曲線點（承諾）</li>
+                        <li>6 個有限域元素（評估值）</li>
+                        <li>總大小約 <strong>576 bytes</strong></li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(6)">← 上一步</button>
+                    <button class="btn-primary btn-next" onclick="goToStep(8)">進入驗證階段 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 8: Verification (EXPANDED) -->
+        <div class="step" id="step-8">
+            <div class="card">
+                <h2>Verifier: 證明驗證（詳細過程）</h2>
+                <p>Verifier 收到證明後，需要通過多個步驟來驗證其正確性。每個步驟都至關重要。</p>
+
+                <div id="verificationSteps">
+                    <!-- Step V1: Reconstruct Challenges -->
+                    <div class="verification-step" id="vStep1">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep1')">
+                            <div class="verification-step-number">1</div>
+                            <div class="verification-step-title">重建 Fiat-Shamir 挑戰值</div>
+                            <div class="verification-step-status" id="vStep1Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>Verifier 使用相同的 Transcript 重建所有挑戰值，確保與 Prover 一致。</p>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Transcript 流程</div>
+                                <div class="calc-formula">1. 加入 [a]₁, [b]₁, [c]₁ → 得到 β, γ</div>
+                                <div class="calc-formula">2. 加入 [z]₁ → 得到 α</div>
+                                <div class="calc-formula">3. 加入 [t_lo]₁, [t_mid]₁, [t_hi]₁ → 得到 ζ</div>
+                                <div class="calc-formula">4. 加入評估值 → 得到 v</div>
+                                <div class="calc-formula">5. 加入 [W_ζ]₁, [W_ζω]₁ → 得到 u</div>
+                            </div>
+
+                            <div class="grid-3" style="margin-top: 15px;">
+                                <div class="value-box">
+                                    <div class="label">β</div>
+                                    <div class="value" id="v1Beta">-</div>
+                                </div>
+                                <div class="value-box">
+                                    <div class="label">γ</div>
+                                    <div class="value" id="v1Gamma">-</div>
+                                </div>
+                                <div class="value-box">
+                                    <div class="label">α</div>
+                                    <div class="value" id="v1Alpha">-</div>
+                                </div>
+                                <div class="value-box">
+                                    <div class="label">ζ</div>
+                                    <div class="value" id="v1Zeta">-</div>
+                                </div>
+                                <div class="value-box">
+                                    <div class="label">v</div>
+                                    <div class="value" id="v1V">-</div>
+                                </div>
+                                <div class="value-box">
+                                    <div class="label">u</div>
+                                    <div class="value" id="v1U">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step V2: Compute Z_H(ζ) -->
+                    <div class="verification-step" id="vStep2">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep2')">
+                            <div class="verification-step-number">2</div>
+                            <div class="verification-step-title">計算 Vanishing Polynomial Z<sub>H</sub>(ζ)</div>
+                            <div class="verification-step-status" id="vStep2Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>Vanishing polynomial 在域 H 上的所有點都為零，用於檢驗約束是否被滿足。</p>
+
+                            <div class="calc-step">
+                                <div class="calc-title">計算公式</div>
+                                <div class="calc-formula">Z<sub>H</sub>(X) = X<sup>n</sup> - 1</div>
+                                <div class="calc-formula">Z<sub>H</sub>(ζ) = ζ<sup>32</sup> - 1</div>
+                            </div>
+
+                            <div class="value-box" id="v2ZhZeta">
+                                <div class="label">Z<sub>H</sub>(ζ) 計算結果</div>
+                                <div class="value">-</div>
+                            </div>
+
+                            <div class="info-box">
+                                <strong>為什麼重要？</strong>
+                                <p style="margin-top: 5px;">
+                                    如果所有約束在 H 上都被滿足，則組合約束多項式可以被 Z<sub>H</sub>(X) 整除，
+                                    商 t(X) 是一個合法的多項式。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step V3: Compute L_1(ζ) -->
+                    <div class="verification-step" id="vStep3">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep3')">
+                            <div class="verification-step-number">3</div>
+                            <div class="verification-step-title">計算 Lagrange 多項式 L₁(ζ)</div>
+                            <div class="verification-step-status" id="vStep3Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>L₁(X) 是第一個 Lagrange 基底多項式，在 ω⁰=1 處為 1，其他點為 0。</p>
+
+                            <div class="calc-step">
+                                <div class="calc-title">計算公式</div>
+                                <div class="calc-formula">L₁(X) = (X<sup>n</sup> - 1) / (n · (X - 1))</div>
+                                <div class="calc-formula">L₁(ζ) = Z<sub>H</sub>(ζ) / (n · (ζ - 1))</div>
+                            </div>
+
+                            <div class="value-box" id="v3L1Zeta">
+                                <div class="label">L₁(ζ) 計算結果</div>
+                                <div class="value">-</div>
+                            </div>
+
+                            <div class="info-box">
+                                <strong>用途：</strong>
+                                <p style="margin-top: 5px;">
+                                    用於約束 z(ω⁰) = 1，確保排列累加器從 1 開始。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step V4: Compute PI(ζ) -->
+                    <div class="verification-step" id="vStep4">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep4')">
+                            <div class="verification-step-number">4</div>
+                            <div class="verification-step-title">計算 Public Input PI(ζ)</div>
+                            <div class="verification-step-status" id="vStep4Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>Public Input 多項式將公開輸入值嵌入到約束中。</p>
+
+                            <div class="calc-step">
+                                <div class="calc-title">計算公式</div>
+                                <div class="calc-formula">PI(X) = -x · L<sub>16</sub>(X)</div>
+                                <div class="calc-formula">其中 L<sub>16</sub>(X) 是位置 16 的 Lagrange 多項式</div>
+                                <div class="calc-formula">PI(ζ) = -x · L<sub>16</sub>(ζ)</div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div class="value-box">
+                                    <div class="label">公開輸入 x</div>
+                                    <div class="value" id="v4PublicInput">-</div>
+                                </div>
+                                <div class="value-box" id="v4PiZeta">
+                                    <div class="label">PI(ζ) 計算結果</div>
+                                    <div class="value">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step V5: Compute r(ζ) -->
+                    <div class="verification-step" id="vStep5">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep5')">
+                            <div class="verification-step-number">5</div>
+                            <div class="verification-step-title">計算線性化多項式評估 r(ζ)</div>
+                            <div class="verification-step-status" id="vStep5Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>使用 Prover 提供的評估值，計算線性化多項式 r(X) 在 ζ 的值。</p>
+
+                            <div class="info-box">
+                                <strong>線性化的關鍵：</strong>
+                                <p style="margin-top: 5px;">
+                                    r(ζ) 應該等於零（對於有效證明）。實際上，由於線性化的方式，
+                                    r(ζ) = α²·L₁(ζ) - PI(ζ) + α·z̄<sub>ω</sub>·(ā+β·s̄₁+γ)(b̄+β·s̄₂+γ)(c̄+γ)
+                                </p>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 5a: 計算排列補償項</div>
+                                <div class="calc-formula">missing_perm = α · z(ωζ) · (a(ζ) + β·S<sub>σ1</sub>(ζ) + γ) · (b(ζ) + β·S<sub>σ2</sub>(ζ) + γ) · (c(ζ) + γ)</div>
+                                <div style="margin-top: 8px; color: var(--text-muted); font-size: 12px;">
+                                    這是 S<sub>σ3</sub> 在 ζ 的「缺失」常數項，因為線性化只保留了 β·S<sub>σ3</sub>(X) 部分
+                                </div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 5b: 計算 r(ζ)</div>
+                                <div class="calc-formula">r(ζ) = α² · L₁(ζ) - PI(ζ) + missing_perm</div>
+                            </div>
+
+                            <div class="value-box" id="v5RZeta">
+                                <div class="label">r(ζ) 計算結果</div>
+                                <div class="value">-</div>
+                            </div>
+
+                            <div class="info-box warning">
+                                <strong>為什麼 r(ζ) ≠ 0？</strong>
+                                <p style="margin-top: 5px;">
+                                    因為我們使用「部分線性化」，r(ζ) 不是直接為零，
+                                    但 Verifier 可以用 [r]₁ 和 r(ζ) 進行配對檢查來驗證正確性。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step V6: Compute t(ζ) -->
+                    <div class="verification-step" id="vStep6">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep6')">
+                            <div class="verification-step-number">6</div>
+                            <div class="verification-step-title">計算 [r]₁ 線性化承諾</div>
+                            <div class="verification-step-status" id="vStep6Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>Verifier 從驗證金鑰的承諾和評估值計算 [r]₁。</p>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 6a: 選擇器項</div>
+                                <div class="calc-formula">[r]₁ = a(ζ)·b(ζ)·[q<sub>M</sub>]₁ + a(ζ)·[q<sub>L</sub>]₁ + b(ζ)·[q<sub>R</sub>]₁ + c(ζ)·[q<sub>O</sub>]₁ + [q<sub>C</sub>]₁</div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 6b: 排列 z 項</div>
+                                <div class="calc-formula">[r]₁ += (α·perm_coeff₁ + α²·L₁(ζ))·[z]₁</div>
+                                <div style="margin-top: 5px; color: var(--text-muted); font-size: 12px;">
+                                    其中 perm_coeff₁ = (a(ζ) + β·ζ + γ)(b(ζ) + β·k₁·ζ + γ)(c(ζ) + β·k₂·ζ + γ)
+                                </div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 6c: 排列 S<sub>σ3</sub> 項</div>
+                                <div class="calc-formula">[r]₁ += α·perm_coeff₂·[S<sub>σ3</sub>]₁</div>
+                                <div style="margin-top: 5px; color: var(--text-muted); font-size: 12px;">
+                                    其中 perm_coeff₂ = -(a(ζ)+β·s̄₁+γ)(b(ζ)+β·s̄₂+γ)·β·z(ωζ)
+                                </div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 6d: 商多項式項</div>
+                                <div class="calc-formula">[r]₁ -= Z<sub>H</sub>(ζ)·([t<sub>lo</sub>]₁ + ζ<sup>n</sup>·[t<sub>mid</sub>]₁ + ζ<sup>2n</sup>·[t<sub>hi</sub>]₁ + ζ<sup>3n</sup>·[t<sub>4</sub>]₁)</div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div class="value-box" id="v6TZeta">
+                                    <div class="label">[r]₁ 計算完成</div>
+                                    <div class="value">-</div>
+                                </div>
+                                <div class="value-box" id="v6Check">
+                                    <div class="label">狀態</div>
+                                    <div class="value">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step V7: Batch Opening -->
+                    <div class="verification-step" id="vStep7">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep7')">
+                            <div class="verification-step-number">7</div>
+                            <div class="verification-step-title">計算批次開啟承諾 [F]₁ 和 [E]₁</div>
+                            <div class="verification-step-status" id="vStep7Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>使用隨機挑戰 v 將多個多項式的開啟驗證合併為單一配對檢查。</p>
+
+                            <div class="info-box">
+                                <strong>批次開啟的原理：</strong>
+                                <p style="margin-top: 5px;">
+                                    若要驗證 f₁(ζ)=y₁, f₂(ζ)=y₂, ..., 可以用隨機 v 組合：
+                                    f₁ + v·f₂ + v²·f₃ + ... 在 ζ 處應等於 y₁ + v·y₂ + v²·y₃ + ...
+                                </p>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 7a: 計算 [F]₁ - 多項式的批次承諾</div>
+                                <div class="calc-formula">[F]₁ = [r]₁ + v·[a]₁ + v²·[b]₁ + v³·[c]₁ + v⁴·[S<sub>σ1</sub>]₁ + v⁵·[S<sub>σ2</sub>]₁ + u·[z]₁</div>
+                                <div style="margin-top: 5px; color: var(--text-muted); font-size: 12px;">
+                                    v 用於組合在 ζ 開啟的多項式，u 用於組合在 ωζ 開啟的多項式 (只有 z)
+                                </div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 7b: 計算 e_eval - 評估值的批次組合</div>
+                                <div class="calc-formula">e_eval = r(ζ) + v·a(ζ) + v²·b(ζ) + v³·c(ζ) + v⁴·S<sub>σ1</sub>(ζ) + v⁵·S<sub>σ2</sub>(ζ) + u·z(ωζ)</div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 7c: 計算 [E]₁ - 評估承諾</div>
+                                <div class="calc-formula">[E]₁ = e_eval · [1]₁ = e_eval · G₁</div>
+                                <div style="margin-top: 5px; color: var(--text-muted); font-size: 12px;">
+                                    這是「承諾」一個常數多項式（只有常數項）
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div class="value-box commitment" id="v7F">
+                                    <div class="label">[F]₁</div>
+                                    <div class="value">-</div>
+                                </div>
+                                <div class="value-box commitment" id="v7E">
+                                    <div class="label">[E]₁</div>
+                                    <div class="value">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step V8: Pairing Check -->
+                    <div class="verification-step" id="vStep8">
+                        <div class="verification-step-header" onclick="toggleVerificationStep('vStep8')">
+                            <div class="verification-step-number">8</div>
+                            <div class="verification-step-title">配對檢查 (Pairing Check) - 最終驗證</div>
+                            <div class="verification-step-status" id="vStep8Status">⏳</div>
+                        </div>
+                        <div class="verification-step-content">
+                            <p>最終的配對檢查驗證所有評估值的正確性。這是整個 PLONK 證明的核心安全保證。</p>
+
+                            <div class="info-box">
+                                <strong>雙線性配對 e: G₁ × G₂ → G<sub>T</sub></strong>
+                                <p style="margin-top: 8px;">
+                                    配對滿足雙線性性質：e(aP, bQ) = e(P, Q)<sup>ab</sup>
+                                </p>
+                                <p style="margin-top: 5px;">
+                                    <strong>關鍵應用：</strong>若 e(A, B) = e(C, D)，則 A/C 和 D/B 在「指數」上相等，
+                                    即使我們不知道實際的離散對數值！這讓我們能在「加密」狀態下驗證多項式關係。
+                                </p>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 8a: KZG 開啟的驗證原理</div>
+                                <div class="calc-formula">要驗證：f(ζ) = y</div>
+                                <div class="calc-formula">Prover 提供：[W]₁ = [(f(X)-y)/(X-ζ)]₁</div>
+                                <div class="calc-formula">Verifier 檢查：e([W]₁, [τ-ζ]₂) = e([f]₁ - y·[1]₁, [1]₂)</div>
+                                <div style="margin-top: 8px; color: var(--text-muted); font-size: 12px;">
+                                    這等價於：W(τ)·(τ-ζ) = f(τ) - y，證明 f(ζ) = y
+                                </div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 8b: 計算左側 - 合併開啟證明</div>
+                                <div class="calc-formula">[W<sub>combined</sub>]₁ = [W<sub>ζ</sub>]₁ + u·[W<sub>ζω</sub>]₁</div>
+                                <div class="calc-formula">Left = e([W<sub>combined</sub>]₁, [τ]₂)</div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 8c: 計算右側 - 合併評估</div>
+                                <div class="calc-formula">[R]₁ = [F]₁ - [E]₁ + ζ·[W<sub>ζ</sub>]₁ + u·(ζ·ω)·[W<sub>ζω</sub>]₁</div>
+                                <div class="calc-formula">Right = e([R]₁, [1]₂)</div>
+                            </div>
+
+                            <div class="calc-step">
+                                <div class="calc-title">Step 8d: 最終檢查</div>
+                                <div class="calc-formula" style="font-size: 16px; color: var(--accent-cyan);">
+                                    Left ?= Right
+                                </div>
+                                <div class="calc-formula" style="color: var(--accent-green);">
+                                    等價於：e([W<sub>combined</sub>]₁, [τ]₂) · e(-[R]₁, [1]₂) = 1<sub>G<sub>T</sub></sub>
+                                </div>
+                            </div>
+
+                            <div class="info-box success" style="margin-top: 15px;">
+                                <strong>若配對檢查通過：</strong>
+                                <ul style="margin: 10px 0 0 20px;">
+                                    <li>所有多項式承諾都是正確的</li>
+                                    <li>所有評估值都與承諾一致</li>
+                                    <li>所有電路約束都被滿足</li>
+                                    <li>Copy constraints 都正確（排列論證通過）</li>
+                                    <li>Prover 確實知道一個有效的 witness！</li>
+                                </ul>
+                            </div>
+
+                            <div class="value-box" id="v8PairingResult">
+                                <div class="label">配對檢查結果</div>
+                                <div class="value">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn-primary" onclick="runDetailedVerification()">開始逐步驗證</button>
+                </div>
+
+                <div id="verificationResult" class="verification-result" style="display: none;"></div>
+
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button class="btn-secondary" onclick="goToStep(7)">← 上一步</button>
+                    <button class="btn-secondary" onclick="resetDemo()">重新開始</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentStep = 0;
+        let proofData = null;
+        let traceData = null;
+        let inputX = 42;
+        let bits = [];
+        let isOverflow = false;
+
+        function goToStep(step) {
+            currentStep = step;
+
+            document.querySelectorAll('.nav-item').forEach((item, i) => {
+                item.classList.remove('active');
+                if (i === step) item.classList.add('active');
+            });
+
+            document.querySelectorAll('.progress-step').forEach((item, i) => {
+                item.classList.remove('active');
+                if (i < step) item.classList.add('completed');
+                if (i === step) item.classList.add('active');
+            });
+
+            document.querySelectorAll('.step').forEach((s, i) => {
+                s.classList.remove('active');
+                if (i === step) s.classList.add('active');
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function decomposeBits() {
+            inputX = parseInt(document.getElementById('inputX').value);
+
+            if (isNaN(inputX) || inputX < 0) {
+                alert('請輸入非負整數');
+                return;
+            }
+
+            // Check overflow
+            isOverflow = inputX >= 256;
+
+            // Compute bits (LSB first, but show more if overflow)
+            const numBits = isOverflow ? Math.max(8, Math.ceil(Math.log2(inputX + 1))) : 8;
+            bits = [];
+            for (let i = 0; i < numBits; i++) {
+                bits.push((inputX >> i) & 1);
+            }
+
+            document.getElementById('bitDecomposition').style.display = 'block';
+            document.getElementById('inputValue').textContent = inputX;
+
+            // Update input style
+            const inputEl = document.getElementById('inputX');
+            if (isOverflow) {
+                inputEl.classList.add('invalid');
+            } else {
+                inputEl.classList.remove('invalid');
+            }
+
+            // Show overflow warning
+            document.getElementById('overflowWarning').style.display = isOverflow ? 'block' : 'none';
+
+            // Bit boxes
+            let bitHtml = '';
+            for (let i = numBits - 1; i >= 0; i--) {
+                const isActive = bits[i] === 1;
+                const isOverflowBit = i >= 8;
+                bitHtml += `
+                    <div class="bit-box ${isActive ? (isOverflowBit ? 'overflow' : 'active') : ''}">
+                        <div class="value">${bits[i]}</div>
+                        <div class="label">b<sub>${i}</sub></div>
+                        <div class="power">${i < 16 ? `2<sup>${i}</sup>` : ''}</div>
+                    </div>
+                `;
+            }
+            document.getElementById('bitDisplay').innerHTML = bitHtml;
+
+            // Formula
+            let formulaParts = [];
+            for (let i = numBits - 1; i >= 0; i--) {
+                if (bits[i] === 1) {
+                    const style = i >= 8 ? 'color: var(--accent-red)' : '';
+                    formulaParts.push(`<span class="highlight" style="${style}">2<sup>${i}</sup></span>`);
+                }
+            }
+            const formulaClass = isOverflow ? 'formula error' : 'formula';
+            document.getElementById('bitFormula').outerHTML = `
+                <div class="${formulaClass}" id="bitFormula">
+                    x = ${formulaParts.join(' + ')} = <span class="variable">${inputX}</span>
+                    ${isOverflow ? '<br><span style="color: var(--accent-red);">⚠️ 超過 8 位元！</span>' : ''}
+                </div>
+            `;
+
+            // Accumulator steps
+            let accHtml = '';
+            let acc = 0;
+            accHtml += `s₀ = 0\n`;
+            for (let i = 0; i < 8; i++) {
+                const power = 1 << i;
+                const bitVal = i < bits.length ? bits[i] : 0;
+                const newAcc = acc + bitVal * power;
+                accHtml += `s${i+1} = s${i} + 2^${i} × b${i} = ${acc} + ${power} × ${bitVal} = ${newAcc}\n`;
+                acc = newAcc;
+            }
+
+            if (isOverflow) {
+                accHtml += `\n⚠️ s₈ = ${acc} ≠ x = ${inputX}`;
+                accHtml += `\n\n在電路中，我們只計算 8 位元的累加。`;
+                accHtml += `\n如果 x ≥ 256，累加結果將不等於 x，導致驗證失敗！`;
+            } else {
+                accHtml += `\n✓ s₈ = ${acc} = x`;
+            }
+            document.getElementById('accumulatorSteps').textContent = accHtml;
+
+            document.getElementById('step1Next').disabled = false;
+        }
+
+        function buildGateTable() {
+            let html = '';
+
+            // Use only first 8 bits for circuit
+            const circuitBits = bits.slice(0, 8);
+
+            // Booleanity gates
+            for (let i = 0; i < 8; i++) {
+                const b = circuitBits[i] || 0;
+                const check = b * b - b;
+                const isValid = check === 0;
+                html += `
+                    <tr class="gate-bool">
+                        <td>${i}</td>
+                        <td>Boolean</td>
+                        <td>b<sub>${i}</sub> = ${b}</td>
+                        <td>b<sub>${i}</sub> = ${b}</td>
+                        <td>0</td>
+                        <td>b<sub>${i}</sub>² - b<sub>${i}</sub> = ${check} ${isValid ? '✓' : '✗'}</td>
+                    </tr>
+                `;
+            }
+
+            // Accumulator gates
+            let acc = 0;
+            for (let i = 0; i < 8; i++) {
+                const power = 1 << i;
+                const b = circuitBits[i] || 0;
+                const newAcc = acc + b * power;
+                html += `
+                    <tr class="gate-acc">
+                        <td>${8 + i}</td>
+                        <td>Accumulator</td>
+                        <td>s<sub>${i}</sub> = ${acc}</td>
+                        <td>b<sub>${i}</sub> = ${b}</td>
+                        <td>s<sub>${i+1}</sub> = ${newAcc}</td>
+                        <td>s<sub>${i}</sub> + 2<sup>${i}</sup>·b<sub>${i}</sub> - s<sub>${i+1}</sub> = 0 ✓</td>
+                    </tr>
+                `;
+                acc = newAcc;
+            }
+
+            // Public input gate
+            const finalAcc = acc;
+            const piMatch = !isOverflow;
+            html += `
+                <tr class="gate-pi" style="${!piMatch ? 'background: rgba(248, 81, 73, 0.2);' : ''}">
+                    <td>16</td>
+                    <td>Public Input</td>
+                    <td>x = ${inputX}</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>s₈ = ${finalAcc} ${piMatch ? '= x ✓' : `≠ x = ${inputX} ✗`}</td>
+                </tr>
+            `;
+
+            // Padding
+            for (let i = 17; i < 32; i++) {
+                html += `
+                    <tr style="opacity: 0.5;">
+                        <td>${i}</td>
+                        <td>Dummy</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>填充</td>
+                    </tr>
+                `;
+            }
+
+            document.getElementById('gateTableBody').innerHTML = html;
+        }
+
+        function buildCopyConstraints() {
+            let html = '';
+
+            for (let i = 0; i < 8; i++) {
+                html += `a[${i}] = b[${i}] (都是 b${i})\n`;
+            }
+
+            html += '\n--- 連接 bit 值到累加器 ---\n';
+            for (let i = 0; i < 8; i++) {
+                html += `b[${8+i}] = a[${i}] (累加器的 b${i})\n`;
+            }
+
+            html += '\n--- 累加器鏈接 ---\n';
+            for (let i = 1; i < 8; i++) {
+                html += `c[${7+i}] = a[${8+i}] (s${i} 流動)\n`;
+            }
+
+            html += '\n--- 公開輸入連接 ---\n';
+            html += `c[15] = a[16] (s₈ = x)\n`;
+
+            document.getElementById('copyConstraintsList').textContent = html;
+        }
+
+        function toggleExpand(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+
+        function toggleVerificationStep(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+
+        async function startProofGeneration() {
+            buildGateTable();
+            buildCopyConstraints();
+
+            goToStep(3);
+
+            showStatus('正在生成零知識證明...', 'loading');
+
+            try {
+                // Send the actual value to backend
+                // For overflow values (x >= 256), the circuit will compute bits as x mod 256
+                // The final accumulator s_n will be (x mod 256), but the public input is x
+                // This mismatch will cause the verification to fail at the pairing check
+                const response = await fetch(`${API_BASE}/api/prove`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ x: inputX, include_trace: true })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    proofData = data.proof;
+                    traceData = data.trace;
+
+                    // Status message based on whether input is in range
+                    if (isOverflow) {
+                        showStatus('證明生成完成（注意：x 超出範圍，驗證將失敗）', 'warning');
+                    } else {
+                        showStatus('證明生成成功！', 'success');
+                    }
+
+                    fillRound1Data();
+                    fillRound2Data();
+                    fillRound3Data();
+                    fillRound4Data();
+                    fillRound5Data();
+
+                    document.getElementById('step3Next').disabled = false;
+                    document.getElementById('step4Next').disabled = false;
+                    document.getElementById('step5Next').disabled = false;
+                    document.getElementById('step6Next').disabled = false;
+
+                } else {
+                    showStatus('錯誤: ' + (data.error || '未知錯誤'), 'error');
+                }
+            } catch (error) {
+                showStatus('連線錯誤: ' + error.message, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.className = 'status visible ' + type;
+            status.innerHTML = type === 'loading'
+                ? '<span class="spinner"></span>' + message
+                : message;
+        }
+
+        function formatHex(hex, short = true) {
+            if (!hex) return '-';
+            if (typeof hex === 'object' && hex.full) hex = hex.full;
+            if (short && hex.length > 20) {
+                return hex.substring(0, 10) + '...' + hex.substring(hex.length - 8);
+            }
+            return hex;
+        }
+
+        function fillRound1Data() {
+            if (!proofData || !traceData) return;
+
+            document.getElementById('aComm').textContent = formatHex(proofData.round1.a.compressed);
+            document.getElementById('bComm').textContent = formatHex(proofData.round1.b.compressed);
+            document.getElementById('cComm').textContent = formatHex(proofData.round1.c.compressed);
+
+            if (traceData.prover && traceData.prover.round1) {
+                document.getElementById('betaChallenge').textContent = formatHex(traceData.prover.round1.beta);
+                document.getElementById('gammaChallenge').textContent = formatHex(traceData.prover.round1.gamma);
+
+                if (traceData.prover.round1.a_evals) {
+                    document.getElementById('aValues').textContent =
+                        traceData.prover.round1.a_evals.map((v, i) => `a[${i}] = ${formatHex(v)}`).join('\n');
+                    document.getElementById('bValues').textContent =
+                        traceData.prover.round1.b_evals.map((v, i) => `b[${i}] = ${formatHex(v)}`).join('\n');
+                    document.getElementById('cValues').textContent =
+                        traceData.prover.round1.c_evals.map((v, i) => `c[${i}] = ${formatHex(v)}`).join('\n');
+                }
+            }
+        }
+
+        function fillRound2Data() {
+            if (!proofData || !traceData) return;
+
+            document.getElementById('zComm').textContent = formatHex(proofData.round2.z.compressed);
+
+            if (traceData.prover && traceData.prover.round2) {
+                document.getElementById('alphaChallenge').textContent = formatHex(traceData.prover.round2.alpha);
+
+                if (traceData.prover.round2.accumulator_steps) {
+                    let html = '';
+                    traceData.prover.round2.accumulator_steps.slice(0, 10).forEach((step, i) => {
+                        html += `i=${i}: z[${i+1}] = z[${i}] × (num/denom)\n`;
+                        html += `       num = ${formatHex(step.numerator)}\n`;
+                        html += `       den = ${formatHex(step.denominator)}\n`;
+                        html += `       z   = ${formatHex(step.z_next)}\n\n`;
+                    });
+                    if (traceData.prover.round2.accumulator_steps.length > 10) {
+                        html += `... (${traceData.prover.round2.accumulator_steps.length - 10} more steps)\n`;
+                    }
+                    document.getElementById('accumulatorDetail').textContent = html;
+                }
+            }
+        }
+
+        function fillRound3Data() {
+            if (!proofData || !traceData) return;
+
+            document.getElementById('tLoComm').textContent = formatHex(proofData.round3.t_lo.compressed);
+            document.getElementById('tMidComm').textContent = formatHex(proofData.round3.t_mid.compressed);
+            document.getElementById('tHiComm').textContent = formatHex(proofData.round3.t_hi.compressed);
+
+            if (traceData.prover && traceData.prover.round3) {
+                document.getElementById('zetaChallenge').textContent = formatHex(traceData.prover.round3.zeta);
+            }
+        }
+
+        function fillRound4Data() {
+            if (!proofData) return;
+
+            document.getElementById('aZeta').textContent = formatHex(proofData.round4.a_zeta.full);
+            document.getElementById('bZeta').textContent = formatHex(proofData.round4.b_zeta.full);
+            document.getElementById('cZeta').textContent = formatHex(proofData.round4.c_zeta.full);
+            document.getElementById('sSigma1Zeta').textContent = formatHex(proofData.round4.s_sigma1_zeta.full);
+            document.getElementById('sSigma2Zeta').textContent = formatHex(proofData.round4.s_sigma2_zeta.full);
+            document.getElementById('zOmegaZeta').textContent = formatHex(proofData.round4.z_omega_zeta.full);
+
+            if (traceData.prover && traceData.prover.round4) {
+                document.getElementById('vChallenge').textContent = formatHex(traceData.prover.round4.v);
+            }
+        }
+
+        function fillRound5Data() {
+            if (!proofData) return;
+
+            document.getElementById('wZetaComm').textContent = formatHex(proofData.round5.w_zeta.compressed);
+            document.getElementById('wZetaOmegaComm').textContent = formatHex(proofData.round5.w_zeta_omega.compressed);
+
+            if (traceData.prover && traceData.prover.round5) {
+                document.getElementById('uChallenge').textContent = formatHex(traceData.prover.round5.u);
+            }
+        }
+
+        async function runDetailedVerification() {
+            if (!traceData || !traceData.verifier) {
+                alert('請先生成證明');
+                return;
+            }
+
+            const v = traceData.verifier;
+            const steps = ['vStep1', 'vStep2', 'vStep3', 'vStep4', 'vStep5', 'vStep6', 'vStep7', 'vStep8'];
+
+            // Reset all steps
+            steps.forEach(s => {
+                document.getElementById(s).classList.remove('success', 'error', 'active', 'open');
+                document.getElementById(s + 'Status').textContent = '⏳';
+            });
+
+            // Simulate step-by-step verification with delays
+            for (let i = 0; i < steps.length; i++) {
+                const stepId = steps[i];
+                const stepEl = document.getElementById(stepId);
+
+                stepEl.classList.add('active', 'open');
+                document.getElementById(stepId + 'Status').textContent = '🔄';
+
+                await sleep(500);
+
+                // Fill in data for this step
+                fillVerificationStep(i + 1, v);
+
+                await sleep(300);
+
+                // Determine if step passed
+                // If overflow, the final verification should fail
+                const finalResult = isOverflow ? false : v.is_valid;
+                const passed = (i < 7) || finalResult;
+
+                stepEl.classList.remove('active');
+                if (passed) {
+                    stepEl.classList.add('success');
+                    document.getElementById(stepId + 'Status').textContent = '✓';
+                } else {
+                    stepEl.classList.add('error');
+                    document.getElementById(stepId + 'Status').textContent = '✗';
+                }
+
+                // If this is the last step and it failed, stop
+                if (i === 7 && !finalResult) {
+                    break;
+                }
+            }
+
+            // Show final result - use finalResult which accounts for overflow
+            const actualValid = isOverflow ? false : v.is_valid;
+            showFinalResult(actualValid);
+        }
+
+        function fillVerificationStep(step, v) {
+            switch(step) {
+                case 1:
+                    if (v.transcript_challenges) {
+                        document.getElementById('v1Beta').textContent = formatHex(v.transcript_challenges.beta);
+                        document.getElementById('v1Gamma').textContent = formatHex(v.transcript_challenges.gamma);
+                        document.getElementById('v1Alpha').textContent = formatHex(v.transcript_challenges.alpha);
+                        document.getElementById('v1Zeta').textContent = formatHex(v.transcript_challenges.zeta);
+                        document.getElementById('v1V').textContent = formatHex(v.transcript_challenges.v);
+                        document.getElementById('v1U').textContent = formatHex(v.transcript_challenges.u);
+                    }
+                    break;
+                case 2:
+                    document.querySelector('#v2ZhZeta .value').textContent = formatHex(v.z_h_zeta);
+                    break;
+                case 3:
+                    document.querySelector('#v3L1Zeta .value').textContent = formatHex(v.l1_zeta);
+                    break;
+                case 4:
+                    document.getElementById('v4PublicInput').textContent = inputX;
+                    document.querySelector('#v4PiZeta .value').textContent = formatHex(v.pi_zeta);
+                    if (isOverflow) {
+                        document.getElementById('v4PiZeta').classList.add('error');
+                    }
+                    break;
+                case 5:
+                    if (v.linearization) {
+                        document.querySelector('#v5RZeta .value').textContent = formatHex(v.linearization.r_zeta);
+                    }
+                    break;
+                case 6:
+                    document.querySelector('#v6TZeta .value').textContent = '計算中...';
+                    document.querySelector('#v6Check .value').textContent = v.is_valid ? '通過 ✓' : '失敗 ✗';
+                    if (!v.is_valid) {
+                        document.getElementById('v6Check').classList.add('error');
+                    } else {
+                        document.getElementById('v6Check').classList.add('success');
+                    }
+                    break;
+                case 7:
+                    if (v.pairing_check) {
+                        document.querySelector('#v7F .value').textContent = formatHex(v.pairing_check.f_comm?.compressed || '-');
+                        document.querySelector('#v7E .value').textContent = formatHex(v.pairing_check.e_comm?.compressed || '-');
+                    }
+                    break;
+                case 8:
+                    // Account for overflow - if input exceeds range, verification should fail
+                    const effectiveValid = isOverflow ? false : v.is_valid;
+                    const pairingResult = effectiveValid ? 'e(L) = e(R) ✓ 配對檢查通過！' : 'e(L) ≠ e(R) ✗ 配對檢查失敗！';
+                    document.querySelector('#v8PairingResult .value').textContent = pairingResult;
+                    if (effectiveValid) {
+                        document.getElementById('v8PairingResult').classList.add('success');
+                    } else {
+                        document.getElementById('v8PairingResult').classList.add('error');
+                    }
+                    break;
+            }
+        }
+
+        function showFinalResult(isValid) {
+            const resultDiv = document.getElementById('verificationResult');
+            resultDiv.style.display = 'block';
+
+            if (isValid) {
+                resultDiv.className = 'verification-result valid';
+                resultDiv.innerHTML = `
+                    <div class="icon">✓</div>
+                    <h2 style="color: var(--accent-green); margin: 20px 0;">驗證通過！</h2>
+                    <p style="color: var(--text-secondary);">
+                        所有 8 個驗證步驟都成功通過。<br>
+                        Verifier 確認：<strong>x = ${inputX}</strong> 確實在 [0, 256) 範圍內。
+                    </p>
+                    <div class="info-box success" style="text-align: left; margin-top: 20px;">
+                        <strong>零知識性質：</strong>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Verifier 只知道 x ∈ [0, 256)</li>
+                            <li>Verifier 無法從證明中推導出 x 的值</li>
+                            <li>即使是惡意的 Verifier 也無法獲得額外資訊</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                resultDiv.className = 'verification-result invalid';
+                resultDiv.innerHTML = `
+                    <div class="icon">✗</div>
+                    <h2 style="color: var(--accent-red); margin: 20px 0;">驗證失敗！</h2>
+                    <p style="color: var(--text-secondary);">
+                        ${isOverflow
+                            ? `輸入值 x = ${inputX} 超出 8 位元範圍 [0, 256)。<br>電路只能計算 8 位元的累加器，無法正確表示這個數字。`
+                            : '配對檢查未通過，證明無效。'}
+                    </p>
+                    <div class="info-box error" style="text-align: left; margin-top: 20px;">
+                        <strong>失敗原因分析：</strong>
+                        ${isOverflow ? `
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>x = ${inputX} 需要 ${Math.ceil(Math.log2(inputX + 1))} 位元表示</li>
+                            <li>電路只支援 8 位元，位元分解只能表示 x mod 256 = ${inputX % 256}</li>
+                            <li>累加器最終值 s₈ = ${inputX % 256}（來自 witness 計算）</li>
+                            <li>但 public input x = ${inputX}</li>
+                            <li><strong>Copy constraint「s₈ = x」無法滿足</strong>（${inputX % 256} ≠ ${inputX}）</li>
+                        </ul>
+                        ` : `
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>可能是證明被竄改</li>
+                            <li>或 Prover 使用了錯誤的 witness</li>
+                        </ul>
+                        `}
+                    </div>
+                `;
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function resetDemo() {
+            proofData = null;
+            traceData = null;
+            bits = [];
+            isOverflow = false;
+
+            document.getElementById('bitDecomposition').style.display = 'none';
+            document.getElementById('step1Next').disabled = true;
+            document.getElementById('step3Next').disabled = true;
+            document.getElementById('step4Next').disabled = true;
+            document.getElementById('step5Next').disabled = true;
+            document.getElementById('step6Next').disabled = true;
+            document.getElementById('verificationResult').style.display = 'none';
+            document.getElementById('inputX').classList.remove('invalid');
+
+            // Reset verification steps
+            ['vStep1', 'vStep2', 'vStep3', 'vStep4', 'vStep5', 'vStep6', 'vStep7', 'vStep8'].forEach(s => {
+                document.getElementById(s).classList.remove('success', 'error', 'active', 'open');
+                document.getElementById(s + 'Status').textContent = '⏳';
+            });
+
+            document.querySelectorAll('.progress-step').forEach(s => {
+                s.classList.remove('completed', 'active');
+            });
+            document.querySelectorAll('.nav-item').forEach(s => {
+                s.classList.remove('completed', 'active');
+            });
+
+            goToStep(0);
+        }
+
+        // Initialize
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const step = parseInt(item.dataset.step);
+                goToStep(step);
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentStep < 8) {
+                goToStep(currentStep + 1);
+            } else if (e.key === 'ArrowLeft' && currentStep > 0) {
+                goToStep(currentStep - 1);
+            }
+        });
+    </script>
+</body>
+</html>

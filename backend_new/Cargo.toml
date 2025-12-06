@@ -1,0 +1,40 @@
+[package]
+name = "plonk-demo"
+version = "0.1.0"
+edition = "2021"
+description = "PLONK ZK-SNARK implementation for educational demo"
+
+[dependencies]
+# Arkworks stack - BLS12-381 curve and field operations
+ark-ff = "0.4"
+ark-ec = "0.4"
+ark-poly = "0.4"
+ark-serialize = "0.4"
+ark-bls12-381 = "0.4"
+ark-std = "0.4"
+
+# Transcript / hash for Fiat-Shamir
+sha2 = "0.10"
+rand = "0.8"
+rand_chacha = "0.3"
+
+# Web framework
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "fs"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Utilities
+thiserror = "1"
+anyhow = "1"
+hex = "0.4"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+[profile.release]
+opt-level = 3
+lto = true
